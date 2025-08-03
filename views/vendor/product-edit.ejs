@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist//vendor/addProduct by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:26 GMT -->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Vendor Product Add</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!-- Favicon-->
+
+    <!--plugin css file -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/multi-select/css/multi-select.css"
+    />
+    <!-- Multi Select Css -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/bootstrap-tagsinput/bootstrap-tagsinput.css"
+    />
+    <!-- Bootstrap Tagsinput Css -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/cropper/cropper.min.css"
+    />
+    <!--Cropperer Css -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/dropify/dist/css/dropify.min.css"
+    />
+    <!-- Dropify Css -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/datatables/responsive.dataTables.min.css"
+    />
+    <!-- Datatable Css -->
+    <link
+      rel="stylesheet"
+      href="/vendor/assets/plugin/datatables/dataTables.bootstrap5.min.css"
+    />
+    <!-- Datatable Css -->
+
+    <!-- Project css file  -->
+    <link rel="stylesheet" href="/vendor/assets/css/ebazar.style.min.css" />
+
+    <style>
+      /* Add your CSS styles here */
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        font-weight: bold;
+      }
+      .form-group.images label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .form-group.images input[type="file"] {
+        margin-bottom: 10px;
+      }
+      .btn-submit {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-submit:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ebazar-layout" class="theme-blue">
+      <!-- sidebar -->
+      <div class="sidebar px-4 py-4 py-md-4 me-0">
+        <div class="d-flex flex-column h-100">
+          <a href="index.html" class="mb-0 brand-icon">
+            <span class="logo-icon">
+              <i class="bi bi-bag-check-fill fs-4"></i>
+            </span>
+            <span class="logo-text"><%= vendor.vendorName %></span>
+          </a>
+          <!-- Menu: main ul -->
+          <ul class="menu-list flex-grow-1 mt-3">
+            <li>
+              <a class="m-link" href="/vendor/dashboard"
+                ><i class="icofont-home fs-5"></i> <span>Dashboard</span></a
+              >
+            </li>
+
+            <li>
+              <a class="m-link active" href="/vendor/productList"
+                ><i class="icofont-truck-loaded fs-5"></i>Products</a
+              >
+            </li>
+            <li>
+              <a class="m-link" href="/vendor/addProduct"
+                ><i class="icofont-truck-loaded fs-5"></i>Add Product</a
+              >
+            </li>
+
+            <li>
+              <a class="m-link" href="/vendor/orders"
+                ><i class="icofont-notepad"></i> <span>Orders</span></a
+              >
+            </li>
+
+            <li>
+              <a class="m-link" href="/vendor/returnRepayment"
+                ><i class="icofont-notepad"></i>
+                <span>Return & Repayment</span></a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- main body area -->
+      <div class="main px-lg-4 px-md-4">
+        <!-- Body: Header -->
+        <div class="header">
+          <nav class="navbar py-4">
+            <div class="container-xxl">
+              <!-- header rightbar icon -->
+              <div
+                class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1"
+              >
+                <div
+                  class="dropdown user-profile ml-2 ml-sm-3 d-flex align-items-center zindex-popover"
+                >
+                  <div class="u-info me-2">
+                    <p class="mb-0 text-end line-height-sm">
+                      <span class="font-weight-bold"
+                        ><%= vendor.vendorName %></span
+                      >
+                    </p>
+                  </div>
+                  <a
+                    class="nav-link dropdown-toggle pulse p-0"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-display="static"
+                  >
+                    <img
+                      class="avatar lg rounded-circle img-thumbnail"
+                      src="/vendor/assets/images/profile_av.svg"
+                      alt="profile"
+                    />
+                  </a>
+                  <div
+                    class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0"
+                  >
+                    <div class="card border-0 w280">
+                      <div class="card-body pb-0">
+                        <div class="d-flex py-1">
+                          <img
+                            class="avatar rounded-circle"
+                            src="/vendor/assets/images/profile_av.svg"
+                            alt="profile"
+                          />
+                          <div class="flex-fill ms-3">
+                            <p class="mb-0">
+                              <span class="font-weight-bold"
+                                ><%= vendor.vendorName %></span
+                              >
+                            </p>
+                            <small class=""><%= vendor.email %></small>
+                          </div>
+                        </div>
+
+                        <div><hr class="dropdown-divider border-dark" /></div>
+                      </div>
+                      <div class="list-group m-2">
+                        <!-- <a
+                          href="/vendorProfile"
+                          class="list-group-item list-group-item-action border-0"
+                          ><i class="icofont-ui-user fs-5 me-3"></i>Profile
+                          Page</a
+                        > -->
+                        <a
+                          href="/vendor/logout"
+                          class="list-group-item list-group-item-action border-0"
+                          ><i class="icofont-logout fs-5 me-3"></i>Signout</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- main menu Search-->
+              <div
+                class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
+              >
+                <div class="input-group flex-nowrap input-group-lg">
+                  <input
+                    type="search"
+                    class="form-control"
+                    placeholder="Search"
+                    aria-label="search"
+                    aria-describedby="addon-wrapping"
+                  />
+                  <button
+                    type="button"
+                    class="input-group-text"
+                    id="addon-wrapping"
+                  >
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+        <!-- Body: Body -->
+        <h2 class="text-uppercase fw-bold px-3">Edit Product</h2>
+        <form
+          class="needs-validation"
+          action="/vendor/editProduct/<%= product._id %>"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div>
+            <div class="form-group px-3">
+              <label for="productName">Product Name:</label>
+              <input
+                type="text"
+                id="productName"
+                name="productName"
+                value="<%= product.productName %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productBrand">Product Brand:</label>
+              <input
+                type="text"
+                id="productBrand"
+                name="productBrand"
+                value="<%= product.productBrand %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productColor">Product Color:</label>
+              <input
+                type="text"
+                id="productColor"
+                name="productColor"
+                value="<%= product.productColor %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productSize">Product Size:</label>
+              <input
+                type="text"
+                id="productSize"
+                name="productSize"
+                value="<%= product.productSize %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productQuantity">Product Quantity:</label>
+              <input
+                type="number"
+                id="productQuantity"
+                name="productQuantity"
+                value="<%= product.productQTY %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productPrice">Product Price:</label>
+              <input
+                type="number"
+                id="productPrice"
+                name="productPrice"
+                value="<%= product.productPrice %>"
+                required
+              />
+            </div>
+
+            <div class="form-group px-3">
+              <label for="productCategory">Category:</label>
+              <select
+                id="productCategory"
+                name="productCategory"
+                onchange="getSubcategory()"
+                required
+              >
+                <option value="">Select Category</option>
+                <% categories.forEach(category => { %>
+                <option value="<%= category.categoryName %>">
+                  <%= category.categoryName %>
+                </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <input
+              type="hidden"
+              id="categoriesData"
+              value="<%= JSON.stringify(categories) %>"
+            />
+
+            <div class="form-group px-3">
+              <label for="productSubcategory">Subcategory:</label>
+              <select
+                id="productSubcategory"
+                name="productSubcategory"
+                required
+              >
+                <option value="">Select Subcategory</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group px-3">
+            <label for="productDescription">Product Description:</label>
+            <textarea
+              id="productDescription"
+              name="productDescription"
+              rows="5"
+              required
+            >
+            <%= product.productDescription %></textarea
+            >
+          </div>
+
+          <div class="form-group images px-3">
+            <label for="productImages">Product Images ( 4 images ):</label
+            ><br />
+
+            <input
+              type="file"
+              id="productImages"
+              name="productImages"
+              value="<%= product.productImages[0] %>"
+            />
+            <img
+              src="<%= product.productImages[0] %>"
+              alt="No image added"
+              style="max-width: 100px"
+            /><br />
+
+            <input
+              type="file"
+              id="productImages"
+              name="productImages"
+              value="<%= product.productImages[1] %>"
+            />
+            <img
+              src="<%= product.productImages[1] %>"
+              alt="No image added"
+              style="max-width: 100px"
+            /><br />
+
+            <input
+              type="file"
+              id="productImages"
+              name="productImages"
+              value="<%= product.productImages[2] %>"
+            />
+            <img
+              src="<%= product.productImages[2] %>"
+              alt="No image added"
+              style="max-width: 100px"
+            /><br />
+
+            <input
+              type="file"
+              id="productImages"
+              name="productImages"
+              value="<%= product.productImages[3] %>"
+            />
+            <img
+              src="<%= product.productImages[2] %>"
+              alt="No image added"
+              style="max-width: 100px"
+            /><br />
+          </div>
+
+          <div class="px-3">
+            <input type="submit" value="Edit Product" class="btn-submit" />
+          </div>
+        </form>
+        <br />
+      </div>
+    </div>
+
+    <script>
+      function getSubcategory() {
+        const categoriesInput = document.getElementById("categoriesData");
+        const categoriesJson = categoriesInput.value;
+
+        // Parse the JSON string to get the categories array
+        const categories = JSON.parse(categoriesJson);
+
+        const categoryDropdown = document.getElementById("productCategory");
+        const subcategoryDropdown =
+          document.getElementById("productSubcategory");
+
+        // Clear previous options
+        subcategoryDropdown.innerHTML =
+          '<option value="">Select Subcategory</option>';
+
+        const selectedCategory = categoryDropdown.value;
+        if (!selectedCategory) {
+          return;
+        }
+
+        // Find the selected category from the categories array
+        const selectedCategoryObj = categories.find(
+          (category) => category.categoryName === selectedCategory
+        );
+
+        if (selectedCategoryObj) {
+          selectedCategoryObj.subcategories.forEach((subcategory) => {
+            const option = document.createElement("option");
+            option.text = subcategory;
+            option.value = subcategory;
+            subcategoryDropdown.add(option);
+          });
+        }
+      }
+
+      // Trigger getSubcategory() when the page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        getSubcategory();
+      });
+    </script>
+
+    <!-- Jquery Core Js -->
+    <script src="/vendor/assets/bundles/libscripts.bundle.js"></script>
+
+    <!-- Jquery Plugin -->
+    <script src="../../../../../cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
+    <script src="/vendor/assets/plugin/multi-select/js/jquery.multi-select.js"></script>
+    <script src="/vendor/assets/plugin/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+    <script src="/vendor/assets/plugin/cropper/cropper.min.js"></script>
+    <script src="/vendor/assets/plugin/cropper/cropper-init.js"></script>
+    <script src="/vendor/assets/bundles/dropify.bundle.js"></script>
+    <script src="/vendor/assets/bundles/dataTables.bundle.js"></script>
+
+    <!-- Jquery Page Js -->
+    <script src="../js/template.js"></script>
+    <script>
+      $(document).ready(function () {
+        //Ch-editer
+        ClassicEditor.create(document.querySelector("#editor")).catch(
+          (error) => {
+            console.error(error);
+          }
+        );
+        //Datatable
+        $("#myCartTable")
+          .addClass("nowrap")
+          .dataTable({
+            responsive: true,
+            columnDefs: [{ targets: [-1, -3], className: "dt-body-right" }],
+          });
+        $(".deleterow").on("click", function () {
+          var tablename = $(this).closest("table").DataTable();
+          tablename.row($(this).parents("tr")).remove().draw();
+        });
+        //Multiselect
+        $("#optgroup").multiSelect({ selectableOptgroup: true });
+      });
+
+      $(function () {
+        $(".dropify").dropify();
+
+        var drEvent = $("#dropify-event").dropify();
+        drEvent.on("dropify.beforeClear", function (event, element) {
+          return confirm(
+            'Do you really want to delete "' + element.file.name + '" ?'
+          );
+        });
+
+        drEvent.on("dropify.afterClear", function (event, element) {
+          alert("File deleted");
+        });
+
+        $(".dropify-fr").dropify({
+          messages: {
+            default: "Glissez-dÃ©posez un fichier ici ou cliquez",
+            replace: "Glissez-dÃ©posez un fichier ou cliquez pour remplacer",
+            remove: "Supprimer",
+            error: "DÃ©solÃ©, le fichier trop volumineux",
+          },
+        });
+      });
+    </script>
+  </body>
+
+  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist//vendor/addProduct by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:27 GMT -->
+</html>

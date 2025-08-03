@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <!-- Mirrored from wphix.com/template/mazia/single-product-5.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:32 GMT -->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>single fixed</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="manifest" href="site.html" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/css/animate.min.css" />
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="/css/meanmenu.css" />
+    <link rel="stylesheet" href="/css/slick.css" />
+    <link rel="stylesheet" href="/css/default.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+
+    <style>
+      /* CSS for Image Zoom */
+      .zoomable {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .zoomable__img {
+        transform-origin: var(--zoom-pos-x, 0%) var(--zoom-pos-y, 0%);
+        transition: transform 0.4s linear;
+      }
+
+      .zoomable--zoomed .zoomable__img {
+        cursor: zoom-in;
+        transform: scale(var(--zoom, 1));
+      }
+
+      /* CSS for the toast notification */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        max-width: 300px;
+        background-color: #292929;
+        color: white;
+        border-radius: 5px;
+        padding: 10px;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- preloader -->
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+    </div>
+
+    <!-- header section start -->
+    <header
+      class="header pt-30 pb-30 header-sticky header-static bg-white"
+      style="padding-top: 30px; padding-bottom: 15px; top: 0px"
+    >
+      <div class="container-fluid">
+        <div class="header-nav position-relative">
+          <div class="row align-items-center">
+            <div class="col-xl-5 col-lg-6 hidden-md position-static">
+              <div class="header-nav">
+                <nav>
+                  <ul>
+                    <li>
+                      <a href="/">
+                        <span>Home </span>
+                      </a>
+                    </li>
+
+                    <li class="position-static">
+                      <a href="/shop">
+                        <span>Shop</span>
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="/contact">
+                        <span>Contact</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-3">
+              <div class="logo">
+                <a href="index3.html"
+                  ><img src="/img/logo/logo1.png" alt=""
+                /></a>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-3 col-6 col-md-6 col-sm-6 col-9">
+              <div class="header-right">
+                <ul class="text-right">
+                  <% if(!user){ %>
+                  <li>
+                    <a href="/login" class="account"
+                      ><i class="fal fa-user-friends"></i>
+                      <article class="account-registar d-inline-block">
+                        Login
+                      </article></a
+                    >
+                  </li>
+                  <% } %>
+
+                  <li>
+                    <a href="/wishlist"
+                      ><i class="fal fa-heart active"
+                        ><span id="wishlistCount"><%= wishlistProducts?.length %></span></i
+                      ></a
+                    >
+                  </li>
+                  <li>
+                    <a href="/cart"
+                      ><i class="fal fa-shopping-bag"
+                        ><span id="cartCount"><%= user?.cart.products.length %></span></i
+                      ></a
+                    >
+                  </li>
+                  <li>
+                    <a><i class="fal fa-align-right"></i></a>
+                    <ul class="submenu bold-content text-right">
+                      <li><a href="/userProfile">My Account</a></li>
+
+                      <% if(user){ %>
+                      <li><a href="/user/logout">Logout</a></li>
+                      <% } %>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-menu visible-sm">
+          <div id="mobile-menu">
+            <ul>
+              <li><a class="pl-3" href="/">Home</a></li>
+              <li><a class="pl-3" href="/shop">Shop</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- /. mobile nav -->
+      </div>
+    </header>
+    <!-- header section end -->
+
+    <!-- single product start -->
+    <section class="single-product mb-90">
+      <div class="container-fluid">
+        <nav aria-label="breadcrumb" class="mb-40"></nav>
+        <div class="shop-wrapper">
+          <div class="single-product-top">
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-12">
+                <div class="shop-img">
+                  <div class="row">
+                    <div class="col-10">
+                      <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="tab-1">
+                          <div
+                            class="product-img zoomable d-flex justify-content-center"
+                          >
+                            <a href="" class="popup-image"
+                              ><img
+                                src="<%= products.productImages[0] %>"
+                                class="zoomable__img w-100"
+                                alt=""
+                            /></a>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-2">
+                          <div
+                            class="product-img zoomable d-flex justify-content-center"
+                          >
+                            <a href="" class="popup-image"
+                              ><img
+                                src="<%= products.productImages[1] %>"
+                                class="zoomable__img w-100"
+                                alt=""
+                            /></a>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-3">
+                          <div
+                            class="product-img zoomable d-flex justify-content-center"
+                          >
+                            <a href="" class="popup-image"
+                              ><img
+                                src="<%= products.productImages[2] %>"
+                                class="zoomable__img w-100"
+                                alt=""
+                            /></a>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-4">
+                          <div
+                            class="product-img zoomable d-flex justify-content-center"
+                          >
+                            <a href="" class="popup-image"
+                              ><img
+                                src="<%= products.productImages[3] %>"
+                                class="zoomable__img w-100"
+                                alt=""
+                            /></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div
+                        class="nav nav-pills has-border-img"
+                        id="v-pills-tab"
+                        role="tablist"
+                        aria-orientation="vertical"
+                      >
+                        <a class="active img-" data-toggle="pill" href="#tab-1">
+                          <img
+                            src="<%= products.productImages[0] %>"
+                            class="w-100"
+                            alt=""
+                          />
+                        </a>
+                        <a data-toggle="pill" href="#tab-2">
+                          <img
+                            src="<%= products.productImages[1] %>"
+                            class="w-100 mt-5-px"
+                            alt=""
+                          />
+                        </a>
+                        <a data-toggle="pill" href="#tab-3">
+                          <img
+                            src="<%= products.productImages[2] %>"
+                            class="w-100 mt-5-px"
+                            alt=""
+                          />
+                        </a>
+                        <a data-toggle="pill" href="#tab-4">
+                          <img
+                            src="<%= products.productImages[3] %>"
+                            class="w-100 mt-5-px"
+                            alt=""
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-12">
+                <div class="single-product-sidebar">
+                  <div class="product-content">
+                    <div class="single-product-title">
+                      <h2><%= products.productName %></h2>
+                    </div>
+                    <div class="single-product-price">
+                      ₹ <span><%= products.productPrice %>/-</span>
+                    </div>
+
+                    <div class="single-product-component">
+                      <h6>
+                        Color :
+                        <span class="color-value"
+                          ><%= products.productColor %></span
+                        >
+                      </h6>
+                    </div>
+                    <div class="single-product-component mb-15">
+                      <div class="size mb-15">
+                        <h6>
+                          Size : <span> <%= products.productSize %></span>
+                        </h6>
+                      </div>
+
+                    </div>
+
+                    <div class="quick-quantity mt-60">
+                      <button
+                        type="button"
+                        onclick="addToCart('<%= products._id %>')"
+                        id="addToCartBtn"
+                        class="list-add-cart-btn red-hover-btn border-0"
+                        style="
+                          padding-left: 20px;
+                          padding-right: 20px;
+                          transition: all 0.5s;
+                        "
+                      >
+                        Add to Cart
+                      </button>
+
+                      <button
+                        type="button"
+                        onclick="addToWishlist(event,'<%= products._id %>')"
+                        id=""
+                        class="list-add-cart-btn red-hover-btn border-0"
+                        style="
+                          padding-left: 20px;
+                          padding-right: 20px;
+                          transition: all 0.5s;
+                        "
+                        >
+                        Add to Wishlist
+                      </button>
+                    </div>
+                    <div class="single-product-action mt-35"></div>
+                  </div>
+                  <div class="single-product-category">
+                    <ul>
+                      <li class="mb-0"><a href="" class="title">Tags : </a></li>
+                      <li class="mb-0">
+                        <a href=""><%= products.productCategory %></a>
+                      </li>
+                      <li class="mb-0">
+                        <a href=""><%= products.productSubCategory %></a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="single-product-bottom mt-80 gray-border-top">
+          <ul class="nav nav-pills justify-content-center mt-100">
+            <li class="nav-item">
+              <a class="active" data-toggle="pill" href="#desc-tab-1"
+                >Description</a
+              >
+            </li>
+          </ul>
+          <div class="container container-1200">
+            <div class="tab-content mt-60">
+              <div class="tab-pane fade show active" id="desc-tab-1">
+                <div class="single-product-tab-content">
+                  <p><%= products.productDescription %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- single product end -->
+
+    <!-- related product start -->
+    <% if(relatedProducts?.length > 4) { %>
+    <section class="related-product mt-120 mb-100">
+      <div class="container-fluid">
+        <div class="generic-title text-center">
+          <h2 class="mb-20">Related Product</h2>
+        </div>
+
+        <div class="main-product-carousel owl-carousel red-nav mt-50">
+          <% relatedProducts.forEach((prod) => { %>
+
+          <div class="carousel-single-item">
+            <div class="col-12">
+              <div class="product-box">
+                <div class="product-box-wrapper">
+                  <div class="product-img">
+                    <a
+                      href="/products?productId=<%= prod._id %>"
+                      class="product-category"
+                    >
+                      <img
+                        src="<%= prod.productImages[0] %>"
+                        class="w-100"
+                        alt="<%= prod.productName %>"
+                      />
+                    </a>
+                  </div>
+
+                  <div class="product-desc pb-20">
+                    <div class="product-desc-top">
+                      <div class="categories">
+                        <a href="" class="product-category"
+                          ><span><%= prod.productCategory %></span></a
+                        >
+                      </div>
+
+                      <button
+                        class="btn btn-link"
+                        onclick="addToWishlist(event, '<%= prod._id %>')"
+                      >
+                        <div class="wishlist float-right">
+                          <% if(user && user.wishlist.products.some( wProduct =>
+                          wProduct.productId.toString() === prod._id.toString()
+                          )) { %>
+                          <i
+                            id="heartIcon-<%= prod._id %>"
+                            class="fas fa-heart fa-lg text-danger"
+                          ></i>
+                          <% } else { %>
+                          <i
+                            id="heartIcon-<%= prod._id %>"
+                            class="fal fa-heart fa-lg"
+                          ></i>
+                          <% } %>
+                        </div>
+                      </button>
+                    </div>
+                    <a
+                      href="/products?productId=<%= prod._id %>"
+                      class="product-title"
+                      ><%= prod.productName %></a
+                    >
+                    <div class="price-switcher">
+                      <span class="price switcher-item"
+                        >₹ <%= prod.productPrice %></span
+                      >
+                      <span class="price switcher-item"
+                        >₹ <%= prod.productPrice %></span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+    <% } %>
+
+    <!-- related product end -->
+
+    <!-- footer section start -->
+    <section class="footer">
+      <div class="footer-bottom pt-77" style="background-color: #292929">
+        <div class="container-1180">
+          <div class="footer-bottom-wrapper">
+            <div class="footer-bottom-primary pb-60">
+              <div class="row">
+                <div class="col-xl-5 col-lg-5 col-md-9">
+                  <div class="footer-item has-desc">
+                    <div class="footer-logo mb-25">
+                      <img
+                        src="img/logo/logo2.png"
+                        width="120"
+                        height="31"
+                        alt=""
+                      />
+                    </div>
+                    <div class="footer-desc">
+                      <p class="mb-10">
+                        Sign to the WatchVista store mailing list to receive
+                        updates on new arrivals, special offers and other
+                        discount information.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-12">
+                  <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="/userProfile" class="title">MY ACCOUNT</a>
+                          </li>
+                          <li><a href="/checkout">Cart</a></li>
+                          <li><a href="/shop">Shop</a></li>
+                          <li><a href="/wishlist">Wishlist</a></li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="" class="title">Quick Links</a>
+                          </li>
+                          <li><a href="">Special Offers</a></li>
+                          <li><a href="">Gift Cards</a></li>
+                          <li><a href="">Privacy Policy</a></li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 hidden-sm">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="" class="title">Company Info</a>
+                          </li>
+                          <li><a href="">About us</a></li>
+                          <li>
+                            <a href="">Business With Us</a>
+                          </li>
+                          <li><a href="">Teams of Use</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- footer section end -->
+
+    <!--------------------------------------------Add to cart------------------------------------------------------->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      // ADD TO WISHLIST
+      function addToWishlist(event, productId) {
+        event.preventDefault();
+        axios
+          .post("/products/addToWishlist", { productId })
+          .then((response) => {
+            const heartIcon = document.getElementById(`heartIcon-${productId}`);
+            // Check if the product was added or removed from wishlist
+            if (
+              response.data.message === "Product added to wishlist successfully"
+            ) {
+              let wishlistCount = document.getElementById('wishlistCount')
+              let count = parseFloat(wishlistCount.textContent)
+              wishlistCount.textContent = count +=1
+
+              Toastify({
+                text: "Product added to wishlist",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+              // heartIcon.classList.remove("fal");
+              // heartIcon.classList.add("fas");
+              // heartIcon.classList.add("text-danger");
+            } else if (
+              response.data.message ===
+              "Product removed from wishlist successfully"
+            ) {
+              let wishlistCount = document.getElementById('wishlistCount')
+              let count = parseFloat(wishlistCount.textContent)
+              wishlistCount.textContent = count -=1
+              
+              Toastify({
+                text: "Product removed from wishlist",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+              // heartIcon.classList.remove("fas");
+              // heartIcon.classList.remove("text-danger");
+              // heartIcon.classList.add("fal");
+            }
+          })
+          .catch((error) => {
+            console.log("sjfjskf", error);
+            if (error.response.data.error === "User not found") {
+              Toastify({
+                text: "Please login for wishlisting a product",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                // backgroundColor: "black",
+              }).showToast();
+            }
+          });
+      }
+
+      // Function to add product to cart
+      function addToCart(productId) {
+        console.log("add to cart function triggered :", productId);
+        axios
+          .post("/cart/add-to-cart", {
+            productId: productId,
+          })
+          .then(function (response) {
+            console.log("rrspnse :", response);
+
+            if (response.status === 200) {
+              Toastify({
+                text: "Product Added to cart",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+
+              let cartCount = document.getElementById('cartCount')
+              let count = parseFloat(cartCount.textContent)
+              cartCount.textContent = count += 1
+            }
+            if (response.status === 201) {
+              Toastify({
+                text: "Product Added to cart",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+            }
+
+          })
+          .catch(function (error) {
+            if (error.response.status === 404) {
+              Toastify({
+                text: "Try, After login",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "red",
+              }).showToast();
+            } else if (error.response.status === 400) {
+              Toastify({
+                text: "Product is out of stock",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "orange",
+              }).showToast();
+            } else {
+              Toastify({
+                text: "An error occurred. Try again",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "red",
+              }).showToast();
+            }
+          });
+      }
+    </script>
+
+    <script>
+      // Constants
+      const Default = {
+        initialZoom: 3,
+        minZoom: 1.25,
+        maxZoom: 4,
+        zoomSpeed: 0.01,
+      };
+
+      // Class definition
+      class Zoomable {
+        constructor(element, config) {
+          this.element = element;
+          this.config = this._mergeConfig(config);
+
+          const { initialZoom, minZoom, maxZoom } = this.config;
+
+          this.zoomed = false;
+          this.initialZoom = Math.max(Math.min(initialZoom, maxZoom), minZoom);
+          this.zoom = this.initialZoom;
+
+          this.img = element.querySelector(".zoomable__img");
+          this.img.draggable = false;
+          this.element.style.setProperty("--zoom", this.initialZoom);
+
+          this._addEventListeners();
+        }
+
+        static get Default() {
+          return Default;
+        }
+
+        _addEventListeners() {
+          this.element.addEventListener("mouseover", () =>
+            this._handleMouseover()
+          );
+          this.element.addEventListener("mousemove", (evt) =>
+            this._handleMousemove(evt)
+          );
+          this.element.addEventListener("mouseout", () =>
+            this._handleMouseout()
+          );
+          this.element.addEventListener("wheel", (evt) =>
+            this._handleWheel(evt)
+          );
+
+          this.element.addEventListener("touchstart", (evt) =>
+            this._handleTouchstart(evt)
+          );
+          this.element.addEventListener("touchmove", (evt) =>
+            this._handleTouchmove(evt)
+          );
+          this.element.addEventListener("touchend", () =>
+            this._handleTouchend()
+          );
+        }
+
+        _handleMouseover() {
+          if (this.zoomed) {
+            return;
+          }
+
+          this.element.classList.add("zoomable--zoomed");
+          this.zoomed = true;
+        }
+
+        _handleMousemove(evt) {
+          if (!this.zoomed) {
+            return;
+          }
+
+          const elPos = this.element.getBoundingClientRect();
+
+          const percentageX = `${
+            ((evt.clientX - elPos.left) * 100) / elPos.width
+          }%`;
+          const percentageY = `${
+            ((evt.clientY - elPos.top) * 100) / elPos.height
+          }%`;
+
+          this.element.style.setProperty("--zoom-pos-x", percentageX);
+          this.element.style.setProperty("--zoom-pos-y", percentageY);
+        }
+
+        _handleMouseout() {
+          if (!this.zoomed) {
+            return;
+          }
+
+          this.element.style.setProperty("--zoom", this.initialZoom);
+          this.element.classList.remove("zoomable--zoomed");
+
+          this.zoomed = false;
+        }
+
+        _handleWheel(evt) {
+          if (!this.zoomed) {
+            return;
+          }
+
+          evt.preventDefault();
+
+          const newZoom = this.zoom + evt.deltaY * (this.config.zoomSpeed * -1);
+          const { minZoom, maxZoom } = this.config;
+
+          this.zoom = Math.max(Math.min(newZoom, maxZoom), minZoom);
+          this.element.style.setProperty("--zoom", this.zoom);
+        }
+
+        _handleTouchstart(evt) {
+          evt.preventDefault();
+
+          this._handleMouseover();
+        }
+
+        _handleTouchmove(evt) {
+          if (!this.zoomed) {
+            return;
+          }
+
+          const elPos = this.element.getBoundingClientRect();
+
+          let percentageX =
+            ((evt.touches[0].clientX - elPos.left) * 100) / elPos.width;
+          let percentageY =
+            ((evt.touches[0].clientY - elPos.top) * 100) / elPos.height;
+
+          percentageX = Math.max(Math.min(percentageX, 100), 0);
+          percentageY = Math.max(Math.min(percentageY, 100), 0);
+
+          this.element.style.setProperty("--zoom-pos-x", `${percentageX}%`);
+          this.element.style.setProperty("--zoom-pos-y", `${percentageY}%`);
+        }
+
+        _handleTouchend(evt) {
+          this._handleMouseout();
+        }
+
+        _mergeConfig(config) {
+          return {
+            ...this.constructor.Default,
+            ...(typeof config === "object" ? config : {}),
+          };
+        }
+      }
+
+      // Implementation
+      const zoomableImages = document.querySelectorAll(".zoomable");
+
+      for (const image of zoomableImages) {
+        new Zoomable(image);
+      }
+    </script>
+
+    <!-- JS here -->
+    <script src="/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    <script src="/js/one-page-nav-min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/jquery.meanmenu.min.js"></script>
+    <script src="/js/ajax-form.js"></script>
+    <script src="/js/fontawesome.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/jquery.scrollUp.min.js"></script>
+    <script src="/js/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+
+  <!-- Mirrored from wphix.com/template/mazia/single-product-5.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:32 GMT -->
+</html>

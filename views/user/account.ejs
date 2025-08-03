@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+
+<!-- Mirrored from htmldemo.net/tuime/tuime/account.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 10 Feb 2024 04:43:25 GMT -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tuime - Animal Food Website Template"/>
+    <meta name="keywords" content="accessories, digital products, electronic html, modern, products, responsive"/>
+    <meta name="author" content="hastech"/>
+
+    <title>Account </title>
+
+    <!--== Favicon ==-->
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon" />
+
+    <!--== Google Fonts ==-->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600&amp;display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/animate.min.css" />
+    <link rel="stylesheet" href="css/magnific-popup.css" />
+    <link rel="stylesheet" href="css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="css/meanmenu.css" />
+    <link rel="stylesheet" href="css/slick.css" />
+    <link rel="stylesheet" href="css/default.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+
+    <!--== Bootstrap CSS ==-->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!--== Main Style CSS ==-->
+    <link href="assets/css/style.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .logout-link {
+            color: inherit; 
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logout-link:hover {
+            color: white; 
+        }
+
+        .nav-link {
+            border: none;
+            background: none; 
+            padding: 0; 
+            cursor: pointer; 
+        }
+
+        /* scroballe code */
+     
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .disable-scroll{
+            overflow-y: hidden;
+        }
+       
+
+        /* STYLES FOR RETURN AREA */
+        .bankDetails {
+            display: none;
+        }
+        #option1:checked + label + .bankDetails {
+            display: block;
+        }
+        .bankDetails {
+            display: none;
+            margin-top: 10px;
+        }
+        .bankDetails label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .bankDetails input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .bankDetails p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+
+        /* No orders div */
+        .no-orders {
+        background-color: #f8f9fa; 
+        border: 1px solid #ced4da; 
+        border-radius: 5px; 
+        padding: 20px; 
+        text-align: center; 
+        max-width: 400px; 
+        margin: 0 auto;
+        }
+
+        /* CSS for the message text */
+        .no-orders p {
+        margin: 0; 
+        color: #6c757d; 
+        font-size: 16px; 
+        font-weight: bold; 
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- header section start -->
+    <header class="header header-2 pt-30 pb-10 header-sticky header-static bg-white">
+        <div class="container-fluid">
+            <div class="header-nav header-nav-2 position-relative">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-5 hidden-md position-static ">
+                        <div class="header-nav">
+                            <nav>
+                                <ul>
+                                    <li>
+                                        <a href="/">
+                                        <span> <strong>Home</strong> </span>
+                                        </a>
+                                    </li>
+                
+                                    <li class="position-static">
+                                        <a href="/shop">
+                                        <span><strong>Shop</strong></span>
+                                        </a>
+                                    </li>
+                
+                                    <li>
+                                        <a href="/contact">
+                                        <span><strong>Contact</strong></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-3 col-md-6 pt-md-2 col-sm-6 pt-2 col-3">
+                        <div class="logo">
+                            <a href="/">
+                                <img src="img/logo/logo1.png" alt="" />
+                            </a>
+                        </div>
+                    </div>
+    
+                    <div class="col-xl-4 col-lg-4 col-6 col-md-6 col-sm-6 col-9">
+                        <div class="header-right">
+                            <ul class="text-right">
+                                <% if(!user){ %>
+                                <li>
+                                    <a href="/login" class="account"
+                                        ><i class="fal fa-user-friends"></i>
+                                        <article class="account-registar d-inline-block">
+                                        Login
+                                        </article>
+                                    </a>
+                                </li>
+                                <% } %>
+            
+                                <li>
+                                    <a href="/wishlist"
+                                        ><i class="fal fa-heart active"
+                                        ><span><%= wishlistProducts?.length %></span></i
+                                        >
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cart">
+                                        <i class="fal fa-shopping-bag">
+                                            <span><%= user?.cart.products.length %></span>
+                                        </i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a><i class="fal fa-align-right"></i></a>
+                                    <ul class="submenu bold-content text-right">
+                                        <li><a href="/userProfile">My Account</a></li>
+                                        <% if(user){ %>
+                                        <li><a href="/user/logout">Logout</a></li>
+                                        <% } %>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--mobile nav -->
+            <div class="mobile-menu visible-sm ">
+                <div id="mobile-menu">
+                <ul>
+                    <li><a class="pl-3" href="/">Home</a></li>
+                    <li><a class="pl-3" href="/shop">Shop</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header section end -->
+
+
+    <main class="main-content" >
+        <!--== Start My Account Wrapper ==-->
+        <section class="my-account-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="myaccount-page-wrapper">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4">
+                                    <nav>
+                                        <div class="myaccount-tab-menu nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active"id="dashboad-tab" data-bs-toggle="tab"  data-bs-target="#dashboad" type="button" role="tab" aria-controls="dashboad" aria-selected="true">
+                                                Personal Information
+                                            </button>
+                                            <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">
+                                                Orders
+                                            </button>
+                                            <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab" data-bs-target="#address-edit" type="button" role="tab" aria-controls="address-edit" aria-selected="false">
+                                                address
+                                            </button>
+                                            <button class="nav-link" id="account-info-tab" data-bs-toggle="tab" data-bs-target="#account-info" type="button" role="tab" aria-controls="account-info" aria-selected="false">
+                                                Change Password
+                                                </button>
+                                            <button class="nav-link" onclick="window.location.href = '/user/logout'" type="button">
+                                                Logout
+                                            </button>
+
+                                        </div>
+                                    </nav>
+                                </div>  
+                                <div class="col-lg-7 col-md-8">
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="dashboad" role="tabpanel" aria-labelledby="dashboad-tab">
+                                            <div class="myaccount-content">
+                                                <div class="welcome d-flex justify-content-between">
+                                                    <h3>Hello, <span id="userName"><%= user.name %></span> </h3>
+                                                    <i class="fas fa-edit" data-toggle="modal" data-target="#editModal"></i>
+                                                </div>
+                                                <p><strong>phone : <%= user.phoneNumber %></strong></p>
+                                                <p><strong>Email : <%= user.email %></strong></p><br>
+                                                <p>From your account dashboard. you can easily check & view your recent orders, manage your shipping and billing addresses and edit your password and account details.</p>
+                                                <p></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- modal for details edit -->
+                                        <div class="modal" id="editModal">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="editForm" >
+                                                            <div class="form-group">
+                                                                <label for="newName">Name:</label>
+                                                                <input type="text" class="form-control" id="newName" value="<%= user.name %>" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="newEmail">Email:</label>
+                                                                <input type="text" class="form-control" id="newEmail" value="<%= user.email %>" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="newPhone">Phone:</label>
+                                                                <input type="text" class="form-control" id="newPhone" value="<%= user.phoneNumber %>" required>
+                                                            </div>
+                                                            <button type="button" onclick="submitUserEditForm(event)" class="btn btn-dark">Save Changes</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade scrollable" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                            <div class="myaccount-content">
+                                                <h3>Orders</h3>
+                                                    
+                                                <div class="" style="height: 35vh; overflow-y: auto;">
+
+                                                <% if (user.orders.length > 0) { %>
+                                                <% cart.forEach((prod) => { %>
+                                                
+                                                    <!-- ORDER HISTORY TABLE STARTS -->  
+                                                    <div class="d-xl-flex d-lg-flex d-md-flex d-sm-flex  mb-2 rounded " style="border: 2px solid whitesmoke ; background-color: #f5f3f3;">
+
+                                                        <div class="d-xl-grid d-lg-grid d-md-grid align-items-md-center text-center">
+
+                                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center col-12">
+                                                                <a href="/products?productId=<%= prod._id %>">
+                                                                    <img class="img-fluid pt-1" src="<%= prod.images[0] %>" alt="" width="150px">
+                                                                </a>
+
+                                                                <div class="p-2">
+                                                                    <% if (prod.orderStatus !== 'Requested for Cancellation' && prod.orderStatus !== 'Cancelled' && prod.orderStatus !== 'Delivered' && prod.orderStatus !== "Requested for Refund" && prod.orderStatus !== "Refund Processed") { %>
+                                                                        <button class="rounded" onclick="openCancelModal('<%= prod.orderId %>', '<%= prod._id %>')" >Cancel</button>
+                                                                    <% } else if( prod.orderStatus === 'Delivered' && prod.differenceInDays <= 7 ) { %>
+                                                                        <button class="rounded" onclick="openReturnModal('<%= prod.orderId %>', '<%= prod._id %>')">Return</button>
+                                                                    <% } else if( prod.orderStatus === "Refund Processed" || prod.orderStatus === "Requested for Refund") { %>
+                                                                        <button class="rounded" onclick="openReturnModal('<%= prod.orderId %>', '<%= prod._id %>')" disabled>Return</button>
+                                                                    <% } else { %>
+                                                                        <button class="rounded" disabled>Cancel</button>
+                                                                    <% } %>
+                                                                </div>
+                                                                
+                                                            </div>
+
+                                                            </div>
+                                                    
+                                                            <div class="row p-2">
+                                                                <div class="col-xl-12 text-xl-start col-lg-12 text-lg-start col-md-12 text-md-start col-sm-12 text-sm-start col-12 ">
+                                                                    <h6 class=""><%= prod.name %></h6>
+                                                                    <small>Order ID : <%= prod.orderId %></small><br>
+                                                                    <small>Color: <%= prod.color %> & Price: <%= prod.price %></small><br>
+                                                                    <small>Size: <%= prod.size %> & Quantity: <%= prod.quantity %></small><br>
+                                                                    <small>Order Status :</small><small class="<%= prod.orderStatus === 'Delivered' ? 'text-success' : prod.orderStatus === 'Cancelled' ? 'text-danger' : 'text-warning' %>"> <%= prod.orderStatus %></small><br>
+                                                                    <small>Delivery Address: <%= prod.shippingAddress.name %>,<br><%= prod.shippingAddress.address %>,<%= prod.shippingAddress.district %>, <%= prod.shippingAddress.zip %>,<br><%= prod.shippingAddress.state %></small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                            
+                                                        <!-- MODAL FOR ORDER CANCELLATION -->
+                                                        <div class="modal fade" id="cancelModal_<%= prod._id %>" tabindex="-1" aria-labelledby="cancelModalLabel_<%= prod._id %>" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="cancelModalLabel_<%= prod._id %>">Cancel Order</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                        
+                                                                    <div class="modal-body">
+                                                                        <form id="cancelOrderForm_<%= prod._id %>" onsubmit="submitCancellation(event, $('#orderIdInput_<%= prod._id %>').val(), '<%= prod._id %>')">
+                                                                            <div class="mb-3">
+                                                                                <label for="cancelReason_<%= prod._id %>" class="form-label">Cancellation Reason</label>
+                                                                                <textarea class="form-control" id="cancelReason_<%= prod._id %>" name="cancelReason" rows="3" required></textarea>
+                                                                            </div>
+                                                                            <input type="hidden" id="orderIdInput_<%= prod._id %>" value="<%= prod.orderId %>">
+                                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- RETURN MODAL -->
+                                                        <div class="modal fade" id="returnlModal_<%= prod._id %>" tabindex="-1" aria-labelledby="returnModalLabel_<%= prod._id %>" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="returnModalLabel_<%= prod._id %>">Return Product</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                   
+                                                                    <div class="modal-body">
+                                                                        <form id="returnOrderForm_<%= prod._id %>" onsubmit="submitReturn(event, $('#orderIdInput_<%= prod._id %>').val(), '<%= prod._id %>',)">
+                                                                            <div class="mb-3">
+                                                                                <label for="cancelReason_<%= prod._id %>" class="form-label pt-10">Return Reason</label>
+                                                                                <textarea class="form-control" id="returnReason_<%= prod._id %>" name="returnReason" rows="3" required></textarea>
+                                                                            </div>
+                                                                            <input type="hidden" id="orderIdInput_<%= prod._id %>" value="<%= prod.orderId %>">
+                                                                            <div>
+                                                                                <h6>Refund</h6>
+                                                                                <% if (prod.paymentMethod === 'RazorPay') { %>
+                                                                                    <input type="radio" id="originalPayment" name="paymentOption" value="Original Payment Method" checked>
+                                                                                    <label for="originalPayment">Original Payment method</label>
+                                                                                    <p>or</p>
+                                                                                <% } %>
+
+                                                                                <input type="radio" id="option1" name="paymentOption" value="Add Bank Account Details">
+                                                                                <label for="option1">Add Bank Account Details</label>
+
+                                                                                <div class="bankDetails">
+                                                                                    <label for="bankName">Bank Name:</label>
+                                                                                    <input type="text" id="bankName" name="bankName" placeholder="Enter Bank Name" required>
+                                                                                    <label for="accountHolderName">Account Holder Name:</label>
+                                                                                    <input type="text" id="accountHolderName" name="accountHolderName" placeholder="Enter Account Holder Name" required>
+                                                                                    <label for="accountNumber">Account Number:</label>
+                                                                                    <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter Account Number" required>
+                                                                                    <label for="ifsc">IFSC:</label>
+                                                                                    <input type="text" id="ifsc" name="ifsc" placeholder="Enter IFSC Code" required>
+                                                                                </div>
+
+                                                                            </div>
+                                                                            
+                                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                                        </form>
+                                                                    
+                                                                </div>      
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <% }) %>
+                                                    <% } else { %>
+                                                        <div class="no-orders">
+                                                            <p>No orders found.</p>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                            </div>    
+                                        </div>
+                                        <!-- ORDER HISTORY TABLE ENDS --> 
+                                        
+
+                                        <div class="tab-pane fade" id="address-edit" role="tabpanel" aria-labelledby="address-edit-tab">
+                                            <div class="myaccount-content">
+                                                    
+                                                <!-- Button trigger modal -->
+                                                <div class="d-flex justify-content-between">
+                                                    <h3>Addresses</h3>
+                                                    <button type="button" class="text-center" data-toggle="modal" data-target="#exampleModal" style="background-color: #525151; color: white; width: auto; height: 30px; border-radius: 5px; border: 2px;" >
+                                                        Add new address
+                                                    </button>
+                                                </div>
+                                                
+                                                
+                                                <div class="" style="height: 35vh; overflow-y: auto;">
+                                                    <% if (addresses.length > 0) { %>
+                                                    <div id="addressList" class="col-xl-12 ">
+                                                        <!--  Addresses -->
+                                                        <% addresses.forEach(address => { %>
+                                                        <div class="my-3 px-2 py-2 form-check rounded d-flex justify-content-between" style="border: 2px solid rgb(223, 223, 223); background-color: rgb(246, 246, 246);">
+                                                            <div >
+                                                                <p class="m-0"><strong><%= address.name %></strong></p>
+                                                                <p class="m-0"><%= address.address %></p>
+                                                                <p class="m-0"><%= address.district %>, <%= address.state %>, <%= address.zip %></p>
+                                                                <p class="m-0"><%= address.email %> , <%= address.phone %></p>
+                                                            </div>
+
+                                                            <!-- Edit and Delete Buttons -->
+                                                            <div class="d-flex d-sm-grid justify-content-end">
+
+                                                                <div class="gap-2">
+                                                                    <button type="button" class="btn btn-sm border mb-1 edit-address-btn"  data-address-id="<%= address._id %>" onclick="editAddress('<%= address._id %>')" >
+                                                                        <i class="fas fa-edit text-success"></i>
+                                                                    </button>
+    
+                                                                    <button type="button" class="btn btn-sm border mb-1 delete-address-btn" data-address-id="<%= address._id %>" onclick="handleDeleteAddress('<%= address._id %>')">
+                                                                        <i class="fas fa-trash text-danger"></i> 
+                                                                    </button>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                        <% }) %>
+                                                        <% } else { %>
+                                                            <div class="no-orders">
+                                                                <p>No address found.</p>
+                                                            </div>
+                                                        <% } %>
+
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <!-- Modal for add address -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">New Address</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form id="addressForm" class="row g-3" onsubmit="return addressSubmission(event)" >
+                                                                    <div id="addAddressMainErr" class="text-danger"></div>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="name" class="form-label">Name</label>
+                                                                        <input type="text" name="name" class="form-control" id="name" placeholder="Your Name">
+                                                                    </div>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="address" class="form-label">Address</label>
+                                                                        <input type="text" name="address" class="form-control" id="address" placeholder="Enter your address">
+                                                                          
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="district" class="form-label">District</label>
+                                                                        <input type="text" name="district" class="form-control" id="district" placeholder="Town or city">
+                                                                          
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="state" class="form-label">State</label>
+                                                                        <input type="text" name="state" class="form-control" id="state" placeholder="Enter your state">
+                                                                        
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="zip" class="form-label">Zip</label>
+                                                                        <input type="text" name="zip" class="form-control" id="zip" placeholder="Zip/Postal">
+                                                                            
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="phone" class="form-label">Phone Number</label><br>
+                                                                        <input type="tel" name="phone" class="form-control" id="phone" placeholder="Your Phone">
+                                                                        <small id="invalid-feedback-Phone" class="text-danger"></small>
+                                                                           
+                                                                    </div>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="email" class="form-label">Email Address</label>
+                                                                        <input type="email" name="email" class="form-control" id="email" placeholder="Your Email">
+                                                                           
+                                                                    </div>
+
+                                                                    <div class="col-12 pt-3">
+                                                                        <button id="submitAddressBtn" type="submit"  class="btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </form>
+                                                                    
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- address modal ends here -->
+
+                                                <!-- modal for edit address starts here -->
+                                                <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            <div class="modal-body">
+                                                                <form id="editAddressForm" class="row g-3" novalidate>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="editName" class="form-label">Name</label>
+                                                                        <input type="text" name="name" class="form-control" id="nameEdit" placeholder="Your Name" required>
+                                                                           
+                                                                    </div>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="editAddress" class="form-label">Address</label>
+                                                                        <input type="text" name="address" class="form-control" id="addressEdit" placeholder="Enter your address" required>
+                                                                            
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="editDistrict" class="form-label">District</label>
+                                                                        <input type="text" name="district" class="form-control" id="districtEdit" placeholder="Town or city" required>
+                                                                            
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="editState" class="form-label">State</label>
+                                                                        <input type="text" name="state" class="form-control" id="stateEdit" placeholder="Enter your state" required>
+                                                                           
+                                                                    </div>
+
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="editZip" class="form-label">Zip</label>
+                                                                        <input type="text" name="zip" class="form-control" id="zipEdit" placeholder="Zip/Postal" required>
+                                                                            
+                                                                    </div>
+                                                                    <div class="col-md-6 p-2">
+                                                                        <label for="editPhone" class="form-label">Phone Number</label>
+                                                                        <input type="number" name="phone" class="form-control" id="phoneEdit" placeholder="Your Phone" required>
+                                                                            
+                                                                    </div>
+                                                                    <div class="col-12 p-2">
+                                                                        <label for="editEmail" class="form-label">Email Address</label>
+                                                                        <input type="email" name="email" class="form-control" id="emailEdit" placeholder="Your Email" required>
+                                                                    </div>
+
+                                                                    <div class="col-12 pt-3">
+                                                                        <button type="button" id="updateAddressBtn" class="btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </form>
+                                                                    
+                                                            </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="tab-pane fade" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
+                                                <div class="myaccount-content">
+                                                    <h3>Change Password</h3>
+
+                                                    <form action="/change-password" onsubmit="changePassword(event)" class="form-group" >
+                                                        <label for="" class="">Current Password</label><br>
+                                                        <p id="currentPasswordError" style="color: red;"></p>
+                                                        <input id="currentPassword"  type="text" class="form-control" ><br>
+
+                                                        <label  for="" class="">New Password</label><br>
+                                                        <p id="newPasswordError" style="color: red;"></p>
+                                                        <input id="newPassword" type="text" class="form-control" ><br>
+
+                                                        <label for="" class="">Confirm Password</label><br>
+                                                        <p id="confirmPasswordError" style="color: red;"></p>
+                                                        <input id="confirmPassword" type="text" class="form-control" ><br>
+
+                                                        <button type="submit" class="btn btn-dark">Submit</button>
+                                                    </form>
+                                                    
+                                                </div>
+                                            </div>
+                                            
+                                        </div>   
+                                    </div>
+                                
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>  
+            </div>      
+        </section>
+        <!--== End My Account Wrapper ==-->
+    </main>
+
+    <section class="footer">
+        <div class="footer-bottom pt-77" style="background-color: #292929">
+          <div class="container-1180">
+            <div class="footer-bottom-wrapper">
+              <div class="footer-bottom-primary pb-60">
+                <div class="row pt-80">
+                  <div class="col-xl-5 col-lg-5 col-md-9">
+                    <div class="footer-item has-desc">
+                      <div class="footer-logo mb-25">
+                        <img
+                          src="img/logo/logo2.png"
+                          width="120"
+                          height="31"
+                          alt=""
+                        />
+                      </div>
+                      <div class="footer-desc">
+                        <p class="mb-10">
+                          Sign to the WatchVista store mailing list to receive updates on new arrivals, special offers and
+                          other discount information.
+                        </p>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <div class="col-xl-7 col-lg-7 col-md-12">
+                    <div class="row">
+                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                        <div class="footer-menu">
+                          <ul>
+                            <li>
+                              <a href="/userProfile" class="title"
+                                >MY ACCOUNT</a
+                              >
+                            </li>
+                            <li><a href="/checkout">Cart</a></li>
+                            <li><a href="/shop">Shop</a></li>
+                            <li><a href="/wishlist">Wishlist</a></li>
+                          </ul>
+                        </div>
+                      </div>
+  
+                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                        <div class="footer-menu">
+                          <ul>
+                            <li>
+                              <a href="" class="title"
+                                >Quick Links</a
+                              >
+                            </li>
+                            <li><a href="">Special Offers</a></li>
+                            <li><a href="">Gift Cards</a></li>
+                            <li><a href="">Privacy Policy</a></li>
+                          </ul>
+                        </div>
+                      </div>
+  
+                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 hidden-sm">
+                        <div class="footer-menu">
+                          <ul>
+                            <li>
+                              <a href="" class="title"
+                                >Company Info</a
+                              >
+                            </li>
+                            <li><a href="">About us</a></li>
+                            <li>
+                              <a href="">Business With Us</a>
+                            </li>
+                            <li><a href="">Teams of Use</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- footer section end -->
+
+
+
+
+<script>
+    
+    // ORDERS LISTING SCROLL
+    function preventScroll(e){
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    function disable(){
+        document.querySelector('.scrollable').classList.add('disable-scroll');
+    }
+    function enable(){
+        document.querySelector('.scrollable').classList.remove('disable-scroll');
+    }
+
+
+
+    // FUCTION FOR OPEN MODAL
+    function openCancelModal(orderId, productId) {
+        console.log("Opening modal for Order ID:", orderId, "Product ID:", productId);
+        $('#orderIdInput_' + productId).val(orderId);
+        $('#cancelModal_' + productId).modal('show');
+    }
+
+    // FUNCTION FOR CANCELLATION REASON POST
+    function submitCancellation(event, orderId, productId) {
+        event.preventDefault();
+
+        const cancelReason = $('#cancelReason_' + productId).val();
+
+        axios.post(`/cancelOrder/${orderId}/${productId}`, { cancelReason })
+        .then(response => {
+            console.log("Cancellation successful:", response.data);
+            const statusElement = $('#orderStatus_' + productId);
+            statusElement.text("Requested for Cancellation");
+            
+            $('#cancelModal_' + productId).modal('hide');
+
+            window.location.href = `/userProfile?scrollTo=orders`
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+
+    // FUNCTION FOR OPEN RETURN MODAL
+    function openReturnModal(orderId,productId){
+        console.log("Opening return  modal for Order ID:", orderId, "Product ID:", productId);
+        $('#orderIdInput_' + productId).val(orderId);
+        $('#returnlModal_' + productId).modal('show');
+    }
+
+    // const paymentOption = $('input[name="paymentOption"]:checked').val();
+
+    // FUNCTION FOR RETURN REASON AND REFUND POST
+    function submitReturn(event, orderId, productId){
+        event.preventDefault()
+        const returnReason = $('#returnReason_' + productId).val()
+        const paymentOptions = document.getElementsByName("paymentOption");
+        let paymentOption;
+        for (const option of paymentOptions) {
+            if (option.checked) {
+                paymentOption = option.value;
+                break;
+            }
+        }
+
+        console.log("payment option :", paymentOption);
+
+      
+
+        const refundData = {
+            orderId : orderId,
+            productId:productId,
+            returnReason : returnReason,
+            refundMethod : paymentOption,
+        }
+
+        if(paymentOption === "Add Bank Account Details"){
+            const bankName = $('#bankName').val();
+            const accountHolderName = $('#accountHolderName').val();
+            const accountNumber = $('#accountNumber').val();
+            const ifsc = $('#ifsc').val();
+
+            const refundDetail = {
+                bankName : bankName,
+                accountHolderName : accountHolderName,
+                accountNumber : accountNumber,
+                ifsc : ifsc,
+            }
+
+            refundData.refundDetails = refundDetail
+           
+        }   
+
+        axios.post("/product/return",{refundData})
+        .then((response)=>{
+            console.log("Response data from return add post : ", response)
+            $('#returnlModal_' + productId).modal('hide');
+            window.location.href = `/userProfile?scrollTo=orders`
+
+        })
+        .catch((error)=>{
+            console.log("Response from erro return add post : ", error)
+            Toastify({
+                text: "An error occurred. Try again",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "red",
+            }).showToast();
+        })
+
+    }
+
+    
+    // ADDRESS SUBMISSION WITH VALIDATION
+    function addressSubmission (event){
+        event.preventDefault();
+        console.log('Button clicked! address submission');
+
+        document.getElementById('addAddressMainErr').textContent = "";
+        document.getElementById('invalid-feedback-Phone').textContent = "";
+
+        let nameInput = document.getElementById("name").value
+        let addressInput = document.getElementById("address").value
+        let districtInput = document.getElementById("district").value
+        let stateInput = document.getElementById("state").value
+        let zipInput = document.getElementById("zip").value
+        let emailInput = document.getElementById("email").value
+        let phoneInput = document.getElementById("phone").value
+
+        var phoneRegex = /^(\+91)?\d{10}$/;
+
+        if (nameInput === "" || addressInput === "" || districtInput === "" || stateInput === "" || zipInput === "" || emailInput === "" || phoneInput === "") {
+            document.getElementById('addAddressMainErr').textContent = "Please fill all input fields"
+            return false;
+
+        }
+        else if (!phoneRegex.test(document.getElementById("phone").value)) {
+            // If phone number doesn't match the regex
+            document.getElementById('invalid-feedback-Phone').textContent = "Please enter a valid phone number"
+            return false;
+        }
+
+            const form = document.getElementById('addressForm')
+            const formData = {
+                name: document.getElementById("name").value,
+                address: document.getElementById("address").value,
+                district: document.getElementById("district").value,
+                state: document.getElementById("state").value,
+                zip: document.getElementById("zip").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value
+            };
+
+            axios.post('/add-address', formData)
+            .then(function (response) {
+
+                $('#exampleModal').modal('hide');
+
+                form.reset();
+
+                var newAddress = response.data;
+                console.log("addresses : ", newAddress);
+                var addressHtml = `
+                    <div class="my-3 px-2 py-2 form-check rounded d-flex justify-content-between" style="border: 2px solid rgb(223, 223, 223); background-color: rgb(246, 246, 246);">
+                        <div>
+                            <p class="m-0"><strong>${newAddress.addedAddress.name}</strong></p>
+                            <p class="m-0">${newAddress.addedAddress.address}</p>
+                            <p class="m-0">${newAddress.addedAddress.district}, ${newAddress.addedAddress.state}, ${newAddress.addedAddress.zip}</p>
+                            <p class="m-0">${newAddress.addedAddress.email} , ${newAddress.addedAddress.phone}</p>
+                        </div>
+                                                
+                        <div class="d-flex d-sm-grid justify-content-end gap-2">
+                            <div class="gap-2">
+
+                                <button type="button" class="btn btn-sm border mb-1 edit-address-btn" data-address-id="${newAddress.addedAddress._id}" onclick="editAddress('${newAddress.addedAddress._id}')">
+                                    <i class="fas fa-edit text-success"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-sm border mb-1 delete-address-btn" data-address-id="${newAddress.addedAddress._id}" onclick="handleDeleteAddress('${newAddress.addedAddress._id}')">
+                                    <i class="fas fa-trash text-danger"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+
+                // APPEND NEW ADDRESS TO THE ADDRESS LIST
+                document.getElementById('addressList').insertAdjacentHTML('beforeend', addressHtml);
+                        
+                // HIDE MODAL
+                var modal = document.getElementById('exampleModal');
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                var modalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
+                modalBackdrop.parentNode.removeChild(modalBackdrop);
+
+                Toastify({
+                    text: "Address added.",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",  
+                    backgroundColor: "green",
+                }).showToast();
+
+            })
+            .catch(function (error) {
+                // HIDE MODAL
+                var modal = document.getElementById('exampleModal');
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                var modalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
+                modalBackdrop.parentNode.removeChild(modalBackdrop);
+                Toastify({
+                    text: "An error occurred. Try again",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                }).showToast();
+                
+            });
+        
+            
+    }
+
+    
+    /// FUNCTION FOR DELETE ADDRESS
+    function handleDeleteAddress(addressId) {
+
+            axios.delete(`/delete-address/${addressId}`)
+            .then(function (response) {
+                if (response.status === 200) {
+                    const deletedAddressElement = document.querySelector(`[data-address-id="${addressId}"]`).closest(".form-check");
+                    if (deletedAddressElement) {
+                        deletedAddressElement.remove();
+                    }
+                    Toastify({
+                        text: "Address Deleted",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "black",
+                    }).showToast();
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                Toastify({
+                    text: "An error occurred. Try again",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                }).showToast();
+            });
+    }
+
+
+    // FUNCTION TO HANDLE EDIT ADDRESS
+    function editAddress(addressId) {
+
+        if (addressId) {
+
+            axios.get(`/getAddressEdit/:${addressId}`)
+            .then((response)=>{
+                console.log("addresses : ",response);
+                let addressForEdit;
+                response.data.addresses.forEach(element => {
+                    if(element._id.toString()===addressId){
+                        addressForEdit = element
+                    }
+                });
+                document.getElementById("nameEdit").value = addressForEdit.name
+                document.getElementById("addressEdit").value = addressForEdit.address
+                document.getElementById("districtEdit").value = addressForEdit.district
+                document.getElementById("stateEdit").value = addressForEdit.state
+                document.getElementById("zipEdit").value = addressForEdit.zip
+                document.getElementById("phoneEdit").value = addressForEdit.phone
+                document.getElementById("emailEdit").value = addressForEdit.email
+            })
+            .catch((error)=>{
+                console.log(error);
+            })
+
+            $('#editAddressModal').modal('show');
+
+            document.getElementById("updateAddressBtn").addEventListener("click", function() {
+                const updatedName = document.getElementById("nameEdit").value;
+                const updatedAddress = document.getElementById("addressEdit").value;
+                const updatedDistrict = document.getElementById("districtEdit").value;
+                const updatedState = document.getElementById("stateEdit").value;
+                const updatedZip = document.getElementById("zipEdit").value;
+                const updatedEmail = document.getElementById("emailEdit").value;
+                const updatedPhone = document.getElementById("phoneEdit").value;
+
+                console.log("updated name :", updatedName);
+
+                const updatedData = {
+                    name: updatedName,
+                    address: updatedAddress,
+                    district: updatedDistrict,
+                    state: updatedState,
+                    zip: updatedZip,
+                    email: updatedEmail,
+                    phone: updatedPhone
+                };
+
+                axios.put(`/update-address/${addressId}`, updatedData)
+                .then(function (response) {
+                    window.location.href = `/userProfile?scrollTo=address-edit`
+                    $('#editAddressModal').modal('hide');
+                    
+                })
+                .catch(function (error) {
+                    console.error("Error updating address:", error);
+                });
+            });
+        }
+          
+    }
+
+
+    // CODE FOR CHANGE PASSWORD
+    function changePassword(event) {
+        event.preventDefault();
+
+        const currentPassword = document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        // Clear any previous error messages
+        document.getElementById("currentPasswordError").textContent = "";
+        document.getElementById("newPasswordError").textContent = "";
+        document.getElementById("confirmPasswordError").textContent = "";
+
+        let isValid = true;
+
+        if (currentPassword.length < 6) {
+            document.getElementById("currentPasswordError").textContent = "Current password must be at least 6 characters long";
+            isValid = false;
+        }
+
+        if (newPassword.length < 6) {
+            document.getElementById("newPasswordError").textContent = "New password must be at least 6 characters long";
+            isValid = false;
+        }
+
+        if (newPassword !== confirmPassword) {
+            document.getElementById("confirmPasswordError").textContent = "Passwords do not match";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        // Create an object with the form data
+        const formData = {
+            currentPassword: currentPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword
+        };
+
+        // Make an Axios POST request to submit the form data
+        axios.post("/change-password", formData)
+        .then(function (response) {
+
+            document.getElementById("currentPassword").value = ""
+            document.getElementById("newPassword").value = " "
+            document.getElementById("confirmPassword").value = " "
+
+            document.getElementById("currentPasswordError").textContent = "";
+            document.getElementById("newPasswordError").textContent = "";
+            document.getElementById("confirmPasswordError").textContent = "";
+            Toastify({
+                text: "Password Updated",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "green",
+            }).showToast();
+
+        })
+        .catch(function (response) {
+            if(response.response.status === 400){
+                    document.getElementById("currentPasswordError").textContent = "Invalid Password";
+            }
+            else{
+                Toastify({
+                    text: "An error occurred. Try again",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                }).showToast();
+            }
+        });
+    }
+
+
+    // USER DETAILS EDIT
+    function submitUserEditForm(event) {
+        event.preventDefault();
+        const newName = $('#newName').val();
+        const newEmail = $('#newEmail').val();
+        const newPhone = $('#newPhone').val();
+
+        axios.post('/update-user-details', {
+            newName: newName,
+            newEmail: newEmail,
+            newPhone: newPhone,
+        })
+        .then(function(response) {
+            window.location.href = "/userProfile";
+        })
+        .catch(function(error) {
+            console.error(error);
+        })
+        .finally(function() {
+            $('#editModal').modal('hide');
+        });
+    }
+
+
+    // Function to trigger a click event on the "Addresses" button
+    function triggerAddressesButtonClick() {
+        const addressesButton = document.getElementById('address-edit-tab');
+        if (addressesButton) {
+            addressesButton.click();
+        }
+    }
+
+    function triggerOrderButtonClick (){
+        const orderAreaButton = document.getElementById('orders-tab')
+        orderAreaButton?.click()
+    }
+
+    // Check for query parameter on page load
+    window.addEventListener('load', (event) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const scrollTo = urlParams.get('scrollTo');
+    if (scrollTo === 'address-edit') {
+        triggerAddressesButtonClick();
+    }
+    else if(scrollTo === 'orders'){
+        triggerOrderButtonClick()
+    }
+    });
+        
+
+</script>
+
+ 
+
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize Bootstrap tabs
+        $('#nav-tab a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+    });
+</script>
+
+<!-- Toastify CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastify JS -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+ <!-- JS here -->
+ <script src="js/vendor/jquery-1.12.4.min.js"></script>
+ <script src="js/popper.min.js"></script>
+ <script src="js/bootstrap.min.js"></script>
+ <script src="js/owl.carousel.min.js"></script>
+ <script src="js/isotope.pkgd.min.js"></script>
+ <script src="js/one-page-nav-min.js"></script>
+ <script src="js/slick.min.js"></script>
+ <script src="js/jquery.meanmenu.min.js"></script>
+ <script src="js/ajax-form.js"></script>
+ <script src="js/fontawesome.min.js"></script>
+ <script src="js/wow.min.js"></script>
+ <script src="js/jquery.scrollUp.min.js"></script>
+ <script src="js/imagesloaded.pkgd.min.js"></script>
+ <script src="js/jquery.magnific-popup.min.js"></script>
+ <script src="js/plugins.js"></script>
+ <script src="js/main.js"></script>
+
+
+</body>
+
+
+</html>

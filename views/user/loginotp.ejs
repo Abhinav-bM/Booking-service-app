@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>WatchVista - Login Phone</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #fff;
+      }
+
+      .signup-container {
+        max-width: 500px;
+        width: 100%;
+        padding: 1px;
+      }
+
+      .logo {
+        max-width: 100px;
+        margin-bottom: 20px;
+      }
+
+      .form-control {
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        height: 46px;
+      }
+
+      .btn-primary {
+        background-color: #000;
+        border-color: #000;
+        height: 46px;
+        color: #fff;
+        /* Set text color to white */
+      }
+
+      .btn-primary:hover {
+        background-color: #000;
+        /* No hover effect */
+        border-color: #000;
+      }
+
+      /* Remove underline from <a> tag */
+      a {
+        text-decoration: none;
+      }
+
+      a {
+        text-decoration: none;
+        color: #000;
+        /* Set link color to black */
+      }
+
+      h2 {
+        font-weight: bolder;
+        font-size: 28px;
+      }
+
+      */
+
+    /* Additional style for terms and conditions checkbox */
+    .form-check-label {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="signup-container">
+      <div class="text-center">
+        <img
+          class="pb-2"
+          src="/img/logo/logo1.png"
+          alt=""
+          style="max-width: 160px"
+        />
+      </div>
+
+      <form action="/loginOtpDone" class="px-3" method="post" onsubmit="return validate()">
+               <% if (typeof error !== 'undefined' && error !== null) { %>
+        <p style="color: red"><%= error %></p>
+              <% } %>
+        <input type="hidden" name="phoneNumber" value="<%= phone %>" />
+
+        <div class="text-start">
+          <label for="otp" class="m-0"
+            >OTP <span class="text-danger">**</span></label
+          >
+        </div>
+        <p id="errMessage" style="color: red"></p>
+        <input
+          id="otp"
+          name="otp"
+          class="form-control my-0 mb-4 py-0"
+          type="text"
+          placeholder="Enter otp..."
+        />
+
+        <button class="btn btn-primary btn-block">Log In</button><br />
+      </form>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function validate() {
+        var otpInput = document.getElementById("otp").value;
+
+        var errMessage = document.getElementById("errMessage");
+
+        if (otpInput.length !== 6) {
+          errMessage.textContent = "Enter the 6 digit otp";
+          return false;
+        } else {
+          return true;
+        }
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>WatchVista - Login Phone</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #fff;
+      }
+
+      .signup-container {
+        max-width: 500px;
+        width: 100%;
+        padding: 1px;
+        
+      }
+
+      .logo {
+        max-width: 100px;
+        margin-bottom: 20px;
+      }
+
+      .form-control {
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        height: 46px;
+      }
+
+      .btn-primary {
+        background-color: #000;
+        border-color: #000;
+        height: 46px;
+        color: #fff;
+        /* Set text color to white */
+      }
+
+      .btn-primary:hover {
+        background-color: #000;
+        /* No hover effect */
+        border-color: #000;
+      }
+
+      /* Remove underline from <a> tag */
+      a {
+        text-decoration: none;
+      }
+
+      a {
+        text-decoration: none;
+        color: #000;
+        /* Set link color to black */
+      }
+
+      h2 {
+        font-weight: bolder;
+        font-size: 28px;
+      }
+
+      */
+
+    /* Additional style for terms and conditions checkbox */
+    .form-check-label {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="signup-container">
+      <div class="text-center">
+        <img class="pb-4" src="/img/logo/logo1.png" alt="" style="max-width: 160px" />
+      </div>
+
+      <form action="/loginOtp" class="px-3" method="post" onsubmit="return validatePhone()">
+        <% if (typeof error !== 'undefined' && error !== null) { %>
+        <p style="color: red"><%= error %></p>
+        <% } %>
+
+        <div>
+          <label for="phone">Phone <span class="text-danger">**</span></label>
+
+        </div>
+
+        <small
+          id="phone-error"
+          style="color: red; display: none; margin-bottom: 10px"
+          >Please enter a valid phone number</small
+        >
+        <input
+          id="phone"
+          name="phoneNumber"
+          class="form-control my-0 mb-4 py-2"
+          type="text"
+          placeholder="Enter phone number..."
+        />
+
+        <button class="btn btn-primary btn-block">Generate OTP</button><br />
+      </form>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function validatePhone() {
+        var phoneInput = document.getElementById("phone");
+        var phoneError = document.getElementById("phone-error");
+
+        // Check if the input field is empty
+        if (phoneInput.value.trim() === "") {
+          phoneError.textContent = "Please fill in the phone number field";
+          phoneError.style.display = "block";
+          return false;
+        } else {
+          phoneError.style.display = "none";
+        }
+
+        // Check if the phone number matches the pattern
+        if (!/^(\+91)?\d{10}$/.test(phoneInput.value.trim())) {
+          phoneError.textContent = "Please enter a valid phone number";
+          phoneError.style.display = "block";
+          return false;
+        } else {
+          phoneError.style.display = "none";
+        }
+
+        return true;
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

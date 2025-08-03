@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <!-- Mirrored from wphix.com/template/mazia//wishlist by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:39 GMT -->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Wishlist♡</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="manifest" href="site.html" />
+    <link rel="shortcut icon" type="image/x-icon" href="" />
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/css/animate.min.css" />
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="/css/meanmenu.css" />
+    <link rel="stylesheet" href="/css/slick.css" />
+    <link rel="stylesheet" href="/css/default.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+
+    <style>
+      /* styles.css */
+
+      .button {
+        padding: 5px 10px;
+        font-size: 14px;
+        background-color: #18191a;
+        color: #fff;
+        border: 1px solid #18191a;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background-color: #18191a;
+        border-color: #18191a;
+      }
+
+      .button:active {
+        background-color: #18191a;
+        border-color: #18191a;
+      }
+
+      .empty-cart {
+        text-align: center;
+        height: 12.33rem;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+    </style>
+  </head>
+
+  <body>
+    <!-- preloader -->
+    <!-- <div id="loader-wrapper">
+      <div id="loader"></div>
+    </div> -->
+
+    <!-- header section start -->
+    <header
+      class="header pt-30 pb-30 header-sticky header-static bg-white"
+      style="padding-top: 30px; padding-bottom: 15px; top: 0px"
+    >
+      <div class="container-fluid">
+        <div class="header-nav position-relative">
+          <div class="row align-items-center">
+            <div class="col-xl-5 col-lg-6 hidden-md position-static">
+              <div class="header-nav">
+                <nav>
+                  <ul>
+                    <li>
+                      <a href="/">
+                        <span>Home </span>
+                      </a>
+                    </li>
+
+                    <li class="position-static">
+                      <a href="/shop">
+                        <span>Shop</span>
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="/contact">
+                        <span>Contact</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-3">
+              <div class="logo">
+                <a href="index3.html"
+                  ><img src="/img/logo/logo1.png" alt=""
+                /></a>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-3 col-6 col-md-6 col-sm-6 col-9">
+              <div class="header-right">
+                <ul class="text-right">
+                  <% if(!user){ %>
+                  <li>
+                    <a href="/login" class="account"
+                      ><i class="fal fa-user-friends"></i>
+                      <article class="account-registar d-inline-block">
+                        Login
+                      </article></a
+                    >
+                  </li>
+                  <% } %>
+
+                  <li>
+                    <a href="/wishlist"
+                      class="active"
+                      ><i class="fal fa-heart active"
+                        ><span><%= wishlistProducts?.length %></span></i
+                      ></a
+                    >
+                  </li>
+                  <li>
+                    <a href="/cart"
+                      ><i class="fal fa-shopping-bag active"
+                        ><span id="cartCount"><%= user?.cart.products.length %></span></i
+                      ></a
+                    >
+                  </li>
+                  <li>
+                    <a><i class="fal fa-align-right"></i></a>
+                    <ul class="submenu bold-content text-right">
+                      <li><a href="/userProfile">My Account</a></li>
+
+                      <% if(user){ %>
+                      <li><a href="/user/logout">Logout</a></li>
+                      <% } %>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-menu visible-sm">
+          <div id="mobile-menu">
+            <ul>
+              <li><a class="pl-3" href="/">Home</a></li>
+              <li><a class="pl-3" href="/shop">Shop</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- /. mobile nav -->
+      </div>
+    </header>
+    <!-- header section end -->
+
+    <!-- shop body section start -->
+    <main>
+      <!-- Cart Area Strat-->
+      <section class="cart-area pt-100 pb-100">
+        <div class="container">
+          <% if(wishlistProducts?.length > 0){ %>
+          <div class="row justify-content-center">
+            <div class="col-10">
+              <form action="#">
+                <div class="table-content table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="product-thumbnail">Images</th>
+                        <th class="cart-product-name">Product</th>
+                        <th class="product-price">Price</th>
+                        <th class="product-quantity">Action</th>
+                        <th class="product-remove">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% wishlistProducts?.forEach(product => { %>
+                      <tr id="wishlistItem-<%= product._id %>">
+                        <td class="product-thumbnail">
+                          <a href="/products?productId=<%= product._id %>"
+                            ><img src="<%= product.images[0] %>" alt=""
+                          /></a>
+                        </td>
+                        <td class="product-name">
+                          <a href="/products?productId=<%= product._id %>"
+                            ><%= product.name %></a
+                          >
+                        </td>
+                        <td class="product-price">
+                          <span class="amount"><%= product.price %></span>
+                        </td>
+                        <td class="">
+                          <button
+                            class="button"
+                            type="button"
+                            onclick="addToCart('<%= product._id %>')"
+                            id="addToCartBtn"
+                          >
+                            Add To Cart
+                          </button>
+                        </td>
+                        <td class="product-remove">
+                          <button
+                            class="button"
+                            type="button"
+                            onclick="removeFromWishlist('<%= product._id %>')"
+                            id="addToCartBtn"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+          <% } else { %>
+            <div class="d-flex justify-content-center align-items-center empty-cart">
+              <h1>Your wishlist is empty !</h1>
+            </div>
+          <% } %>
+        </div>
+      </section>
+      <!-- Cart Area End-->
+    </main>
+
+    <section class="footer">
+      <div class="footer-bottom pt-77" style="background-color: #292929">
+        <div class="container-1180">
+          <div class="footer-bottom-wrapper">
+            <div class="footer-bottom-primary pb-60">
+              <div class="row">
+                <div class="col-xl-5 col-lg-5 col-md-9">
+                  <div class="footer-item has-desc">
+                    <div class="footer-logo mb-25">
+                      <img
+                        src="img/logo/logo2.png"
+                        width="120"
+                        height="31"
+                        alt=""
+                      />
+                    </div>
+                    <div class="footer-desc">
+                      <p class="mb-10">
+                        Sign to the WatchVista store mailing list to receive
+                        updates on new arrivals, special offers and other
+                        discount information.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-12">
+                  <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="/userProfile" class="title">MY ACCOUNT</a>
+                          </li>
+                          <li><a href="/checkout">Cart</a></li>
+                          <li><a href="/shop">Shop</a></li>
+                          <li><a href="/wishlist">Wishlist</a></li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="" class="title">Quick Links</a>
+                          </li>
+                          <li><a href="">Special Offers</a></li>
+                          <li><a href="">Gift Cards</a></li>
+                          <li><a href="">Privacy Policy</a></li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 hidden-sm">
+                      <div class="footer-menu">
+                        <ul>
+                          <li>
+                            <a href="" class="title">Company Info</a>
+                          </li>
+                          <li><a href="">About us</a></li>
+                          <li>
+                            <a href="">Business With Us</a>
+                          </li>
+                          <li><a href="">Teams of Use</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- footer section end -->
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      // Function to add product to cart
+      function addToCart(productId) {
+        console.log("add to cart function triggered :", productId);
+        axios
+          .post("/cart/add-to-cart", {
+            productId: productId,
+          })
+          .then(function (response) {
+            console.log("rrspnse :", response);
+
+            if (response.status === 200) {
+              Toastify({
+                text: "Product Added to cart",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+              let cartCount = document.getElementById('cartCount')
+              let count = parseFloat(cartCount.textContent)
+              cartCount.textContent = count += 1
+              
+            }
+            if (response.status === 201) {
+              Toastify({
+                text: "Product Added to cart",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "black",
+              }).showToast();
+            }
+          })
+          .catch(function (error) {
+            if (error.response.status === 404) {
+              Toastify({
+                text: "Try, After login",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "red",
+              }).showToast();
+            } else if (error.response.status === 400) {
+              Toastify({
+                text: "Product is out of stock",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "orange",
+              }).showToast();
+            } else {
+              Toastify({
+                text: "An error occurred. Try again",
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "red",
+              }).showToast();
+            }
+          });
+      }
+
+      // REMOVE RPODUCT FROM WIHSLIST
+      function removeFromWishlist(productId) {
+        console.log("slkfhdf :", productId);
+        axios
+          .delete(`/wishlist/remove/${productId}`)
+          .then((response) => {
+            console.log(response.data);
+            // updateWishlistUI(productId);
+            window.location.reload()
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      // function updateWishlistUI(productId) {
+      //   const wishlistItem = document.getElementById(
+      //     `wishlistItem-${productId}`
+      //   );
+      //   if (wishlistItem) {
+      //     wishlistItem.remove();
+      //     Toastify({
+      //       text: "Product Removed from wishlist",
+      //       duration: 2000,
+      //       gravity: "top",
+      //       position: "right",
+      //       backgroundColor: "black",
+      //     }).showToast();
+      //   }
+      // }
+    </script>
+
+    <!-- JS here -->
+    <script src="/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    <script src="/js/one-page-nav-min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/jquery.meanmenu.min.js"></script>
+    <script src="/js/ajax-form.js"></script>
+    <script src="/js/fontawesome.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/jquery.scrollUp.min.js"></script>
+    <script src="/js/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+
+  <!-- Mirrored from wphix.com/template/mazia//wishlist by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:40 GMT -->
+</html>

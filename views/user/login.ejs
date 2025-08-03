@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>WatchVista - Login</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #fff;
+      }
+
+      .signup-container {
+        max-width: 500px;
+        width: 100%;
+        padding: 1px;
+      }
+
+      .logo {
+        max-width: 100px;
+        margin-bottom: 20px;
+      }
+
+      .form-control {
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        height: 46px;
+      }
+
+      .btn-primary {
+        background-color: #000;
+        border-color: #000;
+        height: 46px;
+        color: #fff;
+        /* Set text color to white */
+      }
+
+      .btn-primary:hover {
+        background-color: #000;
+        /* No hover effect */
+        border-color: #000;
+      }
+
+      /* Remove underline from <a> tag */
+      a {
+        text-decoration: none;
+      }
+
+      a {
+        text-decoration: none;
+        color: #000;
+        /* Set link color to black */
+      }
+
+      h2 {
+        font-weight: bolder;
+        font-size: 28px;
+      }
+
+      */
+
+    /* Additional style for terms and conditions checkbox */
+    .form-check-label {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="signup-container">
+      <div class="text-center">
+        <img src="/img/logo/logo1.png" alt="" style="max-width: 160px" />
+      </div>
+
+      <% if (typeof error !== 'undefined' && error !== null) { %>
+      <p style="color: red"><%= error %></p>
+      <% } %>
+
+      <form id="loginForm" action="/user/login" method="post" class="pt-4 px-3">
+        <p id="errorMessage" style="color: red"></p>
+
+        <label for="email">Enter email <span class="text-danger">**</span></label>
+        <input
+          id="email"
+          class="form-control my-0 py-2"
+          name="email"
+          type="text"
+          placeholder="Enter email address..."
+        />
+
+        <label for="pass" class="pt-3">Password <span class="text-danger">**</span></label>
+        <input
+          id="pass"
+          class="form-control my-0 py-2"
+          name="password"
+          type="password"
+          placeholder="Enter password..."
+        />
+
+        <div class="d-flex justify-content-between py-3">
+          <span class="forgot-login f-left">
+            <a href="/loginOtp">Log in with OTP</a>
+          </span>
+          <span class="forgot-login f-right">
+            <a href="/forgotPassword">Forgot Password</a>
+          </span>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Login Now
+          </button>
+          <button class="btn btn-primary btn-block">
+            <img src="/img/logo/googleIMG.png" alt="" width="30px" />
+            <a href="/auth/google" class="text-decoration-none text-light"
+              >Login with google</a
+            >
+          </button>
+        </div>
+
+        <div class="text-center"><span>or</span></div>
+      </form>
+
+      <div class="px-3">
+        <button class="btn btn-primary btn-block">
+          <a href="/signup" class="text-decoration-none text-light"
+            >Register Now</a
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM Loaded");
+
+        // Get the form element
+        const loginForm = document.getElementById("loginForm");
+
+        // Check if the form element is found
+        if (loginForm) {
+          console.log("Form found");
+
+          // Add event listener for form submission
+          loginForm.addEventListener("submit", async function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            console.log("Form submitted"); // Check if form submission is detected
+
+            // Get email and password values
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("pass").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            console.log("Email:", email); // Check the email value
+            console.log("Password:", password); // Check the password value
+
+            if (email === "" || password === "") {
+              errorMessage.textContent = "Please fill both input fields.";
+              return;
+            }
+
+            try {
+              const response = await fetch("/user/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+              });
+
+              const data = await response.json();
+
+              console.log("Response:", data); // Check the response data
+
+              if (response.ok) {
+                // Redirect or handle successful login
+                window.location.href = "/"; // Redirect to home page
+              } else if (response.status === 401) {
+                // Password error
+                errorMessage.textContent = "Incorrect password";
+              } else if (response.status === 404) {
+                // User not found error
+                errorMessage.textContent = data.error;
+              } else if (response.status === 403) {
+                // User is blocked by admin
+                errorMessage.textContent = data.error;
+              } else {
+                // Handle other errors
+                errorMessage.textContent =
+                  "An error occurred. Please try again later.";
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              errorMessage.textContent =
+                "An error occurred. Please try again later.";
+            }
+          });
+        } else {
+          console.log("Form not found");
+        }
+      });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
