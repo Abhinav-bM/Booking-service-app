@@ -19,7 +19,7 @@ router.get("/userProfile", verifyToken, userController.userProfile);
 router.get("/user/logout", userController.userLogout);
 router.get("/", userController.loadAuth);
 router.get("/forgotPassword", userController.forgotGetPage);
-router.get("/loginOtp", userController.loginWithOtpGetPage);
+// router.get("/loginOtp", userController.loginWithOtpGetPage);
 router.get("/shop", userController.shopGetPage);
 router.get("/products", userController.singleProductGetPage);
 router.get("/wishlist",verifyToken,userController.getWishlist)
@@ -31,14 +31,14 @@ router.get("/products/search/:inputValue",userController.getSearchProduct)
 router.get("/getAddressEdit/:addressId",verifyToken,userController.getAddressForEdiit)
 router.get("/checkStockAvailability",verifyToken,userController.checkStockAvailability)
 router.get("/contact", userController.getContactPage)
- 
+
 router.post("/user/send-otp", userController.signupPostPage);
 router.post('/verify-otp', userController.signupVerify)
 router.post("/user/login", userController.loginPostPage);
 router.post("/forgotPassword", userController.forgotEmailPostPage);
 router.post("/resetPassword", userController.resetPassword);
-router.post("/loginOtp", userController.loginRequestOTP);
-router.post("/loginOtpDone", userController.loginVerifyOTP);
+// router.post("/loginOtp", userController.loginRequestOTP);
+// router.post("/loginOtpDone", userController.loginVerifyOTP);
 router.post("/products/addToWishlist",userController.addToWishlist)
 router.post("/cart/add-to-cart",userController.addToCart)
 router.post("/cart/update-quantity",verifyToken,userController.updateCartQuantity)
@@ -62,21 +62,21 @@ router.delete("/delete-address/:addressId",verifyToken,userController.deleteAddr
 
 // LOGIN WITH GOOGLE STARTS HERE
 //Auth
-router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
+// router.get(
+//   "/auth/google",
+//   passport.authenticate("google", { scope: ["email", "profile"] })
+// );
 //Auth callback
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "/success",
-    failureRedirect: "/failure",
-  })
-);
+// router.get(
+//   "/auth/google/callback",
+//   passport.authenticate("google", {
+//     successRedirect: "/success",
+//     failureRedirect: "/failure",
+//   })
+// );
 
-router.get("/success", userController.successGoogleLogin);
-router.get("/failure", userController.failureGooglelogin);
+// router.get("/success", userController.successGoogleLogin);
+// router.get("/failure", userController.failureGooglelogin);
 // LOGIN WITH GOOGLE ENDS HERE
 
 module.exports = router;

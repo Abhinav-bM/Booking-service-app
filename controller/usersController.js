@@ -217,64 +217,64 @@ let loginPostPage = async (req, res) => {
 };
 
 // LOGIN WITH GOOGLE
-const successGoogleLogin = async (req, res) => {
-  try {
-    if (!req.user) {
-      // If no user data
-      return res.status(401).send("no user data , login failed");
-    }
+// const successGoogleLogin = async (req, res) => {
+//   try {
+//     if (!req.user) {
+//       // If no user data
+//       return res.status(401).send("no user data , login failed");
+//     }
 
-    // Checking user already exists in database
-    let user = await User.findOne({ email: req.user.email });
+//     // Checking user already exists in database
+//     let user = await User.findOne({ email: req.user.email });
 
-    if (user.blocked) {
-      return res.render("user/login", { error: "You are restricted by admin" });
-    }
+//     if (user.blocked) {
+//       return res.render("user/login", { error: "You are restricted by admin" });
+//     }
 
-    if (!user) {
-      // If the user does not exist, create a new user
-      user = new User({
-        name: req.user.displayName,
-        email: req.user.email,
-      });
+//     if (!user) {
+//       // If the user does not exist, create a new user
+//       user = new User({
+//         name: req.user.displayName,
+//         email: req.user.email,
+//       });
 
-      // Save the new user to the database
-      await user.save();
-    }
+//       // Save the new user to the database
+//       await user.save();
+//     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-      process.env.JWT_KEY,
-      {
-        expiresIn: "24h",
-      }
-    );
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//       },
+//       process.env.JWT_KEY,
+//       {
+//         expiresIn: "24h",
+//       }
+//     );
 
-    // Set JWT token in a cookie
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
-    });
+//     // Set JWT token in a cookie
+//     res.cookie("jwt", token, {
+//       httpOnly: true,
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+//       secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
+//     });
 
-    // Redirect the user to the home page
-    res.status(200).redirect("/");
+//     // Redirect the user to the home page
+//     res.status(200).redirect("/");
 
-    console.log("User logged in with Google : jwt created");
-  } catch (error) {
-    console.error("Error logging in with Google:", error);
-    res.status(500).redirect("/login");
-  }
-};
+//     console.log("User logged in with Google : jwt created");
+//   } catch (error) {
+//     console.error("Error logging in with Google:", error);
+//     res.status(500).redirect("/login");
+//   }
+// };
 
-const failureGooglelogin = (req, res) => {
-  res.status(500).send("Error logging in with Google");
-};
+// const failureGooglelogin = (req, res) => {
+//   res.status(500).send("Error logging in with Google");
+// };
 
 // LOGIN WITH OTP STARTS HERE
 // LOGIN WITH OTP PAGE DISPLAY
@@ -287,86 +287,93 @@ let loginWithOtpGetPage = async (req, res) => {
 };
 
 // REQUEST FOR OTP AFTER ENTERED PHONE
-const loginRequestOTP = async (req, res) => {
-  const { phoneNumber } = req.body;
+// const loginRequestOTP = async (req, res) => {
+//   const { phoneNumber } = req.body;
 
-  try {
-    let phone = phoneNumber;
+//   try {
+//     let phone = phoneNumber;
 
-    if (!phone.startsWith("+91")) {
-      phone = "+91" + phone;
-    }
+//     if (!phone.startsWith("+91")) {
+//       phone = "+91" + phone;
+//     }
 
-    const user = await User.findOne({ phoneNumber: phone });
+//     const user = await User.findOne({ phoneNumber: phone });
 
-    if (!user) {
-      return res
-        .status(404)
-        .render("user/loginOtpPhone", { error: "User not found" });
-    }
+//     if (!user) {
+//       return res
+//         .status(404)
+//         .render("user/loginOtpPhone", { error: "User not found" });
+//     }
 
-    if (user.blocked) {
-      return res.status(403).render("user/loginOtpPhone", {
-        error: "Your are restricted by admin",
-      });
-    }
+//     if (user.blocked) {
+//       return res.status(403).render("user/loginOtpPhone", {
+//         error: "Your are restricted by admin",
+//       });
+//     }
 
-    const otp = generateOTP();
-    user.otp = otp;
-    user.otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
-    await user.save();
+//     const otp = generateOTP();
+//     user.otp = otp;
+//     user.otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
+//     await user.save();
 
-    smsService.sendOTP(phoneNumber, otp);
+//     smsService.sendOTP(phoneNumber, otp);
 
-    res.status(200).render("user/loginotp", { phone });
-  } catch (error) {
-    console.error("Error requesting OTP:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
+//     res.status(200).render("user/loginotp", { phone });
+//   } catch (error) {
+//     console.error("Error requesting OTP:", error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
 
-const loginVerifyOTP = async (req, res) => {
-  const { phoneNumber, otp } = req.body;
+// const loginVerifyOTP = async (req, res) => {
 
-  try {
-    const user = await User.findOne({ phoneNumber });
-    let phone = phoneNumber;
-    if (user.otp !== otp || Date.now() > user.otpExpiration) {
-      return res
-        .status(400)
-        .render("user/loginotp", { error: "Invalid or expired OTP", phone });
-    }
+//   const { phoneNumber, otp } = req.body;
 
-    // Clear OTP fields after successful verification
-    user.otp = undefined;
-    user.otpExpiration = undefined;
-    await user.save();
+//   try {
+//     const user = await User.findOne({ phoneNumber });
+//     let phone = phoneNumber;
+//     if (user.otp !== otp || Date.now() > user.otpExpiration) {
+//       return res
+//         .status(400)
+//         .render("user/loginotp", { error: "Invalid or expired OTP", phone });
+//     }
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-      process.env.JWT_KEY,
-      {
-        expiresIn: "24h",
-      }
-    );
+//     // Clear OTP fields after successful verification
+//     user.otp = undefined;
+//     user.otpExpiration = undefined;
+//     await user.save();
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hours expiry
+//     const token = jwt.sign(
+//       {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//       },
+//       process.env.JWT_KEY,
+//       {
+//         expiresIn: "24h",
+//       }
+//     );
 
-    res.status(200).redirect("/");
-    console.log("User logged in using OTP : JWT created");
-  } catch (error) {
-    console.error("Error verifying OTP:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
+//     res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hours expiry
+
+//     res.status(200).redirect("/");
+//     console.log("User logged in using OTP : JWT created");
+//   } catch (error) {
+//     console.error("Error verifying OTP:", error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
 // LOGIN WITH OTP ENDS HERE
+
+///////////////////////////////////////////////////////////////
+
 
 // FORGOT PASSWORD -- STARTS FROM HERE
 // FORGOT PASSWORD PAGE DISPLAY
+
+
+
 let forgotGetPage = async (req, res) => {
   try {
     res.render("user/forgotemail");
@@ -1885,11 +1892,11 @@ module.exports = {
   userLogout,
   userProfile,
   loadAuth,
-  successGoogleLogin,
-  failureGooglelogin,
+  // successGoogleLogin,
+  // failureGooglelogin,
   loginWithOtpGetPage,
-  loginRequestOTP,
-  loginVerifyOTP,
+  // loginRequestOTP,
+  // loginVerifyOTP,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,

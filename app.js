@@ -42,7 +42,7 @@ global.config = config;
 //CONNECT TO MONGODB
 require("dotenv").config();
 mongoose.connect(process.env.MONGODCo,{
-  dbName:'watch-store',
+  dbName:'smart-cleaning-service',
   connectTimeoutMS:30000
 })
 .then((data)=>
