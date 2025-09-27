@@ -900,7 +900,7 @@ let addToCart = async (req, res) => {
     }
   } catch (error) {
     console.error("Error adding product to cart:", error);
-    res.status(500).json({ error: "Unable to add product to cart" });
+    res.status(500).json({ error: "Unable to Add Service to cart" });
   }
 };
 

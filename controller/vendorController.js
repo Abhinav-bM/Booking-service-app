@@ -1,6 +1,7 @@
 const Vendor = require("../models/vendorsModel");
 const Admin = require("../models/adminModel");
 const User = require("../models/usersModel");
+const Service = require("../models/services");
 const bcrypt = require("bcryptjs");
 const {
   calculateTotalSales,
@@ -26,7 +27,7 @@ let dashboard = async (req, res) => {
     let vendor = await Vendor.findOne({ _id: vendorId });
 
     const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products"
+      "products",
     );
     const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
 
@@ -37,7 +38,7 @@ let dashboard = async (req, res) => {
         order.products.forEach((product) => {
           if (product.productId) {
             const matchingProduct = vendorProducts.products.find(
-              (vendorProduct) => vendorProduct._id.equals(product.productId)
+              (vendorProduct) => vendorProduct._id.equals(product.productId),
             );
 
             if (matchingProduct) {
@@ -143,7 +144,7 @@ let vendorLoginPostPage = async (req, res) => {
     } else if (vendor) {
       const passwordMatch = await bcrypt.compare(
         req.body.password,
-        vendor.password
+        vendor.password,
       );
 
       if (passwordMatch) {
@@ -156,7 +157,7 @@ let vendorLoginPostPage = async (req, res) => {
           process.env.JWT_KEY,
           {
             expiresIn: "24h",
-          }
+          },
         );
 
         res.cookie("vendor_jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
@@ -180,7 +181,7 @@ let vendorLoginPostPage = async (req, res) => {
   }
 };
 
-// ADD PRODUCT PAGE DISPLAY
+// Add Service PAGE DISPLAY
 let addProduct = async (req, res) => {
   try {
     const vendorId = req.user.id;
@@ -189,7 +190,7 @@ let addProduct = async (req, res) => {
     const categories = admin.categories.map((category) => ({
       categoryName: category.categoryName,
       subcategories: category.subcategories.map(
-        (subcategory) => subcategory.subcategoryName
+        (subcategory) => subcategory.subcategoryName,
       ),
     }));
 
@@ -200,16 +201,65 @@ let addProduct = async (req, res) => {
   }
 };
 
-// ADD PRODUCT POST PAGE
-let addProductpost = async (req, res) => {
-  const {
-    croppedMainImage,
-    croppedSecondImage,
-    croppedThirdImage,
-    croppedFourthImage,
-  } = req.body;
-  console.log("Image datas :", req.body);
+// Add Service POST PAGE
+// let addProductpost = async (req, res) => {
+//   const {
+//     croppedMainImage,
+//     croppedSecondImage,
+//     croppedThirdImage,
+//     croppedFourthImage,
+//   } = req.body;
+//   console.log("Image datas :", req.body);
+//   try {
+//     let { email } = req.user;
+
+//     let productData = req.body;
+
+//     let vendor = await Vendor.findOne({ email });
+
+//     const mainImage = await cloudinary.uploader.upload(croppedMainImage);
+//     const secondImage = await cloudinary.uploader.upload(croppedSecondImage);
+//     const thirdImage = await cloudinary.uploader.upload(croppedThirdImage);
+//     const fourthImage = await cloudinary.uploader.upload(croppedFourthImage);
+
+//     const imageUrls = [
+//       mainImage.secure_url,
+//       secondImage.secure_url,
+//       thirdImage.secure_url,
+//       fourthImage.secure_url,
+//     ];
+//     // Create a new Product instance with uploaded image URLs
+//     const newProduct = {
+//       productName: req.body.productName,
+//       productCategory: req.body.productCategory,
+//       productSubCategory: req.body.productSubcategory,
+//       productBrand: req.body.productBrand,
+//       productColor: req.body.productColor,
+//       productSize: req.body.productSize,
+//       productQTY: req.body.productQuantity,
+//       productPrice: req.body.productPrice,
+//       productImages: imageUrls,
+//       productDescription: req.body.productDescription,
+//     };
+//     vendor.products.push(newProduct);
+//     await vendor.save();
+//     res.redirect("/vendor/productList");
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("server error");
+//   }
+// };
+
+const addServicePost = async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    const {
+      croppedMainImage,
+      croppedSecondImage,
+      croppedThirdImage,
+      croppedFourthImage,
+    } = req.body;
+
     let { email } = req.user;
 
     let productData = req.body;
@@ -227,25 +277,26 @@ let addProductpost = async (req, res) => {
       thirdImage.secure_url,
       fourthImage.secure_url,
     ];
-    // Create a new Product instance with uploaded image URLs
-    const newProduct = {
-      productName: req.body.productName,
-      productCategory: req.body.productCategory,
-      productSubCategory: req.body.productSubcategory,
-      productBrand: req.body.productBrand,
-      productColor: req.body.productColor,
-      productSize: req.body.productSize,
-      productQTY: req.body.productQuantity,
-      productPrice: req.body.productPrice,
-      productImages: imageUrls,
-      productDescription: req.body.productDescription,
-    };
-    vendor.products.push(newProduct);
-    await vendor.save();
+
+    const newService = new Service({
+      title: req.body.title,
+      actualPrice: req.body.actualPrice,
+      sellingPrice: req.body.sellingPrice,
+      category: req.body.category,
+      subcategory: req.body.subcategory,
+      duration: req.body.duration,
+      availableFrom: req.body.startTime,
+      availableUntil: req.body.endTime,
+      description: req.body.description,
+      images: imageUrls,
+      vendor: vendor._id,
+    });
+
+    await newService.save();
     res.redirect("/vendor/productList");
   } catch (error) {
-    console.log(error);
-    res.status(500).send("server error");
+    console.error("Error adding service:", error);
+    res.status(500).send("Server error");
   }
 };
 
@@ -258,6 +309,20 @@ let producList = async (req, res) => {
     res.status(200).render("vendor/product-list", { vendor, products });
   } catch (error) {
     console.error("vendor product list error", error);
+    res.status(404).send("page not found");
+  }
+};
+
+// List services
+const servicesList = async (req, res) => {
+  try {
+    let vendorId = req.user.id;
+    const vendor = await Vendor.findOne({ _id: vendorId });
+    let services = await Service.find({ vendor: vendorId });
+    console.log(services);
+    res.status(200).render("vendor/product-list", { vendor, services });
+  } catch (error) {
+    console.error("vendor service list error", error);
     res.status(404).send("page not found");
   }
 };
@@ -275,7 +340,7 @@ let editProduct = async (req, res) => {
 
     let admin = await Admin.findOne();
     let product = vendor.products.find(
-      (prod) => prod._id.toString() === productId
+      (prod) => prod._id.toString() === productId,
     );
     if (!product) {
       return res.status(404).send("Product Not Found");
@@ -284,7 +349,7 @@ let editProduct = async (req, res) => {
     const categories = admin.categories.map((category) => ({
       categoryName: category.categoryName,
       subcategories: category.subcategories.map(
-        (subcategory) => subcategory.subcategoryName
+        (subcategory) => subcategory.subcategoryName,
       ),
     }));
     res.render("vendor/product-edit", { product, categories, vendor });
@@ -312,7 +377,7 @@ let editProductPost = async (req, res) => {
     let vendor = await Vendor.findOne({ _id: vendorId });
 
     let productIndex = await vendor.products.findIndex(
-      (product) => product._id.toString() === productId
+      (product) => product._id.toString() === productId,
     );
 
     if (productIndex === -1) {
@@ -446,7 +511,7 @@ let getOrdersForVendor = async (req, res) => {
   try {
     const vendor = await Vendor.findOne({ _id: vendorId });
     const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products"
+      "products",
     );
     const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
 
@@ -457,7 +522,7 @@ let getOrdersForVendor = async (req, res) => {
         order.products.forEach((product) => {
           if (product.productId) {
             const matchingProduct = vendorProducts.products.find(
-              (vendorProduct) => vendorProduct._id.equals(product.productId)
+              (vendorProduct) => vendorProduct._id.equals(product.productId),
             );
 
             if (matchingProduct) {
@@ -510,7 +575,7 @@ let updateOrderStatus = async (req, res) => {
     const order = user.orders.find((order) => order.orderId === orderId);
 
     const product = order.products.find(
-      (prod) => prod.productId.toString() === productId
+      (prod) => prod.productId.toString() === productId,
     );
 
     if (!product) {
@@ -541,7 +606,7 @@ let salesExcel = async (req, res) => {
 
   try {
     const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products"
+      "products",
     );
     const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
 
@@ -557,7 +622,7 @@ let salesExcel = async (req, res) => {
       (order) =>
         order.orderStatus === "Delivered" &&
         new Date(order.orderDate) >= startDateObj &&
-        new Date(order.orderDate) <= endDateObj
+        new Date(order.orderDate) <= endDateObj,
     );
 
     if (deliveredOrders.length === 0) {
@@ -592,11 +657,11 @@ let salesExcel = async (req, res) => {
 
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=sales_report.xlsx"
+      "attachment; filename=sales_report.xlsx",
     );
 
     await workbook.xlsx.write(res);
@@ -613,7 +678,7 @@ let returnRepaymentGetPage = async (req, res) => {
   const vendorId = req.user.id;
   try {
     const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products"
+      "products",
     );
     const vendor = vendorProducts;
     const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
@@ -637,7 +702,7 @@ module.exports = {
   dashboard,
   vendorLogout,
   addProduct,
-  addProductpost,
+  // addProductpost,
   producList,
   editProduct,
   editProductPost,
@@ -646,4 +711,8 @@ module.exports = {
   updateOrderStatus,
   salesExcel,
   returnRepaymentGetPage,
+
+  // service things
+  addServicePost,
+  servicesList,
 };

@@ -38,12 +38,12 @@
           
                       <li>
                         <a class="m-link active" href="/vendor/productList"
-                          ><i class="icofont-truck-loaded fs-5"></i>Products</a
+                          ><i class="icofont-truck-loaded fs-5"></i>Services</a
                         >
                       </li>
                       <li>
                         <a class="m-link" href="/vendor/addProduct"
-                          ><i class="icofont-truck-loaded fs-5"></i>Add Product</a
+                          ><i class="icofont-truck-loaded fs-5"></i>Add Service</a
                         >
                       </li>
           
@@ -151,22 +151,20 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Image</th>
-                                                <th>Product Name</th>
-                                                <th>Color</th>
-                                                <th>Brand</th>
+                                                <th>Service Name</th>
+                                                <!-- <th>Color</th> -->
+                                                <!-- <th>Brand</th> -->
                                                 <th>Price</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% products.forEach((prod,index) => { %>
+                                            <% services.forEach((service,index) => { %>
                                             <tr>
                                                 <td><strong><%= index + 1 %></strong></td>
-                                                <td><img src="<%= prod.productImages[0] %>" class="avatar lg rounded " alt="<%= prod.productName %>"></td>
-                                                <td><%= prod.productName %></td>
-                                                <td><%= prod.productColor %></td>
-                                                <td><%= prod.productBrand %></td>
-                                                <td>₹ <%= prod.productPrice %></td>
+                                                <td><img src="<%= service.images[0] %>" class="avatar lg rounded " alt="<%= service.title %>"></td>
+                                                <td><%= service.title %></td>
+                                                <td>₹ <%= service.sellingPrice %></td>
                                                 <td>
                                                     <button class="btn bg-dark text-light" data-bs-toggle="modal" data-bs-target="#productModal<%= index %>">View</button>
                                                     <!-- Modal -->
@@ -181,24 +179,21 @@
                                                             <!-- Product details here -->
                                                             <div class="row">
                                                                 <div class="col-lg-6">
-                                                                    <img class="img-fluid" src="<%= prod.productImages[0] %>" alt="<%= prod.productName %>">
+                                                                    <img class="img-fluid" src="<%= service.images[0] %>" alt="<%= service.title %>">
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                       
                                                                     <div>
-                                                                        <p><strong>Name :</strong> <%= prod.productName %></p>
-                                                                        <p><strong>Price :</strong> <%= prod.productPrice %></p>
-                                                                        <p><strong>Color :</strong> <%= prod.productColor %></p>
-                                                                        <p><strong>Size :</strong> <%= prod.productSize %></p>
-                                                                        <p><strong>Brand :</strong> <%= prod.productBrand %></p>
-                                                                        <p><strong>Category :</strong> <%= prod.productCategory %></p>
-                                                                        <p><strong>Subcategory :</strong> <%= prod.productSubCategory %></p>
-                                                                        <p><strong>Stock :</strong> <%= prod.productQTY %></p>
-                                                                        <p class="text-sm text-wrap text-break"><strong>Description :</strong> <%= prod.productDescription %></p>
+                                                                        <p><strong>Name :</strong> <%= service.title %></p>
+                                                                        <p><strong>Price :</strong> <%= service.sellingPrice %></p>
+                                                                    
+                                                                        <p><strong>Category :</strong> <%= service.category %></p>
+                                                                        <p><strong>Subcategory :</strong> <%= service.subcategory %></p>
+                                                                        <p class="text-sm text-wrap text-break"><strong>Description :</strong> <%= service.description %></p>
                                                                     </div>
                                                                     <div class="d-flex gap-2">
                                                                         <form
-                                                                                action="/vendor/editProduct/<%= prod._id %>"
+                                                                                action="/vendor/editProduct/<%= service._id %>"
                                                                                 method="get"
                                                                                 class="editProduct"
                                                                             >
@@ -211,7 +206,7 @@
                                                                             </form>
                                                                             
                                                                             <form
-                                                                            action="/vendor/deleteProduct/<%= prod._id %>"
+                                                                            action="/vendor/deleteProduct/<%= service._id %>"
                                                                             method="post"
                                                                             class="deleteProduct"
                                                                         >

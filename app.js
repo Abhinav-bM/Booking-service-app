@@ -6,7 +6,6 @@ const userRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
 const vendorRouter = require("./routes/vendor");
 
-
 const path = require("path");
 const app = express();
 
@@ -30,28 +29,27 @@ app.use(
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
     },
-  })
+  }),
 );
 
 app.set("view engine", "ejs");
-
 
 const { parsed: config } = require("dotenv").config();
 global.config = config;
 
 //CONNECT TO MONGODB
 require("dotenv").config();
-mongoose.connect(process.env.MONGODCo,{
-  dbName:'smart-cleaning-service',
-  connectTimeoutMS:30000
-})
-.then((data)=>
-{ 
-  console.log("DB Connected");
-}).catch((err)=>
-{
-  console.log(err);
-})
+mongoose
+  .connect(process.env.MONGODCo, {
+    dbName: "smart-cleaning-service",
+    connectTimeoutMS: 30000,
+  })
+  .then((data) => {
+    console.log("DB Connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 // // Set up routes
 app.use("/", userRouter);

@@ -144,7 +144,7 @@
             </li>
             <li>
               <a class="m-link active" href="/vendor/addProduct"
-                ><i class="icofont-truck-loaded fs-5"></i>Add Product</a
+                ><i class="icofont-truck-loaded fs-5"></i>Add Service</a
               >
             </li>
 
@@ -172,7 +172,7 @@
             <div class="container-xxl">
               <!-- header rightbar icon -->
               <div
-                class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1"
+                class="h-right ms-auto d-flex align-items-center mr-5 mr-lg-0 order-1"
               >
                 <div
                   class="dropdown user-profile ml-2 ml-sm-3 d-flex align-items-center zindex-popover"
@@ -249,7 +249,7 @@
               </button>
 
               <!-- main menu Search-->
-              <div
+              <!-- <div
                 class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
               >
                 <div class="input-group flex-nowrap input-group-lg">
@@ -268,34 +268,27 @@
                     <i class="fa fa-search"></i>
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
           </nav>
         </div>
 
-        <!-- Body: Body --><!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-        <h2 class="text-uppercase fw-bold px-3">Add New Product</h2>
+        <h2 class="text-uppercase fw-bold px-3">Add New Service</h2>
         <br />
         <form
           class="needs-validation"
           name="myForm"
-          action="/vendor/addProduct"
+          action="/vendor/addService"
           method="POST"
           enctype="multipart/form-data"
         >
           <div class="">
             <div class="form-group px-3">
-              <label for="productName">Product Name:</label>
-              <input
-                class=""
-                type="text"
-                id="productName"
-                name="productName"
-                required
-              />
+              <label for="title">Title</label>
+              <input class="" type="text" id="title" name="title" required />
             </div>
 
-            <div class="form-group px-3">
+            <!-- <div class="form-group px-3">
               <label for="productBrand">Product Brand:</label>
               <input
                 type="text"
@@ -303,8 +296,8 @@
                 name="productBrand"
                 required
               />
-            </div>
-
+            </div> -->
+            <!-- 
             <div class="form-group px-3">
               <label for="productColor">Product Color:</label>
               <input
@@ -313,14 +306,14 @@
                 name="productColor"
                 required
               />
-            </div>
-
+            </div> -->
+            <!-- 
             <div class="form-group px-3">
               <label for="productSize">Product Size:</label>
               <input type="text" id="productSize" name="productSize" required />
-            </div>
+            </div> -->
 
-            <div class="form-group px-3">
+            <!-- <div class="form-group px-3">
               <label for="productQuantity">Product Quantity:</label>
               <input
                 type="number"
@@ -329,59 +322,108 @@
                 min="0"
                 required
               />
+            </div> -->
+
+            <div class="d-flex w-100">
+              <div class="form-group w-100 px-3">
+                <label for="actualPrice">Actual Price</label>
+                <input
+                  type="number"
+                  id="actualPrice"
+                  name="actualPrice"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="form-group w-100 px-3">
+                <label for="sellingPrice">Selling Price</label>
+                <input
+                  type="number"
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  min="0"
+                  required
+                />
+              </div>
             </div>
 
-            <div class="form-group px-3">
-              <label for="productPrice">Product Price:</label>
+            <div class="d-flex w-100">
+              <div class="form-group w-100 px-3">
+                <label for="category">Category:</label>
+                <select
+                  id="category"
+                  name="category"
+                  onchange="getSubcategory()"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <% categories.forEach(category => { %>
+                  <option value="<%= category.categoryName %>">
+                    <%= category.categoryName %>
+                  </option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <input
+                type="hidden"
+                id="categoriesData"
+                value="<%= JSON.stringify(categories) %>"
+              />
+
+              <div class="form-group w-100 px-3">
+                <label for="subcategory">Subcategory:</label>
+                <select id="subcategory" name="subcategory" required>
+                  <option value="">Select Subcategory</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex">
+            <div class="form-group w-100 px-3">
+              <label for="duration">Duration</label>
               <input
                 type="number"
-                id="productPrice"
-                name="productPrice"
+                id="duration"
+                name="duration"
                 min="0"
                 required
               />
             </div>
+          </div>
 
-            <div class="form-group px-3">
-              <label for="productCategory">Category:</label>
-              <select
-                id="productCategory"
-                name="productCategory"
-                onchange="getSubcategory()"
+          <div class="d-flex">
+            <div class="form-group w-100 px-3">
+              <label for="startTime">Available From</label>
+              <input
+                type="time"
+                id="startTime"
+                name="startTime"
                 required
-              >
-                <option value="">Select Category</option>
-                <% categories.forEach(category => { %>
-                <option value="<%= category.categoryName %>">
-                  <%= category.categoryName %>
-                </option>
-                <% }); %>
-              </select>
+                class="rounded-1"
+                style="height: 45px; width: 100%"
+              />
             </div>
 
-            <input
-              type="hidden"
-              id="categoriesData"
-              value="<%= JSON.stringify(categories) %>"
-            />
-
-            <div class="form-group px-3">
-              <label for="productSubcategory">Subcategory:</label>
-              <select
-                id="productSubcategory"
-                name="productSubcategory"
+            <div class="form-group w-100 px-3">
+              <label for="endTime">Available Until</label>
+              <input
+                type="time"
+                id="endTime"
+                name="endTime"
                 required
-              >
-                <option value="">Select Subcategory</option>
-              </select>
+                class="rounded-1"
+                style="height: 45px; width: 100%"
+              />
             </div>
           </div>
 
           <div class="form-group px-3">
-            <label for="productDescription">Product Description:</label>
+            <label for="description">Description</label>
             <textarea
-              id="productDescription"
-              name="productDescription"
+              id="description"
+              name="description"
               rows="5"
               required
             ></textarea>
@@ -469,8 +511,8 @@
           </div>
 
           <div class="px-3">
-            <!-- <input  value="Add Product" class="btn-submit "> -->
-            <button type="submit" class="btn btn-primary">Add Product</button>
+            <!-- <input  value="Add Service" class="btn-submit "> -->
+            <button type="submit" class="btn btn-primary">Add Service</button>
           </div>
         </form>
         <br />
@@ -627,9 +669,8 @@
             // Parse the JSON string to get the categories array
             const categories = JSON.parse(categoriesJson);
 
-            const categoryDropdown = document.getElementById("productCategory");
-            const subcategoryDropdown =
-              document.getElementById("productSubcategory");
+            const categoryDropdown = document.getElementById("category");
+            const subcategoryDropdown = document.getElementById("subcategory");
 
             // Clear previous options
             subcategoryDropdown.innerHTML =
@@ -642,7 +683,7 @@
 
             // Find the selected category from the categories array
             const selectedCategoryObj = categories.find(
-              (category) => category.categoryName === selectedCategory
+              (category) => category.categoryName === selectedCategory,
             );
 
             if (selectedCategoryObj) {
@@ -998,7 +1039,7 @@
         ClassicEditor.create(document.querySelector("#editor")).catch(
           (error) => {
             console.error(error);
-          }
+          },
         );
         //Datatable
         $("#myCartTable")
@@ -1021,7 +1062,7 @@
         var drEvent = $("#dropify-event").dropify();
         drEvent.on("dropify.beforeClear", function (event, element) {
           return confirm(
-            'Do you really want to delete "' + element.file.name + '" ?'
+            'Do you really want to delete "' + element.file.name + '" ?',
           );
         });
 
