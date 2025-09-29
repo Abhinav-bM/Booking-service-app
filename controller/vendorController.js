@@ -289,7 +289,7 @@ const addServicePost = async (req, res) => {
       availableUntil: req.body.endTime,
       description: req.body.description,
       images: imageUrls,
-      vendor: vendor._id,
+      vendorId: vendor._id,
     });
 
     await newService.save();

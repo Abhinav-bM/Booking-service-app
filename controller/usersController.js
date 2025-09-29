@@ -1,6 +1,8 @@
 const User = require("../models/usersModel");
 const Vendor = require("../models/vendorsModel");
 const Admin = require("../models/adminModel");
+const Services = require("../models/services");
+const Booking = require("../models/booking");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const smsService = require("../helpers/smsService");
@@ -9,6 +11,7 @@ const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
 const { findUserOrders } = require("../helpers/userHelper");
 require("dotenv").config();
+const generateSlots = require("../helpers/booking").generateSlots;
 
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -26,7 +29,7 @@ let homePage = async (req, res) => {
 
     const admin = await Admin.findOne();
     const bannerHome = admin.banner.filter(
-      (banner) => banner.placement === "Home Page"
+      (banner) => banner.placement === "Home Page",
     );
 
     let user;
@@ -137,11 +140,9 @@ let signupVerify = async (req, res) => {
         process.env.JWT_KEY,
         {
           expiresIn: "24h",
-        }
+        },
       );
 
-
-      
       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
 
       return res
@@ -203,7 +204,7 @@ let loginPostPage = async (req, res) => {
       process.env.JWT_KEY,
       {
         expiresIn: "24h",
-      }
+      },
     );
 
     res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
@@ -368,11 +369,8 @@ let loginWithOtpGetPage = async (req, res) => {
 
 ///////////////////////////////////////////////////////////////
 
-
 // FORGOT PASSWORD -- STARTS FROM HERE
 // FORGOT PASSWORD PAGE DISPLAY
-
-
 
 let forgotGetPage = async (req, res) => {
   try {
@@ -433,7 +431,6 @@ let forgotEmailPostPage = async (req, res) => {
 
 // RESET PASSWORD
 let resetPassword = async (req, res) => {
-
   const { emailOrPhone, otp, newPassword, confirmPassword } = req.body;
 
   try {
@@ -515,28 +512,73 @@ let userLogout = async (req, res) => {
 };
 
 // SHOP PAGE DISPLAY
-let shopGetPage = async (req, res) => {
-  const token = req.cookies.jwt;
-  try {
-    const allProducts = await Vendor.aggregate([
-      { $unwind: "$products" },
-      {
-        $project: {
-          _id: "$products._id",
-          productName: "$products.productName",
-          productCategory: "$products.productCategory",
-          productSubCategory: "$products.productSubCategory",
-          productBrand: "$products.productBrand",
-          productColor: "$products.productColor",
-          productSize: "$products.productSize",
-          productQTY: "$products.productQTY",
-          productPrice: "$products.productPrice",
-          productImages: "$products.productImages",
-          productDescription: "$products.productDescription"
-        }
-      }
-    ]);
+// let shopGetPage = async (req, res) => {
+//   const token = req.cookies.jwt;
+//   try {
+//     const allProducts = await Vendor.aggregate([
+//       { $unwind: "$products" },
+//       {
+//         $project: {
+//           _id: "$products._id",
+//           productName: "$products.productName",
+//           productCategory: "$products.productCategory",
+//           productSubCategory: "$products.productSubCategory",
+//           productBrand: "$products.productBrand",
+//           productColor: "$products.productColor",
+//           productSize: "$products.productSize",
+//           productQTY: "$products.productQTY",
+//           productPrice: "$products.productPrice",
+//           productImages: "$products.productImages",
+//           productDescription: "$products.productDescription",
+//         },
+//       },
+//     ]);
 
+//     const admin = await Admin.findOne({});
+//     const allCategories = [];
+
+//     admin.categories.forEach((category) => {
+//       allCategories.push(category.categoryName);
+//     });
+
+//     let user;
+//     if (token) {
+//       const decoded = jwt.verify(token, process.env.JWT_KEY);
+//       const userId = decoded.id;
+//       user = await User.findById(userId);
+//     }
+
+//     // Pagination logic
+//     const ITEMS_PER_PAGE = 8;
+//     const page = +req.query.page || 1;
+//     const totalProducts = allProducts.length;
+//     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+//     const startIndex = (page - 1) * ITEMS_PER_PAGE;
+//     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalProducts);
+//     const paginatedProducts = allProducts.slice(startIndex, endIndex);
+
+//     res.status(200).render("user/services", {
+//       products: paginatedProducts,
+//       allCategories,
+//       user,
+//       wishlistProducts: user?.wishlist.products,
+//       currentPage: page,
+//       hasNextPage: ITEMS_PER_PAGE * page < totalProducts,
+//       hasPrevPage: page > 1,
+//       nextPage: page + 1,
+//       prevPage: page - 1,
+//       lastPage: totalPages,
+//     });
+//   } catch (error) {
+//     console.log("page not found :", error);
+//     res.status(404).send("page not found");
+//   }
+// };
+
+const getServicesPage = async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const allServices = await Services.find();
     const admin = await Admin.findOne({});
     const allCategories = [];
 
@@ -554,14 +596,16 @@ let shopGetPage = async (req, res) => {
     // Pagination logic
     const ITEMS_PER_PAGE = 8;
     const page = +req.query.page || 1;
-    const totalProducts = allProducts.length;
+    const totalProducts = allServices.length;
     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalProducts);
-    const paginatedProducts = allProducts.slice(startIndex, endIndex);
+    const paginatedProducts = allServices.slice(startIndex, endIndex);
 
-    res.status(200).render("user/shop", {
-      products: paginatedProducts,
+    console.log(allServices);
+
+    res.status(200).render("user/services", {
+      services: allServices,
       allCategories,
       user,
       wishlistProducts: user?.wishlist.products,
@@ -573,8 +617,8 @@ let shopGetPage = async (req, res) => {
       lastPage: totalPages,
     });
   } catch (error) {
-    console.log("page not found :", error);
-    res.status(404).send("page not found");
+    console.error("Error fetching services:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -589,7 +633,7 @@ let getProductsByCategory = async (req, res) => {
     let allProducts = vendorProducts.map((vendor) => vendor.products).flat();
 
     let filteredProducts = allProducts.filter(
-      (product) => product.productCategory === category
+      (product) => product.productCategory === category,
     );
 
     let user;
@@ -664,7 +708,7 @@ let getSearchProduct = async (req, res) => {
           .includes(searchTerm.trim().toLowerCase()) ||
         product.productCategory
           .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase())
+          .includes(searchTerm.trim().toLowerCase()),
     );
 
     let user;
@@ -692,7 +736,7 @@ let singleProductGetPage = async (req, res) => {
     const vendor = await Vendor.findOne({ "products._id": productId });
 
     const relatedProducts = vendor.products.filter(
-      (prod) => prod._id.toString() !== productId
+      (prod) => prod._id.toString() !== productId,
     );
 
     if (!vendor) {
@@ -700,7 +744,7 @@ let singleProductGetPage = async (req, res) => {
     }
 
     const products = vendor.products.find(
-      (prod) => prod._id.toString() === productId
+      (prod) => prod._id.toString() === productId,
     );
 
     if (!products) {
@@ -721,7 +765,7 @@ let singleProductGetPage = async (req, res) => {
       relatedProducts: relatedProducts,
     });
   } catch (error) {
-    console.error( error);
+    console.error(error);
     res.status(404).send("page not found");
   }
 };
@@ -789,7 +833,6 @@ let addToWishlist = async (req, res) => {
       userId = decoded.id;
     }
 
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -797,7 +840,7 @@ let addToWishlist = async (req, res) => {
     }
 
     const existingProductIndex = user.wishlist.products.findIndex(
-      (product) => product.productId.toString() === productId
+      (product) => product.productId.toString() === productId,
     );
 
     if (existingProductIndex !== -1) {
@@ -836,7 +879,7 @@ let removeFromWishlist = async (req, res) => {
     }
 
     user.wishlist.products = user.wishlist.products.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => item.productId.toString() !== productId,
     );
 
     await user.save();
@@ -882,7 +925,7 @@ let addToCart = async (req, res) => {
     }
 
     const existingProductIndex = user.cart.products.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId,
     );
 
     if (existingProductIndex !== -1) {
@@ -971,6 +1014,94 @@ let getCart = async (req, res) => {
   }
 };
 
+// Service booking page — shows service details + date picker (GET)
+const bookServiceGetPage = async (req, res) => {
+  try {
+    console.log("called me for booking page");
+    const serviceId = req.params.id;
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const service = await Services.findById(serviceId);
+
+    if (!service) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    return res
+      .status(200)
+      .render("user/bookService", { service, date: todayStr, user });
+  } catch (error) {
+    console.error("Error fetching service:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getServiceSlots = async (req, res) => {
+  console.log("called me for get slots");
+  try {
+    const date = req.query.date;
+    if (!date) return res.status(400).json({ error: "date required" });
+
+    const service = await Services.findById(req.params.id).lean();
+    if (!service) return res.status(404).json({ error: "service not found" });
+
+    // fetch all bookings for this service on this date
+    const bookings = await Booking.find({
+      serviceId: service._id,
+      date,
+    }).lean();
+    const bookedSlots = bookings.map((b) => b.slot);
+
+    const slots = generateSlots(service, date, bookedSlots); // returns objects {slot,...}
+    res.json({ slots });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server error" });
+  }
+};
+
+const checkoutServiceGetPage = async (req, res) => {
+  try {
+    const { serviceId, date, slot } = req.body;
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    const addresses = user.addresses;
+
+    const service = await Services.findById(serviceId).lean();
+    if (!service) return res.status(404).send("Service not found");
+
+    // double-check slot is still available: check Booking collection
+    const existing = await Booking.findOne({ serviceId, date, slot });
+    if (existing) {
+      return res.send(
+        "Selected slot is no longer available. Please choose another slot.",
+      );
+    }
+
+    res.render("user/checkout", {
+      service,
+      date,
+      slot,
+      user,
+      addresses,
+      razorpayKey: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+};
+
 // REMOVE PRODUCT FROM CART
 let removeProductCart = async (req, res) => {
   const { productId } = req.params;
@@ -984,7 +1115,7 @@ let removeProductCart = async (req, res) => {
     }
 
     const updatedCart = user.cart.products.filter(
-      (product) => product.productId.toString() !== productId
+      (product) => product.productId.toString() !== productId,
     );
 
     user.cart.products = updatedCart;
@@ -1048,7 +1179,7 @@ let updateCartQuantity = async (req, res) => {
     const user = await User.findById(userId);
     const vendor = await Vendor.findOne({ "products._id": productId });
     const product = vendor.products.filter(
-      (prod) => prod._id.toString() === productId
+      (prod) => prod._id.toString() === productId,
     );
     if (product[0].productQTY < quantity) {
       return res.status(400).json({
@@ -1062,7 +1193,7 @@ let updateCartQuantity = async (req, res) => {
     }
 
     const productIndex = user.cart.products.findIndex(
-      (product) => product.productId.toString() === productId
+      (product) => product.productId.toString() === productId,
     );
 
     if (productIndex !== -1) {
@@ -1147,7 +1278,7 @@ let checkoutpage = async (req, res) => {
       // Find the product in allProducts
       for (const vendor of allProducts) {
         const product = vendor.products.find((prod) =>
-          prod._id.equals(productId)
+          prod._id.equals(productId),
         );
         if (product) {
           const vendorInfo = {
@@ -1280,7 +1411,7 @@ let editAddress = async (req, res) => {
     }
 
     const addressIndex = userForEditAddress.addresses.findIndex(
-      (addr) => addr._id.toString() === addressId
+      (addr) => addr._id.toString() === addressId,
     );
 
     if (addressIndex === -1) {
@@ -1318,7 +1449,7 @@ let editAddress = async (req, res) => {
 // DELETE ADDRESS
 let deleteAddress = async (req, res) => {
   const addressId = req.params.addressId;
-  
+
   const userId = req.user.id;
 
   try {
@@ -1329,7 +1460,7 @@ let deleteAddress = async (req, res) => {
     }
 
     const addressIndex = user.addresses.findIndex(
-      (address) => address._id.toString() === addressId
+      (address) => address._id.toString() === addressId,
     );
 
     if (addressIndex === -1) {
@@ -1362,7 +1493,7 @@ let placeOrderPost = async (req, res) => {
 
     // selected address from user's addresses
     const selectedAddress = user.addresses.find(
-      (address) => address._id.toString() === selectedAddressId
+      (address) => address._id.toString() === selectedAddressId,
     );
 
     if (!selectedAddress) {
@@ -1403,7 +1534,7 @@ let placeOrderPost = async (req, res) => {
             cart.push(productDetails);
             // UPDATE PRODUCT QUANTITY IN VENDORS INVENTORY
             const updatedProduct = vendor.products.find((p) =>
-              p._id.equals(productId)
+              p._id.equals(productId),
             );
             if (updatedProduct) {
               updatedProduct.productQTY -= cartProduct.quantity;
@@ -1430,7 +1561,7 @@ let placeOrderPost = async (req, res) => {
       })),
       totalAmount: cart.reduce(
         (total, product) => total + product.price * product.quantity,
-        0
+        0,
       ),
       orderDate: new Date(),
       expectedDeliveryDate: formattedDeliveryDate,
@@ -1493,7 +1624,7 @@ let successfulRazorpayOrder = async (req, res) => {
 
     // selected address from user's addresses
     const selectedAddress = user.addresses.find(
-      (address) => address._id.toString() === selectedAddressId
+      (address) => address._id.toString() === selectedAddressId,
     );
 
     if (!selectedAddress) {
@@ -1553,7 +1684,7 @@ let successfulRazorpayOrder = async (req, res) => {
       })),
       totalAmount: cart.reduce(
         (total, product) => total + product.price * product.quantity,
-        0
+        0,
       ),
       orderDate: new Date(),
       expectedDeliveryDate: formattedDeliveryDate,
@@ -1629,7 +1760,7 @@ let orderCancelRequestPost = async (req, res) => {
 
     // Find the product in the order
     const product = order.products.find(
-      (prod) => prod.productId.toString() === productId
+      (prod) => prod.productId.toString() === productId,
     );
     if (!product) {
       return res
@@ -1665,7 +1796,7 @@ let productReturnPost = async (req, res) => {
 
     // Find the order within the user's orders array
     const order = user.orders.find(
-      (order) => order.orderId === refundData.orderId
+      (order) => order.orderId === refundData.orderId,
     );
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
@@ -1673,7 +1804,7 @@ let productReturnPost = async (req, res) => {
 
     // Find the product within the order's products array
     const product = order.products.find(
-      (product) => product.productId.toString() === refundData.productId
+      (product) => product.productId.toString() === refundData.productId,
     );
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -1703,7 +1834,7 @@ let productReturnPost = async (req, res) => {
 let changePasswordPost = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const userId = req.user.id;
-  
+
   try {
     const user = await User.findOne({ _id: userId });
 
@@ -1713,7 +1844,7 @@ let changePasswordPost = async (req, res) => {
 
     const validatedPassword = await bcrypt.compare(
       currentPassword,
-      user.password
+      user.password,
     );
 
     if (!validatedPassword) {
@@ -1724,7 +1855,7 @@ let changePasswordPost = async (req, res) => {
     user.password = newHashedPassword;
 
     await user.save();
-    
+
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.error(error);
@@ -1734,7 +1865,7 @@ let changePasswordPost = async (req, res) => {
 
 let updateUserDetails = async (req, res) => {
   const { newName, newEmail, newPhone } = req.body;
-  
+
   const userId = req.user.id;
   try {
     const user = await User.findOne({ _id: userId });
@@ -1762,7 +1893,7 @@ let applyCoupon = async (req, res) => {
   try {
     const admin = await Admin.findOne();
     const coupon = admin.coupons.find(
-      (coupon) => coupon.couponCode == couponCode
+      (coupon) => coupon.couponCode == couponCode,
     );
     let discountAmount = 0;
 
@@ -1900,7 +2031,7 @@ module.exports = {
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
-  shopGetPage,
+  // shopGetPage,
   getProductsByCategory,
   singleProductGetPage,
   getWishlist,
@@ -1927,4 +2058,10 @@ module.exports = {
   productReturnPost,
   checkStockAvailability,
   getContactPage,
+
+  // service related functions
+  getServicesPage,
+  bookServiceGetPage,
+  getServiceSlots,
+  checkoutServiceGetPage,
 };

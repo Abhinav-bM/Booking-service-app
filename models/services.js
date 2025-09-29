@@ -3,6 +3,12 @@ const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema(
   {
+    // Reference to Vendor
+    vendorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
     title: { type: String, required: true },
     actualPrice: { type: Number, required: true },
     sellingPrice: { type: Number, required: true },
@@ -13,13 +19,7 @@ const serviceSchema = new mongoose.Schema(
     availableUntil: { type: String, required: true }, // "17:00"
     description: { type: String },
     images: [{ type: String }], // filenames or cloud URLs
-
-    // Reference to Vendor
-    vendor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Vendor",
-      required: true,
-    },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );

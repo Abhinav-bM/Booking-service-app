@@ -20,8 +20,8 @@ router.get("/user/logout", userController.userLogout);
 router.get("/", userController.loadAuth);
 router.get("/forgotPassword", userController.forgotGetPage);
 // router.get("/loginOtp", userController.loginWithOtpGetPage);
-router.get("/shop", userController.shopGetPage);
-router.get("/products", userController.singleProductGetPage);
+// router.get("/services", userController.shopGetPage);
+// router.get("/products", userController.singleProductGetPage);
 router.get("/wishlist",verifyToken,userController.getWishlist)
 router.get("/cart",verifyToken,userController.getCart)
 router.get("/checkout",verifyToken,userController.checkoutpage)
@@ -58,6 +58,17 @@ router.put("/update-address/:id",verifyToken,userController.editAddress)
 router.delete("/wishlist/remove/:productId",verifyToken,userController.removeFromWishlist)
 router.delete("/cart/:productId",verifyToken,userController.removeProductCart)
 router.delete("/delete-address/:addressId",verifyToken,userController.deleteAddress)
+
+
+// services routes
+router.get("/services", userController.getServicesPage);
+router.get("/products", userController.singleProductGetPage);
+router.get("/service/:id/book", verifyToken, userController.bookServiceGetPage);
+router.get("/service/:id/slots", verifyToken, userController.getServiceSlots);
+
+router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage);
+
+
 
 
 // LOGIN WITH GOOGLE STARTS HERE

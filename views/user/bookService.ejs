@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html class="no-js" lang="">
-  <!-- Mirrored from wphix.com/template/mazia//wishlist by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:39 GMT -->
+  <!-- Mirrored from wphix.com/template/mazia/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:40 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Wishlist♡</title>
+    <title>cart</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="manifest" href="site.html" />
-    <link rel="shortcut icon" type="image/x-icon" href="" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
     <!-- Place favicon.ico in the root directory -->
 
     <!-- CSS here -->
@@ -37,26 +37,13 @@
     ></script>
 
     <style>
-      /* styles.css */
-
-      .button {
-        padding: 5px 10px;
-        font-size: 14px;
-        background-color: #18191a;
-        color: #fff;
-        border: 1px solid #18191a;
-        border-radius: 5px;
-        cursor: pointer;
+      .incrementButton {
+        border: 0.5px solid rgb(162, 162, 162);
+        margin-top: 0.4rem;
       }
-
-      .button:hover {
-        background-color: #18191a;
-        border-color: #18191a;
-      }
-
-      .button:active {
-        background-color: #18191a;
-        border-color: #18191a;
+      .decrementButton {
+        border: 0.5px solid rgb(162, 162, 162);
+        margin-top: 0.4rem;
       }
 
       .empty-cart {
@@ -67,7 +54,7 @@
         border: 1px solid #ddd;
         border-radius: 5px;
         margin-top: 20px;
-    }
+      }
     </style>
   </head>
 
@@ -79,8 +66,7 @@
 
     <!-- header section start -->
     <header
-      class="header pt-30 pb-30 header-sticky header-static bg-white"
-      style="padding-top: 30px; padding-bottom: 15px; top: 0px"
+      class="header header-2 pt-30 pb-30 header-sticky header-static bg-white"
     >
       <div class="container-fluid">
         <div class="header-nav position-relative">
@@ -110,6 +96,7 @@
                 </nav>
               </div>
             </div>
+
             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-3">
               <div class="logo">
                 <a href="index3.html"
@@ -133,17 +120,9 @@
                   <% } %>
 
                   <li>
-                    <a href="/wishlist"
-                      class="active"
-                      ><i class="fal fa-heart active"
-                        ><span><%= wishlistProducts?.length %></span></i
-                      ></a
-                    >
-                  </li>
-                  <li>
-                    <a href="/cart"
-                      ><i class="fal fa-shopping-bag active"
-                        ><span id="cartCount"><%= user?.cart.products.length %></span></i
+                    <a href="/cart" class="active"
+                      ><i class="fal fa-shopping-bag"
+                        ><span><%= user?.cart.products.length %></span></i
                       ></a
                     >
                   </li>
@@ -151,7 +130,6 @@
                     <a><i class="fal fa-align-right"></i></a>
                     <ul class="submenu bold-content text-right">
                       <li><a href="/userProfile">My Account</a></li>
-
                       <% if(user){ %>
                       <li><a href="/user/logout">Logout</a></li>
                       <% } %>
@@ -177,79 +155,126 @@
     <!-- header section end -->
 
     <!-- shop body section start -->
-    <main>
-      <!-- Cart Area Strat-->
-      <section class="cart-area pt-100 pb-100">
-        <div class="container">
-          <% if(wishlistProducts?.length > 0){ %>
-          <div class="row justify-content-center">
-            <div class="col-10">
-              <form action="#">
-                <div class="table-content table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="product-thumbnail">Images</th>
-                        <th class="cart-product-name">Product</th>
-                        <th class="product-price">Price</th>
-                        <th class="product-quantity">Action</th>
-                        <th class="product-remove">Remove</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <% wishlistProducts?.forEach(product => { %>
-                      <tr id="wishlistItem-<%= product._id %>">
-                        <td class="product-thumbnail">
-                          <a href="/products?productId=<%= product._id %>"
-                            ><img src="<%= product.images[0] %>" alt=""
-                          /></a>
-                        </td>
-                        <td class="product-name">
-                          <a href="/products?productId=<%= product._id %>"
-                            ><%= product.name %></a
-                          >
-                        </td>
-                        <td class="product-price">
-                          <span class="amount"><%= product.price %></span>
-                        </td>
-                        <td class="">
-                          <button
-                            class="button"
-                            type="button"
-                            onclick="addToCart('<%= product._id %>')"
-                            id="addToCartBtn"
-                          >
-                            Add To Cart
-                          </button>
-                        </td>
-                        <td class="product-remove">
-                          <button
-                            class="button"
-                            type="button"
-                            onclick="removeFromWishlist('<%= product._id %>')"
-                            id="addToCartBtn"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                      <% }) %>
-                    </tbody>
-                  </table>
-                </div>
-              </form>
-            </div>
-          </div>
-          <% } else { %>
-            <div class="d-flex justify-content-center align-items-center empty-cart">
-              <h1>Your wishlist is empty !</h1>
-            </div>
-          <% } %>
+    <section class="cart-area pt-50 pb-50">
+      <div class="container">
+        <div
+          class="
+        "
+        >
+          <image
+            src="<%= service.images[0] %>"
+            alt=""
+            width="200"
+            height="200"
+          />
         </div>
-      </section>
-      <!-- Cart Area End-->
-    </main>
+        <h2><%= service.title %></h2>
+        <p><%= service.description %></p>
+        <p>Price: ₹<%= service.sellingPrice %></p>
 
+        <div class="form-group">
+          <label for="date">Choose date</label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            class="form-control"
+            value="<%= date %>"
+            min="<%= new Date().toISOString().split('T')[0] %>"
+          />
+        </div>
+
+        <div id="slotsContainer" class="mt-3">
+          <p>Select date to load slots</p>
+        </div>
+
+        <form
+          id="proceedForm"
+          method="POST"
+          action="/book/checkout"
+          class="mt-3"
+        >
+          <input type="hidden" name="serviceId" value="<%= service._id %>" />
+          <input type="hidden" name="date" id="selectedDate" value="" />
+          <input type="hidden" name="slot" id="selectedSlot" value="" />
+          <button
+            id="proceedBtn"
+            type="submit"
+            class="btn btn-primary"
+            disabled
+          >
+            Proceed
+          </button>
+        </form>
+      </div>
+    </section>
+    <!-- shop body section end -->
+
+    <!--- LINKED AXIOS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      const serviceId = "<%= service._id %>";
+      function loadSlots(date) {
+        $("#slotsContainer").html("<p>Loading slots...</p>");
+        $.getJSON(`/service/${serviceId}/slots?date=${date}`)
+          .done((res) => {
+            if (!res.slots || res.slots.length === 0) {
+              $("#slotsContainer").html(
+                '<div class="alert alert-warning">No slots available</div>',
+              );
+              $("#proceedBtn").prop("disabled", true);
+              return;
+            }
+            let html = '<div class="list-group">';
+            res.slots.forEach((s) => {
+              html += `<div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>${s.slot}</div>
+            <div><button class="btn btn-sm btn-outline-success select-slot" data-slot="${s.slot}">Select</button></div>
+          </div>`;
+            });
+            html += "</div>";
+            $("#slotsContainer").html(html);
+            $("#proceedBtn").prop("disabled", true);
+          })
+          .fail(() => {
+            $("#slotsContainer").html(
+              '<div class="alert alert-danger">Error loading slots</div>',
+            );
+          });
+      }
+
+      $(function () {
+        const $date = $("#date");
+        loadSlots($date.val());
+
+        $date.on("change", function () {
+          loadSlots(this.value);
+          $("#selectedSlot").val("");
+          $("#selectedDate").val("");
+          $("#proceedBtn").prop("disabled", true);
+        });
+
+        $(document).on("click", ".select-slot", function (e) {
+          e.preventDefault();
+          $(".select-slot")
+            .removeClass("btn-success")
+            .addClass("btn-outline-success")
+            .text("Select");
+          $(this)
+            .removeClass("btn-outline-success")
+            .addClass("btn-success")
+            .text("Selected");
+          const slot = $(this).data("slot");
+          $("#selectedSlot").val(slot);
+          $("#selectedDate").val($("#date").val());
+          $("#proceedBtn").prop("disabled", false);
+        });
+      });
+    </script>
+
+    <!-- footer section start -->
     <section class="footer">
       <div class="footer-bottom pt-77" style="background-color: #292929">
         <div class="container-1180">
@@ -327,102 +352,6 @@
     </section>
     <!-- footer section end -->
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-      // Function to Add Service to cart
-      function addToCart(productId) {
-        console.log("add to cart function triggered :", productId);
-        axios
-          .post("/cart/add-to-cart", {
-            productId: productId,
-          })
-          .then(function (response) {
-            console.log("rrspnse :", response);
-
-            if (response.status === 200) {
-              Toastify({
-                text: "Product Added to cart",
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "black",
-              }).showToast();
-              let cartCount = document.getElementById('cartCount')
-              let count = parseFloat(cartCount.textContent)
-              cartCount.textContent = count += 1
-              
-            }
-            if (response.status === 201) {
-              Toastify({
-                text: "Product Added to cart",
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "black",
-              }).showToast();
-            }
-          })
-          .catch(function (error) {
-            if (error.response.status === 404) {
-              Toastify({
-                text: "Try, After login",
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "red",
-              }).showToast();
-            } else if (error.response.status === 400) {
-              Toastify({
-                text: "Product is out of stock",
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "orange",
-              }).showToast();
-            } else {
-              Toastify({
-                text: "An error occurred. Try again",
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "red",
-              }).showToast();
-            }
-          });
-      }
-
-      // REMOVE RPODUCT FROM WIHSLIST
-      function removeFromWishlist(productId) {
-        console.log("slkfhdf :", productId);
-        axios
-          .delete(`/wishlist/remove/${productId}`)
-          .then((response) => {
-            console.log(response.data);
-            // updateWishlistUI(productId);
-            window.location.reload()
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-
-      // function updateWishlistUI(productId) {
-      //   const wishlistItem = document.getElementById(
-      //     `wishlistItem-${productId}`
-      //   );
-      //   if (wishlistItem) {
-      //     wishlistItem.remove();
-      //     Toastify({
-      //       text: "Product Removed from wishlist",
-      //       duration: 2000,
-      //       gravity: "top",
-      //       position: "right",
-      //       backgroundColor: "black",
-      //     }).showToast();
-      //   }
-      // }
-    </script>
-
     <!-- JS here -->
     <script src="/js/vendor/jquery-1.12.4.min.js"></script>
     <script src="/js/popper.min.js"></script>
@@ -443,5 +372,5 @@
     <script src="/js/main.js"></script>
   </body>
 
-  <!-- Mirrored from wphix.com/template/mazia//wishlist by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:40 GMT -->
+  <!-- Mirrored from wphix.com/template/mazia/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:40 GMT -->
 </html>
