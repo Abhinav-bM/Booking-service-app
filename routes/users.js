@@ -49,8 +49,6 @@ router.post("/product/return",verifyToken,userController.productReturnPost)
 
 router.post("/change-password",verifyToken,userController.changePasswordPost)
 router.post("/update-user-details",verifyToken,userController.updateUserDetails)
-router.post("/place-order/razorPay",verifyToken,userController.placeOrderPostRazorpay)
-router.post("/razorpay-order",verifyToken,userController.successfulRazorpayOrder)
 router.post("/apply-coupon",verifyToken,userController.applyCoupon)
 
 router.put("/update-address/:id",verifyToken,userController.editAddress)
@@ -65,9 +63,15 @@ router.get("/services", userController.getServicesPage);
 router.get("/products", userController.singleProductGetPage);
 router.get("/service/:id/book", verifyToken, userController.bookServiceGetPage);
 router.get("/service/:id/slots", verifyToken, userController.getServiceSlots);
+router.get("/userProfile", verifyToken, userController.userProfile);
+
 
 router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage);
 router.post("/book/cod", verifyToken, userController.bookServiceWithCod)
+router.post("/booking/razorPay",verifyToken,userController.placeOrderPostRazorpay)
+router.post("/razorpay-verify",verifyToken,userController.successfulRazorpayOrder)
+
+
 
 
 

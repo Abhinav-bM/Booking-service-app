@@ -601,7 +601,7 @@
                             });
                             showOrderSuccessMessage(response.data);
                         } else if (paymentMethod === 'RazorPay') {
-                            handleRazorpayPayment(selectedAddressId,paymentMethod,totalPrice)
+                            handleRazorpayPayment(selectedAddressId,"<%= service._id %>", "<%= date %>", "<%= slot %>");
                         }
                     } catch (error) {
                         console.error('Error placing order:', error.response.data);
@@ -617,7 +617,7 @@
     
     
                     
-                    async function handleRazorpayPayment(selectedAddressId,paymentMethod,totalPrice) {
+                    async function handleRazorpayPayment(selectedAddressId,serviceId,date, slot) {
                         if(selectedAddressId === null){
                             Toastify({
                                 text: "Please select an address",
@@ -629,26 +629,29 @@
                             return false
                         }
                         try {
-                            const response = await axios.post('/place-order/razorPay', {    
-                                totalPrice: totalPrice
+                            const response = await axios.post('/booking/razorPay', {    
+                                selectedAddressId,
+                                serviceId,
+                                date,
+                                slot
                             });
     
                             const { orderId, amount, keyId } = response.data;
     
                             const options = {
                                 key: keyId,
-                                amount: amount, // Amount in the smallest currency unit
+                                amount: amount,
                                 currency: 'INR',
-                                name: 'WatchVista',
-                                description: 'Test Transaction',
+                                name: 'Smart cleaning service',
+                                description: 'Smart cleaning service razorpay booking test',
                                 image: 'https://example.com/your_logo.png',
                                 order_id: orderId,
                                 handler: function (response) {
                                     
-                                    axios.post("/razorpay-order",{response,paymentMethod,selectedAddressId})
+                                    axios.post("/razorpay-verify",{ response, selectedAddressId, serviceId, date, slot})
                                     .then((respons)=>{
                                         console.log(respons);
-                                        showOrderSuccessMessage(respons.data)
+                                        showBookingSuccessMessage(respons.data)
                                     })
                                     .catch((error)=>{
                                         console.log(error);
@@ -672,13 +675,12 @@
                         }
                     }
     
-                    function showOrderSuccessMessage(data) {
+                    function showBookingSuccessMessage(data) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Order Placed Successfully!',
-                            html: `Your order with ID <strong>${data.orderId}</strong> has been placed.<br>
-                            Total Price: <strong>${totalPrice}</strong><br>
-                            Expected Delivery Date: <strong>${data.expectedDeliveryDate}</strong>`,
+                            title: 'Booking Successfull!',
+                            html: `Your booking with ID <strong>${data.orderId}</strong> has been placed.<br>
+                            Total Price: <strong>${totalPrice}</strong><br>`,
                             confirmButtonText: "Ok"
                         }).then((result) => {
                             if (result.isConfirmed) {

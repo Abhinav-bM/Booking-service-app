@@ -24,9 +24,7 @@ let homePage = async (req, res) => {
 
   try {
     let vendors = await Vendor.find().select("products");
-    const allProducts = vendors.flatMap((vendor) => vendor.products);
-    allProducts.sort((a, b) => b.createdAt - a.createdAt);
-    const latestProducts = allProducts.slice(0, 8);
+    let services = await Services.find();
 
     const admin = await Admin.findOne();
     const bannerHome = admin.banner.filter(
@@ -41,7 +39,7 @@ let homePage = async (req, res) => {
     }
 
     res.status(200).render("user/home", {
-      products: latestProducts,
+      services,
       bannerHome,
       user,
       wishlistProducts: user?.wishlist.products,
@@ -1099,64 +1097,6 @@ const checkoutServiceGetPage = async (req, res) => {
   }
 };
 
-const bookServiceWithCod = async (req, res) => {
-  try {
-    const { serviceId, date, slot, selectedAddressId } = req.body;
-    const userId = req.user.id;
-
-    console.log("Booking service with COD:", {
-      serviceId,
-      date,
-      slot,
-      userId,
-      selectedAddressId,
-    });
-    const user = await User.findById(userId);
-    const address = user.addresses.find(
-      (addr) => addr._id.toString() === selectedAddressId,
-    );
-    const service = await Services.findById(serviceId).lean();
-    if (!service) return res.status(404).send("Service not found");
-
-    const amount = service
-      ? service.sellingPrice || service.actualPrice || 0
-      : 0;
-
-    // create booking (unique index will protect against duplicate)
-    const booking = new Booking({
-      serviceId,
-      userId,
-      date,
-      slot,
-      status: "pending",
-      paymentMethod: "COD",
-      paymentStatus: "pending",
-      amount,
-      address,
-    });
-
-    await booking.save();
-    // res.redirect("/bookings");
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.send("Slot already booked. Please choose another slot.");
-    }
-    console.error(error);
-    res.status(500).send("Error creating booking");
-  }
-};
-
-const bookingListGetPage = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const bookings = await Booking.find({ userId }).populate("serviceId");
-    res.render("user/bookingList", { bookings });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server error - error while fetching bookings");
-  }
-};
-
 // REMOVE PRODUCT FROM CART
 let removeProductCart = async (req, res) => {
   const { productId } = req.params;
@@ -1643,21 +1583,79 @@ let placeOrderPost = async (req, res) => {
   }
 };
 
-// PLACE ORDER RAZORPAY - STARTS HERE
+const bookServiceWithCod = async (req, res) => {
+  try {
+    const { serviceId, date, slot, selectedAddressId } = req.body;
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    const address = user.addresses.find(
+      (addr) => addr._id.toString() === selectedAddressId,
+    );
+    const service = await Services.findById(serviceId).lean();
+    if (!service) return res.status(404).send("Service not found");
+
+    const amount = service
+      ? service.sellingPrice || service.actualPrice || 0
+      : 0;
+
+    // create booking (unique index will protect against duplicate)
+    const booking = new Booking({
+      serviceId,
+      userId,
+      date,
+      slot,
+      status: "pending",
+      paymentMethod: "COD",
+      paymentStatus: "pending",
+      amount,
+      address,
+    });
+
+    await booking.save();
+    // res.redirect("/bookings");
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.send("Slot already booked. Please choose another slot.");
+    }
+    console.error(error);
+    res.status(500).send("Error creating booking");
+  }
+};
+
+const bookingListGetPage = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const bookings = await Booking.find({ userId }).populate("serviceId");
+    res.render("user/bookingList", { bookings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error - error while fetching bookings");
+  }
+};
+
+// place order through razorpay - starts here
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_ID_KEY,
   key_secret: process.env.RAZORPAY_SECRET_KEY,
 });
-let placeOrderPostRazorpay = async (req, res) => {
-  const { totalPrice } = req.body;
-  const keyId = process.env.RAZORPAY_ID_KEY;
-
-  const options = {
-    amount: totalPrice * 100,
-    currency: "INR",
-  };
-
+const placeOrderPostRazorpay = async (req, res) => {
   try {
+    const { selectedAddressId, serviceId, date, slot } = req.body;
+    const keyId = process.env.RAZORPAY_ID_KEY;
+
+    const service = await Services.findById(serviceId).lean();
+    if (!service) return res.status(404).send("Service not found");
+
+    const totalPrice = service
+      ? service.sellingPrice || service.actualPrice || 0
+      : 0;
+
+    const options = {
+      amount: totalPrice * 100,
+      currency: "INR",
+    };
+
     const order = await razorpay.orders.create(options);
     res.json({ orderId: order.id, amount: order.amount, keyId });
   } catch (error) {
@@ -1665,112 +1663,65 @@ let placeOrderPostRazorpay = async (req, res) => {
     res.status(500).json({ error: "Failed to create order" });
   }
 };
-let successfulRazorpayOrder = async (req, res) => {
-  const { razorpay_payment_id, razorpay_order_id } = req.body.response;
-  const { selectedAddressId, paymentMethod } = req.body;
+const successfulRazorpayOrder = async (req, res) => {
   try {
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+      req.body.response;
+    const { serviceId, date, slot, selectedAddressId } = req.body;
     const userId = req.user.id;
 
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // selected address from user's addresses
-    const selectedAddress = user.addresses.find(
-      (address) => address._id.toString() === selectedAddressId,
+    const address = user.addresses.find(
+      (addr) => addr._id.toString() === selectedAddressId,
     );
-
-    if (!selectedAddress) {
+    if (!address) {
       return res.status(404).json({ message: "Selected address not found" });
     }
 
-    // ALL PRODUCTS
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
+    const service = await Services.findById(serviceId).lean();
+    if (!service) return res.status(404).send("Service not found");
 
-    user.cart.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
+    const amount = service
+      ? service.sellingPrice || service.actualPrice || 0
+      : 0;
 
-      // FIND PRODUCTS FROM ALL PRODUCTS
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-            };
-
-            cart.push(productDetails);
-          }
-        });
-      });
+    // create booking (unique index will protect against duplicate)
+    const booking = new Booking({
+      serviceId,
+      userId,
+      date,
+      slot,
+      status: "paid",
+      paymentMethod: "ONLINE",
+      paymentStatus: "pending",
+      amount,
+      address,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
     });
 
-    const orderDate = new Date();
-    const expectedDeliveryDate = new Date(orderDate);
-    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 4);
-    const formattedDeliveryDate = expectedDeliveryDate.toLocaleDateString();
-    const newOrder = {
-      orderId: new mongoose.Types.ObjectId(),
-      products: cart.map((product) => ({
-        productId: product._id,
-        qty: product.quantity,
-        price: product.price,
-        size: product.size,
-      })),
-      totalAmount: cart.reduce(
-        (total, product) => total + product.price * product.quantity,
-        0,
-      ),
-      orderDate: new Date(),
-      expectedDeliveryDate: formattedDeliveryDate,
-      shippingAddress: selectedAddress,
-      paymentMethod: paymentMethod,
-      razorPaymentId: razorpay_payment_id,
-      razorpayOrderId: razorpay_order_id,
-    };
+    await booking.save();
 
-    user.orders.push(newOrder);
-
-    await user.save();
-
-    // Send a response with the new order details
+    // Send a response with the new booking details
     res.status(201).json({
       message: "Order placed successfully!",
-      orderId: newOrder.orderId,
-
-      totalAmount: newOrder.totalAmount,
-      shippingAddress: newOrder.shippingAddress,
-      paymentMethod: newOrder.paymentMethod,
-      expectedDeliveryDate: formattedDeliveryDate,
+      bookingId: booking._id,
+      totalAmount: booking.amount,
+      shippingAddress: booking.address,
+      paymentMethod: booking.paymentMethod,
     });
   } catch (error) {
     console.error("Error placing order throught razorpat payment :", error);
     res.status(500).json({ error: "An error occured" });
   }
 };
-// PLACE ORDER RAZORPAY - ENDS HERE
 
-// USER PROFILE PAGE DISPLAY
+// user profile get page with bookings and addresses
 let userProfile = async (req, res) => {
   const userId = req.user.id;
 
@@ -1778,15 +1729,27 @@ let userProfile = async (req, res) => {
     const user = await User.findById(userId).populate("orders");
     const addresses = user.addresses;
     const allVendors = await Vendor.find({}).populate("products");
+    const bookings = await Booking.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service",
+        },
+      },
+      { $unwind: "$service" },
+      { $sort: { createdAt: -1 } },
+    ]);
 
     let cart = findUserOrders(user, allVendors);
     cart.reverse();
 
     res.status(200).render("user/account", {
-      cart,
       addresses,
       user,
-      wishlistProducts: user?.wishlist.products,
+      bookings,
     });
   } catch (error) {
     console.error(error);

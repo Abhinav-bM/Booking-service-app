@@ -66,18 +66,18 @@
           transform: scale(1);
         }
       }
-    
     </style>
   </head>
   <body>
-
     <!-- preloader -->
     <div id="loader-wrapper">
       <div id="loader"></div>
     </div>
 
     <!-- header section start -->
-    <header class="header header-2 pt-30 pb-20 header-sticky header-static bg-white">
+    <header
+      class="header header-2 pt-30 pb-20 header-sticky header-static bg-white"
+    >
       <div class="container-fluid">
         <div class="header-nav header-nav-2 position-relative">
           <div class="row align-items-center">
@@ -87,13 +87,13 @@
                   <ul>
                     <li>
                       <a href="/" class="active">
-                        <span >Home </span>
+                        <span>Home </span>
                       </a>
                     </li>
 
                     <li class="position-static">
                       <a href="/services">
-                        <span>Shop</span>
+                        <span>Services</span>
                       </a>
                     </li>
 
@@ -129,7 +129,9 @@
                   <li>
                     <a href="/wishlist"
                       ><i class="fal fa-heart active"
-                        ><span id="wishlistCount"><%= wishlistProducts?.length %></span></i
+                        ><span id="wishlistCount"
+                          ><%= wishlistProducts?.length %></span
+                        ></i
                       ></a
                     >
                   </li>
@@ -159,7 +161,7 @@
           <div id="mobile-menu">
             <ul>
               <li><a class="pl-3" href="/">Home</a></li>
-              <li><a class="pl-3" href="/services">Shop</a></li>
+              <li><a class="pl-3" href="/services">Services</a></li>
               <li><a href="/contact">Contact</a></li>
             </ul>
           </div>
@@ -189,8 +191,7 @@
                     data-animation="flipInX"
                     data-delay=".4s"
                   >
-                    <h2 class="mb-0" style="color: white">SmartWatch</h2>
-                    <h2 class="mb-0" style="color: white">New Trending 2024</h2>
+                    <h2 class="mb-0" style="color: white">Cart Detailing</h2>
                   </div>
                   <div
                     class="slider-desc"
@@ -198,8 +199,10 @@
                     data-delay=".6s"
                   >
                     <p class="mt-35 mb-0" style="color: white">
-                      SmartWatch 2022 series, cutting-edge features and sleek
-                      designs.
+                      Cart Detailing - Experience a spotless interior and
+                      exterior, advanced cleaning techniques, and premium care
+                      for your vehicle. Restore your car’s shine and comfort
+                      with our professional detailing services.
                     </p>
                   </div>
                   <div
@@ -228,75 +231,47 @@
     <section class="new-arrival mt-120">
       <div class="container container-1430">
         <div class="generic-title text-center">
-          <h2 class="mb-20">#New Arrivals</h2>
+          <h2 class="mb-20">#New Services</h2>
           <!-- <p>Nam liber tempor cum soluta nobis eleifend option congue nihil</p> -->
           <!-- <p>doming id quod mazim placerat facer possim assum typi non habent claritatem insitam.</p> -->
         </div>
 
         <div class="new-arrival-wrapper mt-55">
           <div class="row">
-            <% products.forEach(product=>{ %>
+            <% services.forEach(service=>{ %>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
               <div class="product-box mb-40">
                 <div class="product-box-wrapper">
-                  <div class="col-12 product-img img-container">
+                  <div class="product-img">
                     <a
-                      href="/products?productId=<%= product._id %>"
+                      href="/products?productId=<%= service._id %>"
                       class="product-category"
                     >
                       <img
-                        src="<%= product.productImages[0] %>"
+                        src="<%= service.images[0] %>"
                         class="w-100"
-                        alt="<%= products.productName %>"
+                        alt="<%= service.title %>"
                       />
                     </a>
                   </div>
 
                   <div class="product-desc pb-20">
-                    <div class="product-desc-top">
-                      <div class="categories">
-                        <a
-                          href="/products?productId=<%= product._id %>"
-                          class="product-category"
-                          ><span><%= product.productCategory %></span></a
-                        >
-                      </div>
-                      <button
-                        class="btn btn-link"
-                        onclick="addToWishlist(event, '<%= product._id %>')"
-                      >
-                        <div class="wishlist float-right">
-                          <% if(user && user.wishlist.products.some( wProduct =>
-                          wProduct.productId.toString() ===
-                          product._id.toString() )) { %>
-                          <i
-                            id="heartIcon-<%= product._id %>"
-                            class="fas fa-heart fa-lg text-danger"
-                          ></i>
-                          <% } else { %>
-                          <i
-                            id="heartIcon-<%= product._id %>"
-                            class="fal fa-heart fa-lg"
-                          ></i>
-                          <% } %>
-                        </div>
-                      </button>
-                    </div>
                     <a
-                      href="/products?productId=<%= product._id %>"
+                      href="/services?productId=<%= service._id %>"
                       class="product-title"
-                      ><%= product.productName %></a
+                      ><%= service.title %></a
                     >
-                    <div class="price-switcher">
-                      <span class="price switcher-item"
-                        >₹ <%= product.productPrice %>/-</span
-                      >
-                      <span class="price switcher-item"
-                        >₹ <%= product.productPrice %>/-</span
-                      >
-                    </div>
+                    <span
+                      >₹
+                      <%= service.sellingPrice %></span
+                    >
                   </div>
                 </div>
+                <a
+                  href="/service/<%= service._id %>/book"
+                  class="bg-primary px-4 py-2 rounded d-flex justify-content-center align-items-center text-white"
+                  >Book Now</a
+                >
               </div>
             </div>
             <% }) %>
@@ -401,9 +376,9 @@
               heartIcon.classList.add("fas");
               heartIcon.classList.add("text-danger");
 
-              let wishlistCount = document.getElementById('wishlistCount')
-              let count = parseFloat(wishlistCount.textContent)
-              wishlistCount.textContent = count +=1
+              let wishlistCount = document.getElementById("wishlistCount");
+              let count = parseFloat(wishlistCount.textContent);
+              wishlistCount.textContent = count += 1;
 
               Toastify({
                 text: "Product added to wishlist",
@@ -420,9 +395,9 @@
               heartIcon.classList.remove("fas");
               heartIcon.classList.remove("text-danger");
               heartIcon.classList.add("fal");
-              let wishlistCount = document.getElementById('wishlistCount')
-              let count = parseFloat(wishlistCount.textContent)
-              wishlistCount.textContent = count -=1
+              let wishlistCount = document.getElementById("wishlistCount");
+              let count = parseFloat(wishlistCount.textContent);
+              wishlistCount.textContent = count -= 1;
               Toastify({
                 text: "Product removed from wishlist",
                 duration: 2000,
@@ -453,7 +428,6 @@
         autoplay: {
           delay: 5000, // Autoplay delay in milliseconds
         },
-      
       });
     </script>
 

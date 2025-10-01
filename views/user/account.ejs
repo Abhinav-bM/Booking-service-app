@@ -146,7 +146,7 @@
                 
                                     <li class="position-static">
                                         <a href="/services">
-                                        <span><strong>Shop</strong></span>
+                                        <span><strong>Services</strong></span>
                                         </a>
                                     </li>
                 
@@ -181,21 +181,7 @@
                                     </a>
                                 </li>
                                 <% } %>
-            
-                                <li>
-                                    <a href="/wishlist"
-                                        ><i class="fal fa-heart active"
-                                        ><span><%= wishlistProducts?.length %></span></i
-                                        >
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/cart">
-                                        <i class="fal fa-shopping-bag">
-                                            <span><%= user?.cart.products.length %></span>
-                                        </i>
-                                    </a>
-                                </li>
+        
                                 <li>
                                     <a><i class="fal fa-align-right"></i></a>
                                     <ul class="submenu bold-content text-right">
@@ -216,7 +202,7 @@
                 <div id="mobile-menu">
                 <ul>
                     <li><a class="pl-3" href="/">Home</a></li>
-                    <li><a class="pl-3" href="/services">Shop</a></li>
+                    <li><a class="pl-3" href="/services">Services</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
                 </div>
@@ -241,7 +227,7 @@
                                                 Personal Information
                                             </button>
                                             <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false">
-                                                Orders
+                                                Bookings
                                             </button>
                                             <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab" data-bs-target="#address-edit" type="button" role="tab" aria-controls="address-edit" aria-selected="false">
                                                 address
@@ -304,32 +290,34 @@
                                             <div class="myaccount-content">
                                                 <h3>Orders</h3>
                                                     
-                                                <div class="" style="height: 35vh; overflow-y: auto;">
+                                                <div class="" style="height: 80dvh; overflow-y: auto;">
 
-                                                <% if (user.orders.length > 0) { %>
-                                                <% cart.forEach((prod) => { %>
-                                                
-                                                    <!-- ORDER HISTORY TABLE STARTS -->  
-                                                    <div class="d-xl-flex d-lg-flex d-md-flex d-sm-flex  mb-2 rounded " style="border: 2px solid whitesmoke ; background-color: #f5f3f3;">
+                                                <% if (bookings.length > 0) { %>
+                                                <% bookings.forEach((booking) => { %>
+
+                                                    <!-- ORDER HISTORY TABLE STARTS -->
+                                                    <div class="d-xl-flex d-lg-flex d-md-flex d-sm-flex  mb-3 py-3 rounded" style="border: 2px solid whitesmoke ; background-color: #fcfafa;">
 
                                                         <div class="d-xl-grid d-lg-grid d-md-grid align-items-md-center text-center">
 
                                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center col-12">
-                                                                <a href="/products?productId=<%= prod._id %>">
-                                                                    <img class="img-fluid pt-1" src="<%= prod.images[0] %>" alt="" width="150px">
+                                                                <a 
+                                                                href=""
+                                                                >
+                                                                    <img class="img-fluid pt-1" src="<%= booking.service.images[0] %>" alt="" width="150px">
                                                                 </a>
 
-                                                                <div class="p-2">
-                                                                    <% if (prod.orderStatus !== 'Requested for Cancellation' && prod.orderStatus !== 'Cancelled' && prod.orderStatus !== 'Delivered' && prod.orderStatus !== "Requested for Refund" && prod.orderStatus !== "Refund Processed") { %>
-                                                                        <button class="rounded" onclick="openCancelModal('<%= prod.orderId %>', '<%= prod._id %>')" >Cancel</button>
-                                                                    <% } else if( prod.orderStatus === 'Delivered' && prod.differenceInDays <= 7 ) { %>
-                                                                        <button class="rounded" onclick="openReturnModal('<%= prod.orderId %>', '<%= prod._id %>')">Return</button>
-                                                                    <% } else if( prod.orderStatus === "Refund Processed" || prod.orderStatus === "Requested for Refund") { %>
-                                                                        <button class="rounded" onclick="openReturnModal('<%= prod.orderId %>', '<%= prod._id %>')" disabled>Return</button>
+                                                                <!-- <div class="py-2">
+                                                                    <% if (booking.status !== 'Requested for Cancellation' && booking.status !== 'Cancelled' && booking.status !== 'Delivered' && booking.status !== "Requested for Refund" && booking.status !== "Refund Processed") { %>
+                                                                        <button class="rounded w-100" onclick="openCancelModal('<%= booking.orderId %>', '<%= booking._id %>')" >Cancel</button>
+                                                                    <% } else if( booking.status === 'Delivered' && booking.differenceInDays <= 7 ) { %>
+                                                                        <button class="rounded w-100" onclick="openReturnModal('<%= booking._id %>', '<%= booking._id %>')">Return</button>
+                                                                    <% } else if( booking.status === "Refund Processed" || booking.status === "Requested for Refund") { %>
+                                                                        <button class="rounded w-100" onclick="openReturnModal('<%= booking._id %>', '<%= prod._id %>')" disabled>Return</button>
                                                                     <% } else { %>
-                                                                        <button class="rounded" disabled>Cancel</button>
+                                                                        <button class="rounded w-100" disabled>Cancel</button>
                                                                     <% } %>
-                                                                </div>
+                                                                </div> -->
                                                                 
                                                             </div>
 
@@ -337,32 +325,30 @@
                                                     
                                                             <div class="row p-2">
                                                                 <div class="col-xl-12 text-xl-start col-lg-12 text-lg-start col-md-12 text-md-start col-sm-12 text-sm-start col-12 ">
-                                                                    <h6 class=""><%= prod.name %></h6>
-                                                                    <small>Order ID : <%= prod.orderId %></small><br>
-                                                                    <small>Color: <%= prod.color %> & Price: <%= prod.price %></small><br>
-                                                                    <small>Size: <%= prod.size %> & Quantity: <%= prod.quantity %></small><br>
-                                                                    <small>Order Status :</small><small class="<%= prod.orderStatus === 'Delivered' ? 'text-success' : prod.orderStatus === 'Cancelled' ? 'text-danger' : 'text-warning' %>"> <%= prod.orderStatus %></small><br>
-                                                                    <small>Delivery Address: <%= prod.shippingAddress.name %>,<br><%= prod.shippingAddress.address %>,<%= prod.shippingAddress.district %>, <%= prod.shippingAddress.zip %>,<br><%= prod.shippingAddress.state %></small>
+                                                                    <h6 class=""><%= booking.service.title %></h6>
+                                                                    <small>Booking ID : <%= booking._id %></small><br>
+                                                                    <small>Booking Status :</small><small class="<%= booking.status === 'Delivered' ? 'text-success' : booking.status === 'Cancelled' ? 'text-danger' : 'text-warning' %> fw-semibold"> <%= booking.status.toUpperCase() %></small><br>
+                                                                    <small>Delivery Address: <%= booking.address.name %>,<br><%= booking.address.address %>,<%= booking.address.district %>, <%= booking.address.zip %>,<br><%= booking.address.state %></small>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                             
                                                         <!-- MODAL FOR ORDER CANCELLATION -->
-                                                        <div class="modal fade" id="cancelModal_<%= prod._id %>" tabindex="-1" aria-labelledby="cancelModalLabel_<%= prod._id %>" aria-hidden="true">
+                                                        <div class="modal fade" id="cancelModal_<%= booking._id %>" tabindex="-1" aria-labelledby="cancelModalLabel_<%= booking._id %>" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="cancelModalLabel_<%= prod._id %>">Cancel Order</h5>
+                                                                        <h5 class="modal-title" id="cancelModalLabel_<%= booking._id %>">Cancel Booking</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                         
                                                                     <div class="modal-body">
-                                                                        <form id="cancelOrderForm_<%= prod._id %>" onsubmit="submitCancellation(event, $('#orderIdInput_<%= prod._id %>').val(), '<%= prod._id %>')">
+                                                                        <form id="cancelOrderForm_<%= booking._id %>" onsubmit="submitCancellation(event, $('#orderIdInput_<%= booking._id %>').val(), '<%= booking._id %>')">
                                                                             <div class="mb-3">
-                                                                                <label for="cancelReason_<%= prod._id %>" class="form-label">Cancellation Reason</label>
-                                                                                <textarea class="form-control" id="cancelReason_<%= prod._id %>" name="cancelReason" rows="3" required></textarea>
+                                                                                <label for="cancelReason_<%= booking._id %>" class="form-label">Cancellation Reason</label>
+                                                                                <textarea class="form-control" id="cancelReason_<%= booking._id %>" name="cancelReason" rows="3" required></textarea>
                                                                             </div>
-                                                                            <input type="hidden" id="orderIdInput_<%= prod._id %>" value="<%= prod.orderId %>">
+                                                                            <input type="hidden" id="orderIdInput_<%= booking._id %>" value="<%= booking._id %>">
                                                                             <button type="submit" class="btn btn-primary">Submit</button>
                                                                         </form>
                                                                     </div>
@@ -371,24 +357,24 @@
                                                         </div>
 
                                                         <!-- RETURN MODAL -->
-                                                        <div class="modal fade" id="returnlModal_<%= prod._id %>" tabindex="-1" aria-labelledby="returnModalLabel_<%= prod._id %>" aria-hidden="true">
+                                                        <div class="modal fade" id="returnModal_<%= booking._id %>" tabindex="-1" aria-labelledby="returnModalLabel_<%= booking._id %>" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="returnModalLabel_<%= prod._id %>">Return Product</h5>
+                                                                        <h5 class="modal-title" id="returnModalLabel_<%= booking._id %>">Return Product</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                    
                                                                     <div class="modal-body">
-                                                                        <form id="returnOrderForm_<%= prod._id %>" onsubmit="submitReturn(event, $('#orderIdInput_<%= prod._id %>').val(), '<%= prod._id %>',)">
+                                                                        <form id="returnOrderForm_<%= booking._id %>" onsubmit="submitReturn(event, $('#orderIdInput_<%= booking._id %>').val(), '<%= booking._id %>',)">
                                                                             <div class="mb-3">
-                                                                                <label for="cancelReason_<%= prod._id %>" class="form-label pt-10">Return Reason</label>
-                                                                                <textarea class="form-control" id="returnReason_<%= prod._id %>" name="returnReason" rows="3" required></textarea>
+                                                                                <label for="cancelReason_<%= booking._id %>" class="form-label pt-10">Return Reason</label>
+                                                                                <textarea class="form-control" id="returnReason_<%= booking._id %>" name="returnReason" rows="3" required></textarea>
                                                                             </div>
-                                                                            <input type="hidden" id="orderIdInput_<%= prod._id %>" value="<%= prod.orderId %>">
+                                                                            <input type="hidden" id="orderIdInput_<%= booking._id %>" value="<%= booking._id %>">
                                                                             <div>
                                                                                 <h6>Refund</h6>
-                                                                                <% if (prod.paymentMethod === 'RazorPay') { %>
+                                                                                <% if (booking.paymentMethod === 'RazorPay') { %>
                                                                                     <input type="radio" id="originalPayment" name="paymentOption" value="Original Payment Method" checked>
                                                                                     <label for="originalPayment">Original Payment method</label>
                                                                                     <p>or</p>
@@ -421,7 +407,7 @@
                                                     <% }) %>
                                                     <% } else { %>
                                                         <div class="no-orders">
-                                                            <p>No orders found.</p>
+                                                            <p>No bookings found.</p>
                                                         </div>
                                                     <% } %>
                                                 </div>
