@@ -10,6 +10,7 @@ const { sendOtpEmail } = require("../helpers/emailService");
 const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
 const { findUserOrders } = require("../helpers/userHelper");
+const { relativeTimeRounding } = require("moment");
 require("dotenv").config();
 const generateSlots = require("../helpers/booking").generateSlots;
 
@@ -1082,11 +1083,6 @@ const checkoutServiceGetPage = async (req, res) => {
 
     // double-check slot is still available: check Booking collection
     const existing = await Booking.findOne({ serviceId, date, slot });
-    if (existing) {
-      return res.send(
-        "Selected slot is no longer available. Please choose another slot.",
-      );
-    }
 
     res.render("user/checkout", {
       service,
@@ -1095,10 +1091,69 @@ const checkoutServiceGetPage = async (req, res) => {
       user,
       addresses,
       razorpayKey: process.env.RAZORPAY_KEY_ID,
+      existing,
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
+  }
+};
+
+const bookServiceWithCod = async (req, res) => {
+  try {
+    const { serviceId, date, slot, selectedAddressId } = req.body;
+    const userId = req.user.id;
+
+    console.log("Booking service with COD:", {
+      serviceId,
+      date,
+      slot,
+      userId,
+      selectedAddressId,
+    });
+    const user = await User.findById(userId);
+    const address = user.addresses.find(
+      (addr) => addr._id.toString() === selectedAddressId,
+    );
+    const service = await Services.findById(serviceId).lean();
+    if (!service) return res.status(404).send("Service not found");
+
+    const amount = service
+      ? service.sellingPrice || service.actualPrice || 0
+      : 0;
+
+    // create booking (unique index will protect against duplicate)
+    const booking = new Booking({
+      serviceId,
+      userId,
+      date,
+      slot,
+      status: "pending",
+      paymentMethod: "COD",
+      paymentStatus: "pending",
+      amount,
+      address,
+    });
+
+    await booking.save();
+    // res.redirect("/bookings");
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.send("Slot already booked. Please choose another slot.");
+    }
+    console.error(error);
+    res.status(500).send("Error creating booking");
+  }
+};
+
+const bookingListGetPage = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const bookings = await Booking.find({ userId }).populate("serviceId");
+    res.render("user/bookingList", { bookings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error - error while fetching bookings");
   }
 };
 
@@ -2064,4 +2119,6 @@ module.exports = {
   bookServiceGetPage,
   getServiceSlots,
   checkoutServiceGetPage,
+  bookServiceWithCod,
+  bookingListGetPage,
 };

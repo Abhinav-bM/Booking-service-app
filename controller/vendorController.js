@@ -243,7 +243,7 @@ let addProduct = async (req, res) => {
 //     };
 //     vendor.products.push(newProduct);
 //     await vendor.save();
-//     res.redirect("/vendor/productList");
+//     res.redirect("/vendor/servicesList");
 //   } catch (error) {
 //     console.log(error);
 //     res.status(500).send("server error");
@@ -293,7 +293,7 @@ const addServicePost = async (req, res) => {
     });
 
     await newService.save();
-    res.redirect("/vendor/productList");
+    res.redirect("/vendor/servicesList");
   } catch (error) {
     console.error("Error adding service:", error);
     res.status(500).send("Server error");
@@ -318,9 +318,9 @@ const servicesList = async (req, res) => {
   try {
     let vendorId = req.user.id;
     const vendor = await Vendor.findOne({ _id: vendorId });
-    let services = await Service.find({ vendor: vendorId });
+    let services = await Service.find({ vendorId: vendor._id });
     console.log(services);
-    res.status(200).render("vendor/product-list", { vendor, services });
+    res.status(200).render("vendor/services-list", { vendor, services });
   } catch (error) {
     console.error("vendor service list error", error);
     res.status(404).send("page not found");
@@ -401,7 +401,7 @@ let editProductPost = async (req, res) => {
 
       await vendor.save();
 
-      res.status(200).redirect("/vendor/productList");
+      res.status(200).redirect("/vendor/servicesList");
     }
   } catch (error) {
     console.error(error);
@@ -432,7 +432,7 @@ let deleteProduct = async (req, res) => {
 
     await vendor.save();
 
-    res.status(200).redirect("/vendor/productList");
+    res.status(200).redirect("/vendor/servicesList");
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

@@ -355,38 +355,6 @@
                                 </div>
 
                                 <div class="product-desc pb-20">
-                                  <div class="product-desc-top">
-                                    <div class="categories">
-                                      <a
-                                        href="/services?productId=<%= service._id %>"
-                                        class="product-category"
-                                        ><span
-                                          ><%= service.category %></span
-                                        ></a
-                                      >
-                                    </div>
-                                    <button
-                                      class="btn btn-link"
-                                      onclick="addToWishlist(event, '<%= service ._id %>')"
-                                    >
-                                      <div class="wishlist float-right">
-                                        <% if(user &&
-                                        user.wishlist.products.some( wProduct =>
-                                        wProduct.productId.toString() ===
-                                        product._id.toString() )) { %>
-                                        <i
-                                          id="heartIcon-<%= product._id %>"
-                                          class="fas fa-heart fa-lg text-danger"
-                                        ></i>
-                                        <% } else { %>
-                                        <i
-                                          id="heartIcon-<%= service._id %>"
-                                          class="fal fa-heart fa-lg"
-                                        ></i>
-                                        <% } %>
-                                      </div>
-                                    </button>
-                                  </div>
                                   <a
                                     href="/services?productId=<%= service._id %>"
                                     class="product-title"

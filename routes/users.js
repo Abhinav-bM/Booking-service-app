@@ -67,6 +67,7 @@ router.get("/service/:id/book", verifyToken, userController.bookServiceGetPage);
 router.get("/service/:id/slots", verifyToken, userController.getServiceSlots);
 
 router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage);
+router.post("/book/cod", verifyToken, userController.bookServiceWithCod)
 
 
 

@@ -1,6 +1,16 @@
 // models/Booking.js
 const mongoose = require("mongoose");
 
+const addressSchema = new mongoose.Schema({
+  name: { type: String },
+  address: { type: String },
+  district: { type: String },
+  state: { type: String },
+  zip: { type: Number },
+  phone: { type: Number },
+  email: { type: String },
+});
+
 const bookingSchema = new mongoose.Schema(
   {
     serviceId: {
@@ -27,7 +37,7 @@ const bookingSchema = new mongoose.Schema(
       default: "pending",
     },
     amount: { type: Number, default: 0 },
-    address: { type: String },
+    address: { type: addressSchema, required: true },
     razorpay_order_id: { type: String },
     razorpay_payment_id: { type: String },
     razorpay_signature: { type: String },
