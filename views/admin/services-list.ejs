@@ -35,11 +35,11 @@
                   ><i class="icofont-home fs-5"></i> <span>Dashboard</span></a
                 >
               </li>
-              <li class="collapsed">
-                <a class="m-link active" href="/admin/productList">
-                  <i class="icofont-truck-loaded fs-5"></i> <span>Products</span>
-                </a>
-              </li>
+                 <li class="collapsed">
+              <a class="m-link" href="/admin/servicesList">
+                <i class="icofont-truck-loaded fs-5"></i> <span>Services</span>
+              </a>
+            </li>
               <li>
                 <a class="m-link" href="/admin/categoryList"
                   ><i class="icofont-chart-flow fs-5"></i>
@@ -53,11 +53,11 @@
                 >
               </li>
   
-              <li>
-                <a class="m-link" href="/admin/orders">
-                  <i class="icofont-notepad fs-5"></i> <span>Orders</span>
-                </a>
-              </li>
+                         <li>
+              <a class="m-link" href="/admin/bookings">
+                <i class="icofont-notepad fs-5"></i> <span>Bookings</span>
+              </a>
+            </li>
               <li class="collapsed"></li>
               <li>
                 <a class="m-link" href="/admin/customersList"
@@ -154,7 +154,7 @@
                     <div class="row align-items-center"> 
                         <div class="border-0 mb-4"> 
                             <div class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
-                                <h3 class="fw-bold mb-0">Products List
+                                <h3 class="fw-bold mb-0">Services List
                             </div>
                         </div>
                     </div> <!-- Row end  -->
@@ -167,22 +167,18 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Image</th>
-                                                <th>Product Name</th>
-                                                <th>Color</th>
-                                                <th>Brand</th>
+                                                <th>Title</th>
                                                 <th>Price</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% products.forEach((prod,index) => { %>
+                                            <% services.forEach((service,index) => { %>
                                             <tr>
                                                 <td><strong><%= index + 1 %></strong></td>
-                                                <td><img src="<%= prod.productImages[0] %>" class="avatar lg rounded " alt="<%= prod.productName %>"></td>
-                                                <td><%= prod.productName %></td>
-                                                <td><%= prod.productColor %></td>
-                                                <td><%= prod.productBrand %></td>
-                                                <td>₹ <%= prod.productPrice %></td>
+                                                <td><img src="<%= service.images[0] %>" class="avatar lg rounded " alt="<%= service.title %>"></td>
+                                                <td><%= service.title %></td>
+                                                <td>₹ <%= service.sellingPrice %></td>
                                                 <td>
                                                     <button class="btn bg-dark text-light" data-bs-toggle="modal" data-bs-target="#productModal<%= index %>">View</button>
                                                     <!-- Modal -->
@@ -190,35 +186,25 @@
                                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                            <h5 class="modal-title" id="productModalLabel<%= index %>">Product Details</h5>
+                                                            <h5 class="modal-title" id="productModalLabel<%= index %>">Service Details</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                             <!-- Product details here -->
                                                             <div class="row">
                                                                 <div class="col-lg-6">
-                                                                    <img class="img-fluid" src="<%= prod.productImages[0] %>" alt="<%= prod.productName %>">
+                                                                    <img class="img-fluid" src="<%= service.images[0] %>" alt="<%= service.title %>">
                                                                 </div>
                                                                 <div class="col-lg-6">
-                                                      
                                                                     <div>
-                                                                        <p><strong>Name :</strong> <%= prod.productName %></p>
-                                                                        <p><strong>Price :</strong> <%= prod.productPrice %></p>
-                                                                        <p><strong>Color :</strong> <%= prod.productColor %></p>
-                                                                        <p><strong>Size :</strong> <%= prod.productSize %></p>
-                                                                        <p><strong>Brand :</strong> <%= prod.productBrand %></p>
-                                                                        <p><strong>Category :</strong> <%= prod.productCategory %></p>
-                                                                        <p><strong>Subcategory :</strong> <%= prod.productSubCategory %></p>
-                                                                        <p><strong>Stock :</strong> <%= prod.productQTY %></p>
-                                                                        <p class="text-sm text-wrap text-break"><strong>Description :</strong> <%= prod.productDescription %></p>
+                                                                        <p><strong>Name :</strong> <%= service.title %></p>
+                                                                        <p><strong>Price :</strong> <%= service.sellingPrice %></p>
+                                                                        <p><strong>Category :</strong> <%= service.category %></p>
+                                                                        <p><strong>Subcategory :</strong> <%= service.subcategory %></p>
+                                                                        <p class="text-sm text-wrap text-break"><strong>Description :</strong> <%= service.description %></p>
                                                                     </div>
-
-                                                                  
-                                                            
                                                                 </div>
-                                                               
                                                             </div>                                                         
-                                                               
                                                             <!-- Add more product details as needed -->
                                                             </div>
                                                             <div class="modal-footer">

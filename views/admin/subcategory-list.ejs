@@ -44,8 +44,8 @@
               >
             </li>
             <li class="collapsed">
-              <a class="m-link" href="/admin/productList">
-                <i class="icofont-truck-loaded fs-5"></i> <span>Products</span>
+              <a class="m-link" href="/admin/servicesList">
+                <i class="icofont-truck-loaded fs-5"></i> <span>Services</span>
               </a>
             </li>
             <li>
@@ -62,8 +62,8 @@
             </li>
 
             <li>
-              <a class="m-link" href="/admin/orders">
-                <i class="icofont-notepad fs-5"></i> <span>Orders</span>
+              <a class="m-link" href="/admin/bookings">
+                <i class="icofont-notepad fs-5"></i> <span>Bookings</span>
               </a>
             </li>
             <li class="collapsed"></li>
@@ -291,7 +291,7 @@
                             function validateForm() {
                               const subcategoryName =
                                 document.getElementById(
-                                  "subcategoryName"
+                                  "subcategoryName",
                                 ).value;
                               const categoryId =
                                 document.getElementById("categorySelect").value;
@@ -304,7 +304,7 @@
                                   .getElementById("subcategoryName")
                                   .classList.add("is-invalid");
                                 document.getElementById(
-                                  "subcategoryNameError"
+                                  "subcategoryNameError",
                                 ).style.display = "block";
                                 isValid = false;
                               } else {
@@ -312,7 +312,7 @@
                                   .getElementById("subcategoryName")
                                   .classList.remove("is-invalid");
                                 document.getElementById(
-                                  "subcategoryNameError"
+                                  "subcategoryNameError",
                                 ).style.display = "none";
                               }
 
@@ -322,7 +322,7 @@
                                   .getElementById("categorySelect")
                                   .classList.add("is-invalid");
                                 document.getElementById(
-                                  "categorySelectError"
+                                  "categorySelectError",
                                 ).style.display = "block";
                                 isValid = false;
                               } else {
@@ -330,7 +330,7 @@
                                   .getElementById("categorySelect")
                                   .classList.remove("is-invalid");
                                 document.getElementById(
-                                  "categorySelectError"
+                                  "categorySelectError",
                                 ).style.display = "none";
                               }
 
@@ -364,10 +364,12 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <% let counter = 1; %> <%
-                        subcategories.forEach(subcategory => { %>
+                        <% let counter = 1; %>
+                        <% subcategories.forEach(subcategory => { %>
                         <tr>
-                          <td><strong><%= counter %></strong></td>
+                          <td>
+                            <strong><%= counter %></strong>
+                          </td>
                           <td><%= subcategory.subcategoryName %></td>
                           <td><%= subcategory.categoryName %></td>
                           <td>
@@ -512,7 +514,8 @@
                             </div>
                           </div>
                         </div>
-                        <% counter++; %> <% }) %>
+                        <% counter++; %>
+                        <% }) %>
                       </tbody>
                     </table>
                   </div>

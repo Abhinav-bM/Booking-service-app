@@ -1,6 +1,8 @@
 const Admin = require("../models/adminModel");
 const User = require("../models/usersModel");
 const Vendor = require("../models/vendorsModel");
+const Services = require("../models/services");
+const Booking = require("../models/booking");
 const {
   calculateTotalSales,
   getOrdersCountForLast10Days,
@@ -34,7 +36,7 @@ let loginPostPage = async (req, res) => {
           process.env.JWT_KEY,
           {
             expiresIn: "24h",
-          }
+          },
         );
         res.cookie("admin_jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
 
@@ -74,7 +76,7 @@ let dashboardPage = async (req, res) => {
       prod.products.forEach((product) => productsArr.push(product));
     });
     const filtered = productsArr.filter(
-      (prod) => prod.orderStatus === "Delivered"
+      (prod) => prod.orderStatus === "Delivered",
     );
     let totalSales = 0;
     filtered.forEach((prod) => (totalSales += prod.qty * prod.price));
@@ -93,7 +95,7 @@ let dashboardPage = async (req, res) => {
             // Find the matching product from vendor products
             const matchingProduct = vendorProducts.reduce((acc, vendor) => {
               const foundProduct = vendor.products.find((vendorProduct) =>
-                vendorProduct._id.equals(product.productId)
+                vendorProduct._id.equals(product.productId),
               );
               return foundProduct ? foundProduct : acc;
             }, null);
@@ -196,7 +198,7 @@ let updateCategory = async (req, res) => {
   try {
     const admin = await Admin.updateOne(
       { "categories._id": categoryId },
-      { $set: { "categories.$.categoryName": categoryName } }
+      { $set: { "categories.$.categoryName": categoryName } },
     );
     console.log("category updated successfully : ", categoryName);
 
@@ -219,7 +221,7 @@ let deleteCategory = async (req, res) => {
     let admin = await Admin.findOne();
 
     const categoryIndex = admin.categories.findIndex(
-      (cat) => cat._id.toString() === deleteCategoryId
+      (cat) => cat._id.toString() === deleteCategoryId,
     );
 
     if (categoryIndex === -1) {
@@ -257,7 +259,7 @@ let subcategoryList = async (req, res) => {
         });
         return acc.concat(subcategories);
       },
-      []
+      [],
     );
 
     res.render("admin/subcategory-list", {
@@ -312,7 +314,7 @@ let updateSubcategory = async (req, res) => {
     // Search through categories and subcategories to find the subcategory with the given ID
     admin.categories.forEach((category) => {
       const subcategory = category.subcategories.find(
-        (sub) => sub._id.toString() === subcategoryId
+        (sub) => sub._id.toString() === subcategoryId,
       );
       if (subcategory) {
         foundSubcategory = subcategory;
@@ -345,7 +347,7 @@ let deleteSubcategory = async (req, res) => {
 
     admin.categories.forEach((category, i) => {
       const index = category.subcategories.findIndex(
-        (sub) => sub._id.toString() === deleteSubcategoryId
+        (sub) => sub._id.toString() === deleteSubcategoryId,
       );
       if (index !== -1) {
         categoryIndex = i;
@@ -377,31 +379,12 @@ let vendorsList = async (req, res) => {
   }
 };
 
-// LIST PRODUCT PAGE
-let productList = async (req, res) => {
+// services list page
+const servicesList = async (req, res) => {
   try {
     const user = await Admin.findOne();
-    const products = await Vendor.aggregate([
-      { $unwind: "$products" },
-      {
-        $project: {
-          _id: "$products._id",
-          productName: "$products.productName",
-          productCategory: "$products.productCategory",
-          productSubCategory: "$products.productSubCategory",
-          productBrand: "$products.productBrand",
-          productColor: "$products.productColor",
-          productSize: "$products.productSize",
-          productQTY: "$products.productQTY",
-          productPrice: "$products.productPrice",
-          productMRP: "$products.productMRP",
-          productDiscount: "$products.productDiscount",
-          productImages: "$products.productImages",
-          productDescription: "$products.productDescription",
-        },
-      },
-    ]);
-    res.status(200).render("admin/product-list", { products, user });
+    const services = await Services.find();
+    res.status(200).render("admin/services-list", { services, user });
   } catch (error) {
     console.error("vendor product list error", error);
     res.status(404).send("page not found");
@@ -482,7 +465,7 @@ let editCouponGet = async (req, res) => {
     const coupon = admin.coupons;
 
     const couponForEdit = coupon.find(
-      (coupon) => coupon._id.toString() === couponId
+      (coupon) => coupon._id.toString() === couponId,
     );
 
     const categories = await Admin.aggregate([
@@ -506,7 +489,7 @@ let editCouponPost = async (req, res) => {
   try {
     const admin = await Admin.findOne();
     const index = admin?.coupons.findIndex(
-      (coupon) => coupon._id.toString() == couponId
+      (coupon) => coupon._id.toString() == couponId,
     );
     admin.coupons[index] = data;
     console.log(data);
@@ -525,7 +508,7 @@ let deleteCoupon = async (req, res) => {
   try {
     const admin = await Admin.findOne({});
     const index = admin?.coupons.findIndex(
-      (coupon) => coupon._id.toString() == couponId
+      (coupon) => coupon._id.toString() == couponId,
     );
     admin?.coupons.splice(index, 1);
     admin.save();
@@ -616,62 +599,27 @@ let adminLogout = (req, res) => {
   }
 };
 
-// ORDERS LIST PAGE
-const ordersList = async (req, res) => {
+// booking list page
+const bookingList = async (req, res) => {
   try {
-    const ordersWithProducts = await User.aggregate([
-      {
-        $unwind: "$orders",
-      },
+    const bookings = await Booking.aggregate([
       {
         $lookup: {
-          from: "vendors",
-          localField: "orders.products.productId",
-          foreignField: "products._id",
-          as: "vendorDetails",
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service",
         },
       },
-      {
-        $unwind: "$vendorDetails",
-      },
-      {
-        $unwind: "$vendorDetails.products",
-      },
-      {
-        $unwind: "$orders.products",
-      },
+      { $unwind: "$service" },
       {
         $sort: { "orders.orderDate": -1 },
-      },
-      {
-        $project: {
-          _id: "$orders._id",
-          orderId: "$orders.orderId",
-          userName: "$name",
-          userEmail: "$email",
-          productName: "$vendorDetails.products.productName",
-          productImages: "$vendorDetails.products.productImages",
-          size: "$orders.products.size",
-          qty: "$orders.products.qty",
-          price: "$orders.products.price",
-          orderStatus: "$orders.products.orderStatus",
-          cancelReason: "$orders.products.cancelReason",
-          totalAmount: "$orders.totalAmount",
-          orderDate: "$orders.orderDate",
-          expectedDeliveryDate: "$orders.expectedDeliveryDate",
-          shippingAddress: "$orders.shippingAddress",
-          paymentMethod: "$orders.paymentMethod",
-        },
       },
     ]);
 
     const admin = await Admin.findOne();
 
-    console.log("admin side orders with aggregation :", ordersWithProducts);
-
-    res
-      .status(200)
-      .render("admin/orders-list", { orders: ordersWithProducts, admin });
+    res.status(200).render("admin/bookings-list", { bookings, admin });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -694,7 +642,6 @@ module.exports = {
   updateSubcategory,
   deleteSubcategory,
   vendorsList,
-  productList,
   verifyVendor,
   couponList,
   couponAddGet,
@@ -705,5 +652,8 @@ module.exports = {
   bannerGetPage,
   bannerAddPost,
   deleteBanner,
-  ordersList,
+
+  // services related controller
+  servicesList,
+  bookingList,
 };

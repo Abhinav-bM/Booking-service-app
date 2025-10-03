@@ -19,13 +19,11 @@ router.get("/logout",adminController.adminLogout)
 router.get("/customersList",adminAuthMiddleware,adminController.customersList)
 router.get("/categoryList",adminAuthMiddleware,adminController.categoryList)
 router.get("/subcategoryList",adminAuthMiddleware,adminController.subcategoryList)
-router.get("/productList",adminAuthMiddleware,adminController.productList)
 router.get("/vendorsList",adminAuthMiddleware,adminController.vendorsList)
 router.get("/couponList",adminAuthMiddleware,adminController.couponList)
 router.get("/couponAddGet",adminAuthMiddleware,adminController.couponAddGet)
 router.get("/editCouponGet/:id",adminAuthMiddleware,adminController.editCouponGet)
 router.get("/banner",adminAuthMiddleware,adminController.bannerGetPage)
-router.get("/orders",adminAuthMiddleware,adminController.ordersList)
 
 router.post("/loginPost", adminController.loginPostPage);
 router.post("/addCategory",adminAuthMiddleware,adminController.addCategory)
@@ -43,6 +41,13 @@ router.put("/editCouponPost",adminAuthMiddleware, adminController.editCouponPost
 
 router.delete("/deleteCoupon/:id",adminAuthMiddleware,adminController.deleteCoupon)
 router.delete("/bannerDelete/:bannerId",adminAuthMiddleware,adminController.deleteBanner)
+
+
+//service related routes
+router.get("/servicesList",adminAuthMiddleware,adminController.servicesList)
+router.get("/orders",adminAuthMiddleware,adminController.bookingList)
+
+
 
 
 module.exports = router;
