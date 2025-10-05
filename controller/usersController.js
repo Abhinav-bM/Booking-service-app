@@ -15,6 +15,7 @@ const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
 const { findUserOrders } = require("../helpers/userHelper");
 const { relativeTimeRounding } = require("moment");
+const { request } = require("http");
 require("dotenv").config();
 const generateSlots = require("../helpers/booking").generateSlots;
 
@@ -657,7 +658,7 @@ let getProductsByCategory = async (req, res) => {
 };
 
 // GET PRODUCTS BY SORT
-let getProductBySort = async (req, res) => {
+const getProductBySort = async (req, res) => {
   const token = req.cookies.jwt;
   const { option } = req.params;
   try {
@@ -731,29 +732,22 @@ let getSearchProduct = async (req, res) => {
   }
 };
 
-// DISPLAY SINGLE PRODUCT PAGE
-let singleProductGetPage = async (req, res) => {
-  const token = req.cookies.jwt;
+// Service details get page
+const serviceDetailsGetPage = async (req, res) => {
   try {
-    const productId = req.query.productId;
+    const token = req.cookies.jwt;
+    const serviceId = req.params.id;
 
-    const vendor = await Vendor.findOne({ "products._id": productId });
+    const service = await Services.findById(serviceId);
 
-    const relatedProducts = vendor.products.filter(
-      (prod) => prod._id.toString() !== productId,
-    );
-
-    if (!vendor) {
-      throw new Error("Product not found");
+    if (!service) {
+      return res.status(404).send("Service not found");
     }
 
-    const products = vendor.products.find(
-      (prod) => prod._id.toString() === productId,
-    );
-
-    if (!products) {
-      throw new Error("Product not found");
-    }
+    const relatedServices = await Services.find({
+      _id: { $ne: serviceId },
+      category: service.category,
+    }).limit(4);
 
     let user;
     if (token) {
@@ -762,11 +756,10 @@ let singleProductGetPage = async (req, res) => {
       user = await User.findById(userId);
     }
 
-    res.render("user/singleProduct", {
-      products: products,
+    res.render("user/serviceDetails", {
+      service,
       user,
-      wishlistProducts: user?.wishlist.products,
-      relatedProducts: relatedProducts,
+      relatedServices,
     });
   } catch (error) {
     console.error(error);
@@ -2087,7 +2080,6 @@ module.exports = {
   resetPassword,
   // shopGetPage,
   getProductsByCategory,
-  singleProductGetPage,
   getWishlist,
   addToWishlist,
   removeFromWishlist,
@@ -2120,4 +2112,5 @@ module.exports = {
   checkoutServiceGetPage,
   bookServiceWithCod,
   bookingListGetPage,
+  serviceDetailsGetPage,
 };

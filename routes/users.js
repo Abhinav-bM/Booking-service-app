@@ -60,11 +60,10 @@ router.delete("/delete-address/:addressId",verifyToken,userController.deleteAddr
 
 // services routes
 router.get("/services", userController.getServicesPage);
-router.get("/products", userController.singleProductGetPage);
+router.get("/service/:id", userController.serviceDetailsGetPage);
 router.get("/service/:id/book", verifyToken, userController.bookServiceGetPage);
 router.get("/service/:id/slots", verifyToken, userController.getServiceSlots);
 router.get("/userProfile", verifyToken, userController.userProfile);
-
 
 router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage);
 router.post("/book/cod", verifyToken, userController.bookServiceWithCod)
