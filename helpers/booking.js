@@ -22,16 +22,40 @@ function generateSlots(service, dateStr, bookedSlots = []) {
 
   const slots = [];
   let cur = new Date(start);
+
+  // current time (now)
+  const now = new Date();
+
   while (cur.getTime() + dur * 60000 <= end.getTime()) {
     const nxt = new Date(cur.getTime() + dur * 60000);
+
     const startStr = pad(cur.getHours()) + ":" + pad(cur.getMinutes());
     const endStr = pad(nxt.getHours()) + ":" + pad(nxt.getMinutes());
     const slotLabel = `${startStr} - ${endStr}`;
-    if (!bookedSlots.includes(slotLabel)) {
-      slots.push({ slot: slotLabel, startTime: startStr, endTime: endStr });
+
+    // Skip if already booked
+    if (bookedSlots.includes(slotLabel)) {
+      cur = nxt;
+      continue;
     }
+
+    // Skip past slots only if date is today
+    const slotDate = new Date(dateStr + "T00:00:00");
+    slotDate.setHours(cur.getHours(), cur.getMinutes(), 0, 0);
+
+    if (
+      slotDate.toDateString() === now.toDateString() && // same day
+      slotDate.getTime() <= now.getTime() // slot already passed
+    ) {
+      cur = nxt;
+      continue;
+    }
+
+    // add slot
+    slots.push({ slot: slotLabel, startTime: startStr, endTime: endStr });
     cur = nxt;
   }
+
   return slots;
 }
 

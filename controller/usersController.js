@@ -6,7 +6,11 @@ const Booking = require("../models/booking");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const smsService = require("../helpers/smsService");
-const { sendOtpEmail } = require("../helpers/emailService");
+const {
+  sendOtpEmail,
+  sendBookingEmail,
+  scheduleReminderEmail,
+} = require("../helpers/emailService");
 const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
 const { findUserOrders } = require("../helpers/userHelper");
@@ -18,7 +22,7 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// HOME PAGE DISPLAY
+// home page display
 let homePage = async (req, res) => {
   const token = req.cookies.jwt;
 
@@ -574,6 +578,7 @@ let userLogout = async (req, res) => {
 //   }
 // };
 
+// get services listing page
 const getServicesPage = async (req, res) => {
   try {
     const token = req.cookies.jwt;
@@ -1045,6 +1050,7 @@ const bookServiceGetPage = async (req, res) => {
   }
 };
 
+// API to get available slots for a service on a given date
 const getServiceSlots = async (req, res) => {
   console.log("called me for get slots");
   try {
@@ -1069,6 +1075,7 @@ const getServiceSlots = async (req, res) => {
   }
 };
 
+// checkout page display with address and payment options
 const checkoutServiceGetPage = async (req, res) => {
   try {
     const { serviceId, date, slot } = req.body;
@@ -1613,7 +1620,22 @@ const bookServiceWithCod = async (req, res) => {
     });
 
     await booking.save();
-    // res.redirect("/bookings");
+
+    await sendBookingEmail(user.email, {
+      serviceName: service.title,
+      date: booking.date,
+      slot: booking.slot,
+      price: booking.price,
+    });
+
+    // Schedule reminder email 30 min before
+    scheduleReminderEmail(req.user.email, {
+      serviceName: service.title,
+      date: booking.date,
+      slot: booking.slot,
+    });
+
+    res.redirect("/userProfile");
   } catch (error) {
     if (error.code === 11000) {
       return res.send("Slot already booked. Please choose another slot.");
@@ -1706,6 +1728,20 @@ const successfulRazorpayOrder = async (req, res) => {
     });
 
     await booking.save();
+
+    await sendBookingEmail(user.email, {
+      serviceName: service.title,
+      date: booking.date,
+      slot: booking.slot,
+      price: booking.price,
+    });
+
+    // Schedule reminder email 30 min before
+    scheduleReminderEmail(req.user.email, {
+      serviceName: service.title,
+      date: booking.date,
+      slot: booking.slot,
+    });
 
     // Send a response with the new booking details
     res.status(201).json({
