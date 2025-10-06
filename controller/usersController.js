@@ -55,10 +55,10 @@ let homePage = async (req, res) => {
   }
 };
 
-// AUTH
+// auth
 const loadAuth = (req, res) => [res.render("auth")];
 
-// USER SIGNUP PAGE DISPLAY
+// signup page get
 let signupGetPage = async (req, res) => {
   try {
     res.render("user/signup");
@@ -68,7 +68,7 @@ let signupGetPage = async (req, res) => {
   }
 };
 
-// USER SIGNUP
+// signup post
 let signupPostPage = async (req, res) => {
   try {
     const { userName, email, phoneNumber, password } = req.body;
@@ -162,9 +162,8 @@ let signupVerify = async (req, res) => {
       .json({ error: "Verification failed. Please try again later." });
   }
 };
-// USER SIGNUP ENDS HERE
 
-// USER LOGIN PAGE DISPLAY
+// login page get
 let loginGetPage = async (req, res) => {
   try {
     if (req.cookies.jwt) {
@@ -178,7 +177,7 @@ let loginGetPage = async (req, res) => {
   }
 };
 
-// USER LOGIN
+// user login
 let loginPostPage = async (req, res) => {
   const { email, password } = req.body;
 
@@ -221,68 +220,7 @@ let loginPostPage = async (req, res) => {
   }
 };
 
-// LOGIN WITH GOOGLE
-// const successGoogleLogin = async (req, res) => {
-//   try {
-//     if (!req.user) {
-//       // If no user data
-//       return res.status(401).send("no user data , login failed");
-//     }
-
-//     // Checking user already exists in database
-//     let user = await User.findOne({ email: req.user.email });
-
-//     if (user.blocked) {
-//       return res.render("user/login", { error: "You are restricted by admin" });
-//     }
-
-//     if (!user) {
-//       // If the user does not exist, create a new user
-//       user = new User({
-//         name: req.user.displayName,
-//         email: req.user.email,
-//       });
-
-//       // Save the new user to the database
-//       await user.save();
-//     }
-
-//     // Generate JWT token
-//     const token = jwt.sign(
-//       {
-//         id: user._id,
-//         name: user.name,
-//         email: user.email,
-//       },
-//       process.env.JWT_KEY,
-//       {
-//         expiresIn: "24h",
-//       }
-//     );
-
-//     // Set JWT token in a cookie
-//     res.cookie("jwt", token, {
-//       httpOnly: true,
-//       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-//       secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
-//     });
-
-//     // Redirect the user to the home page
-//     res.status(200).redirect("/");
-
-//     console.log("User logged in with Google : jwt created");
-//   } catch (error) {
-//     console.error("Error logging in with Google:", error);
-//     res.status(500).redirect("/login");
-//   }
-// };
-
-// const failureGooglelogin = (req, res) => {
-//   res.status(500).send("Error logging in with Google");
-// };
-
-// LOGIN WITH OTP STARTS HERE
-// LOGIN WITH OTP PAGE DISPLAY
+// login with otp page get
 let loginWithOtpGetPage = async (req, res) => {
   try {
     res.render("user/loginOtpPhone");
@@ -291,91 +229,7 @@ let loginWithOtpGetPage = async (req, res) => {
   }
 };
 
-// REQUEST FOR OTP AFTER ENTERED PHONE
-// const loginRequestOTP = async (req, res) => {
-//   const { phoneNumber } = req.body;
-
-//   try {
-//     let phone = phoneNumber;
-
-//     if (!phone.startsWith("+91")) {
-//       phone = "+91" + phone;
-//     }
-
-//     const user = await User.findOne({ phoneNumber: phone });
-
-//     if (!user) {
-//       return res
-//         .status(404)
-//         .render("user/loginOtpPhone", { error: "User not found" });
-//     }
-
-//     if (user.blocked) {
-//       return res.status(403).render("user/loginOtpPhone", {
-//         error: "Your are restricted by admin",
-//       });
-//     }
-
-//     const otp = generateOTP();
-//     user.otp = otp;
-//     user.otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
-//     await user.save();
-
-//     smsService.sendOTP(phoneNumber, otp);
-
-//     res.status(200).render("user/loginotp", { phone });
-//   } catch (error) {
-//     console.error("Error requesting OTP:", error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
-// const loginVerifyOTP = async (req, res) => {
-
-//   const { phoneNumber, otp } = req.body;
-
-//   try {
-//     const user = await User.findOne({ phoneNumber });
-//     let phone = phoneNumber;
-//     if (user.otp !== otp || Date.now() > user.otpExpiration) {
-//       return res
-//         .status(400)
-//         .render("user/loginotp", { error: "Invalid or expired OTP", phone });
-//     }
-
-//     // Clear OTP fields after successful verification
-//     user.otp = undefined;
-//     user.otpExpiration = undefined;
-//     await user.save();
-
-//     const token = jwt.sign(
-//       {
-//         id: user._id,
-//         name: user.name,
-//         email: user.email,
-//       },
-//       process.env.JWT_KEY,
-//       {
-//         expiresIn: "24h",
-//       }
-//     );
-
-//     res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hours expiry
-
-//     res.status(200).redirect("/");
-//     console.log("User logged in using OTP : JWT created");
-//   } catch (error) {
-//     console.error("Error verifying OTP:", error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-// LOGIN WITH OTP ENDS HERE
-
-///////////////////////////////////////////////////////////////
-
-// FORGOT PASSWORD -- STARTS FROM HERE
-// FORGOT PASSWORD PAGE DISPLAY
-
+// forgot password get page
 let forgotGetPage = async (req, res) => {
   try {
     res.render("user/forgotemail");
@@ -384,7 +238,7 @@ let forgotGetPage = async (req, res) => {
   }
 };
 
-// FORGOT EMAIL POST + OTP GENERATION AND MAIL SEND
+// forgot email post and otp generation and email sending
 let forgotEmailPostPage = async (req, res) => {
   const { emailOrPhone } = req.body;
 
@@ -433,7 +287,7 @@ let forgotEmailPostPage = async (req, res) => {
   }
 };
 
-// RESET PASSWORD
+// reset password
 let resetPassword = async (req, res) => {
   const { emailOrPhone, otp, newPassword, confirmPassword } = req.body;
 
@@ -494,9 +348,8 @@ let resetPassword = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-// FORGOT PASSWORD -- ENDS HERE
 
-// LOGOUT STARTS HERE
+// user logout
 let userLogout = async (req, res) => {
   const token = req.cookies.jwt;
 
@@ -514,70 +367,6 @@ let userLogout = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
-// SHOP PAGE DISPLAY
-// let shopGetPage = async (req, res) => {
-//   const token = req.cookies.jwt;
-//   try {
-//     const allProducts = await Vendor.aggregate([
-//       { $unwind: "$products" },
-//       {
-//         $project: {
-//           _id: "$products._id",
-//           productName: "$products.productName",
-//           productCategory: "$products.productCategory",
-//           productSubCategory: "$products.productSubCategory",
-//           productBrand: "$products.productBrand",
-//           productColor: "$products.productColor",
-//           productSize: "$products.productSize",
-//           productQTY: "$products.productQTY",
-//           productPrice: "$products.productPrice",
-//           productImages: "$products.productImages",
-//           productDescription: "$products.productDescription",
-//         },
-//       },
-//     ]);
-
-//     const admin = await Admin.findOne({});
-//     const allCategories = [];
-
-//     admin.categories.forEach((category) => {
-//       allCategories.push(category.categoryName);
-//     });
-
-//     let user;
-//     if (token) {
-//       const decoded = jwt.verify(token, process.env.JWT_KEY);
-//       const userId = decoded.id;
-//       user = await User.findById(userId);
-//     }
-
-//     // Pagination logic
-//     const ITEMS_PER_PAGE = 8;
-//     const page = +req.query.page || 1;
-//     const totalProducts = allProducts.length;
-//     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
-//     const startIndex = (page - 1) * ITEMS_PER_PAGE;
-//     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalProducts);
-//     const paginatedProducts = allProducts.slice(startIndex, endIndex);
-
-//     res.status(200).render("user/services", {
-//       products: paginatedProducts,
-//       allCategories,
-//       user,
-//       wishlistProducts: user?.wishlist.products,
-//       currentPage: page,
-//       hasNextPage: ITEMS_PER_PAGE * page < totalProducts,
-//       hasPrevPage: page > 1,
-//       nextPage: page + 1,
-//       prevPage: page - 1,
-//       lastPage: totalPages,
-//     });
-//   } catch (error) {
-//     console.log("page not found :", error);
-//     res.status(404).send("page not found");
-//   }
-// };
 
 // get services listing page
 const getServicesPage = async (req, res) => {
@@ -627,111 +416,6 @@ const getServicesPage = async (req, res) => {
   }
 };
 
-// PRDUCTS BASED ON CATEGORY
-let getProductsByCategory = async (req, res) => {
-  const { category } = req.params;
-  const token = req.cookies.jwt;
-
-  try {
-    let vendorProducts = await Vendor.find().select("products");
-
-    let allProducts = vendorProducts.map((vendor) => vendor.products).flat();
-
-    let filteredProducts = allProducts.filter(
-      (product) => product.productCategory === category,
-    );
-
-    let user;
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
-      const userId = decoded.id;
-      user = await User.findById(userId);
-    }
-
-    res
-      .status(200)
-      .json({ message: "product filtered", filteredProducts, user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// GET PRODUCTS BY SORT
-const getProductBySort = async (req, res) => {
-  const token = req.cookies.jwt;
-  const { option } = req.params;
-  try {
-    let vendorProducts = await Vendor.find().select("products");
-
-    let allProducts = vendorProducts.map((vendor) => vendor.products).flat();
-
-    let user;
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
-      const userId = decoded.id;
-      user = await User.findById(userId);
-    }
-    switch (option) {
-      case "latest":
-        allProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        break;
-      case "low to high":
-        allProducts.sort((a, b) => a.productPrice - b.productPrice);
-        break;
-      case "high to low":
-        allProducts.sort((a, b) => b.productPrice - a.productPrice);
-        break;
-      default:
-        // Default sorting
-        break;
-    }
-
-    res.status(200).json({ message: "product filtered", allProducts, user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// GET PRODUCTS BY SEARCH
-let getSearchProduct = async (req, res) => {
-  const token = req.cookies.jwt;
-  const searchTerm = req.params.inputValue;
-  try {
-    const vendorProducts = await Vendor.find().select("products");
-
-    const allProducts = vendorProducts.map((vendor) => vendor.products).flat();
-
-    const filteredProducts = allProducts.filter(
-      (product) =>
-        product.productBrand
-          .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase()) ||
-        product.productName
-          .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase()) ||
-        product.productCategory
-          .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase()),
-    );
-
-    let user;
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
-      const userId = decoded.id;
-      user = await User.findById(userId);
-    }
-
-    res
-      .status(200)
-      .json({ message: "product filtered", filteredProducts, user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 // Service details get page
 const serviceDetailsGetPage = async (req, res) => {
   try {
@@ -767,250 +451,6 @@ const serviceDetailsGetPage = async (req, res) => {
   }
 };
 
-// GET WISLIST PAGE
-let getWishlist = async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const allProducts = await Vendor.find({}).populate("products");
-    let wishlistProducts = [];
-
-    user.wishlist.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
-
-      // Find the product in allProducts
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-            };
-
-            wishlistProducts.push(productDetails);
-          }
-        });
-      });
-    });
-
-    res.render("user/wishlist", { wishlistProducts, user });
-  } catch (error) {}
-};
-
-// ADD TO WIHSLIST
-let addToWishlist = async (req, res) => {
-  const productId = req.body.productId;
-  const token = req.cookies.jwt;
-  let userId;
-  try {
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
-      userId = decoded.id;
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const existingProductIndex = user.wishlist.products.findIndex(
-      (product) => product.productId.toString() === productId,
-    );
-
-    if (existingProductIndex !== -1) {
-      user.wishlist.products.splice(existingProductIndex, 1);
-
-      await user.save();
-
-      return res
-        .status(200)
-        .json({ message: "Product removed from wishlist successfully", user });
-    } else {
-      user.wishlist.products.push({ productId });
-
-      await user.save();
-
-      return res
-        .status(201)
-        .json({ message: "Product added to wishlist successfully", user });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// REMOVE PRODUCT
-let removeFromWishlist = async (req, res) => {
-  const { productId } = req.params;
-  const userId = req.user.id;
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    user.wishlist.products = user.wishlist.products.filter(
-      (item) => item.productId.toString() !== productId,
-    );
-
-    await user.save();
-
-    res.status(200).json({ message: "Product removed from wishlist" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-// ADD TO CART
-let addToCart = async (req, res) => {
-  const { productId } = req.body;
-  const token = req.cookies.jwt;
-  let userId;
-
-  try {
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
-      userId = decoded.id;
-    }
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Find the product in the vendor's products array
-    const vendor = await Vendor.findOne({ "products._id": productId });
-    if (!vendor) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    const product = vendor.products.find((p) => p._id.toString() === productId);
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    // Check product availability and stock
-    if (product.productQTY <= 0) {
-      return res.status(400).json({ error: "Product out of stock" });
-    }
-
-    const existingProductIndex = user.cart.products.findIndex(
-      (item) => item.productId.toString() === productId,
-    );
-
-    if (existingProductIndex !== -1) {
-      user.cart.products[existingProductIndex].quantity += 1;
-      await user.save();
-      return res
-        .status(201)
-        .json({ message: "Product added to cart successfully" });
-    } else {
-      user.cart.products.push({ productId, quantity: 1 });
-      await user.save();
-      return res
-        .status(200)
-        .json({ message: "Product added to cart successfully" });
-    }
-  } catch (error) {
-    console.error("Error adding product to cart:", error);
-    res.status(500).json({ error: "Unable to Add Service to cart" });
-  }
-};
-
-// CART PAGE DISPLAY WITH PRODUCTS
-let getCart = async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
-
-    user.cart.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
-
-      // Find the product in allProducts
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-              productQTY: product.productQTY,
-            };
-
-            cart.push(productDetails);
-          }
-        });
-      });
-    });
-
-    let subtotal = 0;
-    let deliveryCharge = 0;
-    cart.forEach((prod) => {
-      subtotal += prod.quantity * prod.price;
-    });
-    return res.status(200).render("user/cart", {
-      cart,
-      subtotal,
-      deliveryCharge,
-      user,
-      wishlistProducts: user?.wishlist.products,
-    });
-  } catch (error) {
-    console.error("get Cart Error : ", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 // Service booking page — shows service details + date picker (GET)
 const bookServiceGetPage = async (req, res) => {
   try {
@@ -1033,6 +473,8 @@ const bookServiceGetPage = async (req, res) => {
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
     const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    console.log("called me for booking page");
 
     return res
       .status(200)
@@ -1097,245 +539,7 @@ const checkoutServiceGetPage = async (req, res) => {
   }
 };
 
-// REMOVE PRODUCT FROM CART
-let removeProductCart = async (req, res) => {
-  const { productId } = req.params;
-  const userId = req.user.id;
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const updatedCart = user.cart.products.filter(
-      (product) => product.productId.toString() !== productId,
-    );
-
-    user.cart.products = updatedCart;
-    await user.save();
-
-    ///////////////////////////////////
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
-
-    user.cart.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
-
-      // Find the product in allProducts
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-            };
-
-            cart.push(productDetails);
-          }
-        });
-      });
-    });
-    //////////////////////////////////////////////
-
-    res
-      .status(200)
-      .json({ message: "Product removed from cart successfully", user, cart });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// UPDATE QUANTIY OF PRODUCT IN CART
-let updateCartQuantity = async (req, res) => {
-  const { productId, quantity } = req.body;
-  const userId = req.user.id;
-
-  try {
-    const user = await User.findById(userId);
-    const vendor = await Vendor.findOne({ "products._id": productId });
-    const product = vendor.products.filter(
-      (prod) => prod._id.toString() === productId,
-    );
-    if (product[0].productQTY < quantity) {
-      return res.status(400).json({
-        error: "Requested quantity not available in stock",
-        quantity,
-        productId,
-      });
-    }
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const productIndex = user.cart.products.findIndex(
-      (product) => product.productId.toString() === productId,
-    );
-
-    if (productIndex !== -1) {
-      user.cart.products[productIndex].quantity = parseInt(quantity);
-
-      await user.save();
-
-      ///////////////////////////////////
-      const allProducts = await Vendor.find({}).populate("products");
-      let cart = [];
-
-      user.cart.products.forEach((cartProduct) => {
-        const productId = cartProduct.productId;
-
-        // Find the product in allProducts
-        allProducts.forEach((vendor) => {
-          vendor.products.forEach((product) => {
-            if (product._id.equals(productId)) {
-              const vendorInfo = {
-                vendorId: vendor._id,
-                vendorName: vendor.vendorName,
-              };
-
-              const productDetails = {
-                _id: product._id,
-                name: product.productName,
-                category: product.productCategory,
-                subcategory: product.productSubCategory,
-                brand: product.productBrand,
-                color: product.productColor,
-                size: product.productSize,
-                quantity: cartProduct.quantity,
-                price: product.productPrice,
-                mrp: product.productMRP,
-                discount: product.productDiscount,
-                images: product.productImages,
-                description: product.productDescription,
-                vendor: vendorInfo,
-                productQTY: product.productQTY,
-              };
-
-              cart.push(productDetails);
-            }
-          });
-        });
-      });
-      //////////////////////////////////////////////
-
-      res.status(200).json({
-        message: "Quantity updated successfully",
-        quantity,
-        user,
-        cart,
-      });
-    } else {
-      res.status(404).json({ error: "Product not found in cart" });
-    }
-  } catch (error) {}
-};
-
-// PROCEED TO CHECKOUT PAGE DISPLAY
-let checkoutpage = async (req, res) => {
-  let userId = req.user.id;
-
-  try {
-    const user = await User.findById({ _id: userId });
-    const addresses = user.addresses;
-
-    if (user.cart.products.length === 0) {
-      return res.redirect("/cart");
-    }
-
-    ///////////////////////////////////
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
-    let outOfStockProducts = [];
-
-    // Check product availability and populate cart
-    for (const cartProduct of user.cart.products) {
-      const productId = cartProduct.productId;
-
-      // Find the product in allProducts
-      for (const vendor of allProducts) {
-        const product = vendor.products.find((prod) =>
-          prod._id.equals(productId),
-        );
-        if (product) {
-          const vendorInfo = {
-            vendorId: vendor._id,
-            vendorName: vendor.vendorName,
-          };
-
-          const productDetails = {
-            _id: product._id,
-            name: product.productName,
-            category: product.productCategory,
-            subcategory: product.productSubCategory,
-            brand: product.productBrand,
-            color: product.productColor,
-            size: product.productSize,
-            quantity: cartProduct.quantity,
-            price: product.productPrice,
-            mrp: product.productMRP,
-            discount: product.productDiscount,
-            images: product.productImages,
-            description: product.productDescription,
-            vendor: vendorInfo,
-          };
-
-          // Check if product is in stock
-          if (product.productQTY >= cartProduct.quantity) {
-            cart.push(productDetails);
-          } else {
-            // If product is out of stock, add it to outOfStockProducts array
-            outOfStockProducts.push({
-              product: productDetails,
-              availableQuantity: product.productQTY,
-            });
-          }
-        }
-      }
-    }
-    //////////////////////////////////////////////
-
-    if (outOfStockProducts.length > 0) {
-      // If any product is out of stock, send a JSON response
-      return res
-        .status(400)
-        .json({ message: "Some products are out of stock" });
-    }
-
-    let totalPrice = 0;
-    cart.forEach((prod) => (totalPrice += prod.price * prod.quantity));
-    res.status(200).render("user/checkout", {
-      addresses,
-      cart,
-      totalPrice,
-      user,
-      wishlistProducts: user?.wishlist.products,
-    });
-  } catch (error) {
-    console.error("Error on checkout page display :", error);
-    res.status(500).json({ message: "An error occurred" });
-  }
-};
-
-// ADD ADDRESS
+// add address
 let addAddress = async (req, res) => {
   const { name, address, district, state, zip, email, phone } = req.body;
   const userId = req.user.id;
@@ -1373,7 +577,7 @@ let addAddress = async (req, res) => {
   }
 };
 
-// GET ADDRSS FOR EDIT
+// get address for edit
 let getAddressForEdiit = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -1393,7 +597,7 @@ let getAddressForEdiit = async (req, res) => {
   }
 };
 
-// EDIT USER ADDRESS
+// edit address
 let editAddress = async (req, res) => {
   const addressId = req.params.id;
   const { name, address, district, state, zip, email, phone } = req.body;
@@ -1441,7 +645,7 @@ let editAddress = async (req, res) => {
   }
 };
 
-// DELETE ADDRESS
+// delete address
 let deleteAddress = async (req, res) => {
   const addressId = req.params.addressId;
 
@@ -1473,116 +677,7 @@ let deleteAddress = async (req, res) => {
   }
 };
 
-// PLACE ORDER
-let placeOrderPost = async (req, res) => {
-  const { selectedAddressId, paymentMethod, totalPrice } = req.body;
-
-  try {
-    const userId = req.user.id;
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // selected address from user's addresses
-    const selectedAddress = user.addresses.find(
-      (address) => address._id.toString() === selectedAddressId,
-    );
-
-    if (!selectedAddress) {
-      return res.status(404).json({ message: "Selected address not found" });
-    }
-
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
-
-    user.cart.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
-      // Find the product in allProducts
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-            };
-
-            cart.push(productDetails);
-            // UPDATE PRODUCT QUANTITY IN VENDORS INVENTORY
-            const updatedProduct = vendor.products.find((p) =>
-              p._id.equals(productId),
-            );
-            if (updatedProduct) {
-              updatedProduct.productQTY -= cartProduct.quantity;
-            }
-          }
-        });
-      });
-    });
-    // UPDATE VENDOR
-    await Promise.all(allProducts.map((vendor) => vendor.save()));
-
-    const orderDate = new Date();
-    const expectedDeliveryDate = new Date(orderDate);
-    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 4);
-    const formattedDeliveryDate = expectedDeliveryDate.toLocaleDateString();
-
-    const newOrder = {
-      orderId: new mongoose.Types.ObjectId(),
-      products: cart.map((product) => ({
-        productId: product._id,
-        qty: product.quantity,
-        price: product.price,
-        size: product.size,
-      })),
-      totalAmount: cart.reduce(
-        (total, product) => total + product.price * product.quantity,
-        0,
-      ),
-      orderDate: new Date(),
-      expectedDeliveryDate: formattedDeliveryDate,
-      shippingAddress: selectedAddress,
-      paymentMethod: paymentMethod,
-    };
-
-    user.orders.push(newOrder);
-
-    await user.save();
-
-    // Send a response with the new order details
-    res.status(201).json({
-      message: "Order placed successfully!",
-      orderId: newOrder.orderId,
-      totalAmount: newOrder.totalAmount,
-      shippingAddress: newOrder.shippingAddress,
-      paymentMethod: newOrder.paymentMethod,
-      expectedDeliveryDate: formattedDeliveryDate,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
+// book service through COD
 const bookServiceWithCod = async (req, res) => {
   try {
     const { serviceId, date, slot, selectedAddressId } = req.body;
@@ -1635,17 +730,6 @@ const bookServiceWithCod = async (req, res) => {
     }
     console.error(error);
     res.status(500).send("Error creating booking");
-  }
-};
-
-const bookingListGetPage = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const bookings = await Booking.find({ userId }).populate("serviceId");
-    res.render("user/bookingList", { bookings });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server error - error while fetching bookings");
   }
 };
 
@@ -1786,8 +870,8 @@ let userProfile = async (req, res) => {
   }
 };
 
-// ORDER CANCELLATION REQUEST POST
-let orderCancelRequestPost = async (req, res) => {
+// service cancel request post
+let serviceCancelRequestPost = async (req, res) => {
   const { orderId, productId } = req.params;
   const { cancelReason } = req.body;
   const userId = req.user.id;
@@ -1829,55 +913,7 @@ let orderCancelRequestPost = async (req, res) => {
   }
 };
 
-// PRODUCT RETURN REASON AND REFUND POST
-let productReturnPost = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { refundData } = req.body;
-
-    // Find the user by ID
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Find the order within the user's orders array
-    const order = user.orders.find(
-      (order) => order.orderId === refundData.orderId,
-    );
-    if (!order) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    // Find the product within the order's products array
-    const product = order.products.find(
-      (product) => product.productId.toString() === refundData.productId,
-    );
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    // Update return reason and refund details for the product
-    product.returnReason = refundData.returnReason;
-    product.refundMethod = refundData.refundMethod;
-    if (refundData.refundDetails) {
-      product.refundDetails = refundData.refundDetails;
-      product.orderStatus = "Requested for Refund";
-    }
-
-    // Save the changes
-    await user.save();
-
-    res
-      .status(200)
-      .json({ message: "Return and refund details submitted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// CHANGE PASSWORD POST PAGE
+// change password post
 let changePasswordPost = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const userId = req.user.id;
@@ -1910,6 +946,7 @@ let changePasswordPost = async (req, res) => {
   }
 };
 
+// updated user details
 let updateUserDetails = async (req, res) => {
   const { newName, newEmail, newPhone } = req.body;
 
@@ -1933,113 +970,7 @@ let updateUserDetails = async (req, res) => {
   }
 };
 
-// APPLY COUPON
-let applyCoupon = async (req, res) => {
-  const { couponCode, totalPrice } = req.body;
-
-  try {
-    const admin = await Admin.findOne();
-    const coupon = admin.coupons.find(
-      (coupon) => coupon.couponCode == couponCode,
-    );
-    let discountAmount = 0;
-
-    console.log(coupon);
-
-    const currentDate = new Date();
-    if (
-      !coupon ||
-      coupon.couponStatus === "InActive" ||
-      coupon.endDate < currentDate
-    ) {
-      return res.status(400).json({ message: "Invalid Coupon" });
-    }
-
-    if (coupon.couponType === "Fixed Amount") {
-      discountAmount = coupon.discountValue;
-      return res
-        .status(200)
-        .json({ message: "coupon applied successfully ", discountAmount });
-    } else if (coupon.couponType === "Percentage") {
-      discountAmount = (coupon.discountValue / 100) * totalPrice;
-      return res
-        .status(200)
-        .json({ message: "coupon applied successfully ", discountAmount });
-    }
-  } catch (error) {
-    console.error(error);
-    res.staus(500).json({ error: "Internal server error" });
-  }
-};
-
-// CHECK SOTCK
-let checkStockAvailability = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findOne({ _id: userId });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const allProducts = await Vendor.find({}).populate("products");
-    let cart = [];
-
-    user.cart.products.forEach((cartProduct) => {
-      const productId = cartProduct.productId;
-
-      // Find the product in allProducts
-      allProducts.forEach((vendor) => {
-        vendor.products.forEach((product) => {
-          if (product._id.equals(productId)) {
-            const vendorInfo = {
-              vendorId: vendor._id,
-              vendorName: vendor.vendorName,
-            };
-
-            const productDetails = {
-              _id: product._id,
-              name: product.productName,
-              category: product.productCategory,
-              subcategory: product.productSubCategory,
-              brand: product.productBrand,
-              color: product.productColor,
-              size: product.productSize,
-              quantity: cartProduct.quantity,
-              price: product.productPrice,
-              mrp: product.productMRP,
-              discount: product.productDiscount,
-              images: product.productImages,
-              description: product.productDescription,
-              vendor: vendorInfo,
-              productQTY: product.productQTY,
-            };
-
-            cart.push(productDetails);
-          }
-        });
-      });
-    });
-
-    let outOfStock = [];
-    cart.forEach((prod) => {
-      if (prod.productQTY <= 0) {
-        outOfStock.push(prod);
-      }
-    });
-
-    if (outOfStock.length > 0) {
-      return res.status(400).json({ message: "Product is out of stock" });
-    }
-
-    res.status(200).json({ messages: "Success" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// CONTACT GET PAGE
+// contact page get
 let getContactPage = async (req, res) => {
   try {
     const token = req.cookies.jwt;
@@ -2070,47 +1001,24 @@ module.exports = {
   userLogout,
   userProfile,
   loadAuth,
-  // successGoogleLogin,
-  // failureGooglelogin,
   loginWithOtpGetPage,
-  // loginRequestOTP,
-  // loginVerifyOTP,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
-  // shopGetPage,
-  getProductsByCategory,
-  getWishlist,
-  addToWishlist,
-  removeFromWishlist,
-  addToCart,
-  removeProductCart,
-  getCart,
-  updateCartQuantity,
-  checkoutpage,
   addAddress,
   getAddressForEdiit,
   editAddress,
   deleteAddress,
-  placeOrderPost,
   placeOrderPostRazorpay,
   successfulRazorpayOrder,
-  orderCancelRequestPost,
   changePasswordPost,
   updateUserDetails,
-  applyCoupon,
-  getProductBySort,
-  getSearchProduct,
-  productReturnPost,
-  checkStockAvailability,
   getContactPage,
-
-  // service related functions
   getServicesPage,
   bookServiceGetPage,
   getServiceSlots,
   checkoutServiceGetPage,
   bookServiceWithCod,
-  bookingListGetPage,
   serviceDetailsGetPage,
+  serviceCancelRequestPost,
 };

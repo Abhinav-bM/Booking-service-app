@@ -1,0 +1,77 @@
+<header
+  class="header header-2 pt-30 pb-20 header-sticky header-static bg-white"
+>
+  <div class="container-fluid">
+    <div class="header-nav header-nav-2 position-relative">
+      <div class="row align-items-center">
+        <div class="col-xl-5 col-lg-6 hidden-md position-static">
+          <div class="header-nav">
+            <nav>
+              <ul>
+                <li>
+                  <a href="/" class="active">
+                    <span>Home </span>
+                  </a>
+                </li>
+
+                <li class="position-static">
+                  <a href="/services">
+                    <span>Services</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="/contact">
+                    <span>Contact</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-3">
+          <div class="logo">
+            <a href="/"><img src="" alt="LOGO" /></a>
+          </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-3 col-6 col-md-6 col-sm-6 col-9">
+          <div class="header-right">
+            <ul class="text-right">
+              <% if(!user){ %>
+              <li>
+                <a href="/login" class="account"
+                  ><i class="fal fa-user-friends"></i>
+                  <article class="account-registar d-inline-block">
+                    Login
+                  </article></a
+                >
+              </li>
+              <% } %>
+
+              <li>
+                <a><i class="fal fa-align-right"></i></a>
+                <ul class="submenu bold-content text-right">
+                  <li><a href="/userProfile">My Account</a></li>
+
+                  <% if(user){ %>
+                  <li><a href="/user/logout">Logout</a></li>
+                  <% } %>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-menu visible-sm">
+      <div id="mobile-menu">
+        <ul>
+          <li><a class="pl-3" href="/">Home</a></li>
+          <li><a class="pl-3" href="/services">Services</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>

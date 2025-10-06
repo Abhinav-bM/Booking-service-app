@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html class="no-js" lang="">
-  <!-- Mirrored from wphix.com/template/mazia/services3.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:31 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Shop</title>
+    <title>Services</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="manifest" href="site.html" />
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
-    <!-- Place favicon.ico in the root directory -->
 
     <!-- CSS here -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -110,136 +108,8 @@
       <div id="loader"></div>
     </div>
 
-    <!-- header section start -->
-    <header
-      class="header pt-30 pb-30 header-sticky header-static bg-white"
-      style="padding-top: 30px; padding-bottom: 15px; top: 0px; "
-    >
-      <div class="container-fluid">
-        <div class="header-nav position-relative">
-          <div class="row align-items-center">
-            <div class="col-xl-5 col-lg-5 hidden-md position-static">
-              <div class="header-nav">
-                <nav>
-                  <ul>
-                    <li>
-                      <a href="/">
-                        <span>Home </span>
-                      </a>
-                    </li>
-
-                    <li class="position-static">
-                      <a href="/services" class="active">
-                        <span>Services</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="/contact">
-                        <span>Contact</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-3">
-              <div class="logo">
-                <a href="/"><img src="/img/logo/logo1.png" alt="" /></a>
-              </div>
-            </div>
-
-            <div class="col-xl-5 col-lg-5 col-md-8 col-sm-8 col-9">
-              <div class="header-right">
-                <ul class="text-right">
-                  <li style="display: flex; align-items: center">
-                    <div
-                      id="searchContainer"
-                      style="display: flex; align-items: center"
-                      class="col-md-1 p-0"
-                    >
-                      <!-- Search Input and Button for larger screens -->
-                      <div id="searchLargeScreen" class="d-none d-sm-flex">
-                        <input
-                          type="text"
-                          name="search"
-                          id="searchInput"
-                          placeholder="Search..."
-                          style="
-                            padding: 3px;
-                            border-radius: 2px;
-                            border: 1px solid #ccc;
-                            margin-right: px;
-                          "
-                        />
-                        <button
-                          id="searchButton"
-                          style="
-                            padding: 0.1rem 0.3rem 0.1rem 0.1rem;
-                            border: none;
-                            border-radius: 2px;
-                            background-color: #3e3f3f;
-                            color: #fff;
-                            cursor: pointer;
-                          "
-                        >
-                          <i class="fal fa-search"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <% if(!user){ %>
-                  <li class="hide-on-small">
-                    <a href="/login" class="account"
-                      ><i class="fal fa-user-friends"></i>
-                      <article class="account-registar d-inline-block">
-                        Login
-                      </article></a
-                    >
-                  </li>
-                  <% } %>
-
-                  <li class="hide-on-small">
-                    <a href="/wishlist"
-                      ><i class="fal fa-heart"
-                        ><span id="wishlistCount"><%= wishlistProducts?.length %></span></i
-                      ></a
-                    >
-                  </li>
-                  <li class="hide-on-small">
-                    <a href="/cart"
-                      ><i class="fal fa-shopping-bag"
-                        ><span><%= user?.cart.products.length %></span></i
-                      ></a
-                    >
-                  </li>
-                  <li>
-                    <a><i class="fal fa-align-right"></i></a>
-                    <ul class="submenu bold-content text-right">
-                      <li><a href="/userProfile">My Account</a></li>
-                      <% if(user){ %>
-                      <li><a href="/user/logout">Logout</a></li>
-                      <% } %>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /. mobile nav -->
-        <div class="mobile-menu visible-sm">
-          <div id="mobile-menu">
-            <ul>
-              <li><a class="pl-3" href="/">Home</a></li>
-              <li><a class="pl-3" href="/services">Shop</a></li>
-              <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </header>
-    <!-- header section end -->
+    <!-- header  -->
+  <%- include('../partials/header') %>
 
     <div class="col-12">
       <div id="searchSmallScreen" class="d-flex d-sm-none">
@@ -421,87 +291,8 @@
         </div>
       </div>
 
-      <!-- footer section start -->
-      <section class="footer">
-        <div class="footer-bottom pt-77" style="background-color: #292929">
-          <div class="container-1180">
-            <div class="footer-bottom-wrapper">
-              <div class="footer-bottom-primary pb-60">
-                <div class="row">
-                  <div class="col-xl-5 col-lg-5 col-md-9">
-                    <div class="footer-item has-desc">
-                      <div class="footer-logo mb-25">
-                        <img
-                          src="img/logo/logo2.png"
-                          width="120"
-                          height="31"
-                          alt=""
-                        />
-                      </div>
-                      <div class="footer-desc">
-                        <p class="mb-10">
-                          Sign to the WatchVista store mailing list to receive
-                          updates on new arrivals, special offers and other
-                          discount information.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-7 col-lg-7 col-md-12">
-                    <div class="row">
-                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
-                        <div class="footer-menu">
-                          <ul>
-                            <li>
-                              <a href="/userProfile" class="title"
-                                >MY ACCOUNT</a
-                              >
-                            </li>
-                            <li><a href="/checkout">Cart</a></li>
-                            <li><a href="/services">Shop</a></li>
-                            <li><a href="/wishlist">Wishlist</a></li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
-                        <div class="footer-menu">
-                          <ul>
-                            <li>
-                              <a href="" class="title">Quick Links</a>
-                            </li>
-                            <li><a href="">Special Offers</a></li>
-                            <li><a href="">Gift Cards</a></li>
-                            <li><a href="">Privacy Policy</a></li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div
-                        class="col-xl-4 col-lg-4 col-md-4 col-sm-4 hidden-sm"
-                      >
-                        <div class="footer-menu">
-                          <ul>
-                            <li>
-                              <a href="" class="title">Company Info</a>
-                            </li>
-                            <li><a href="">About us</a></li>
-                            <li>
-                              <a href="">Business With Us</a>
-                            </li>
-                            <li><a href="">Teams of Use</a></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- footer section end -->
+      <!-- footer  -->
+      <%- include('../partials/footer') %>
       <script>
         // Toggle visibility of search input and button for larger screens
         const searchContainer = document.getElementById("searchContainer");
@@ -844,7 +635,6 @@
       <script src="/js/plugins.js"></script>
       <script src="/js/main.js"></script>
 
-      <!-- Mirrored from wphix.com/template/mazia/services3.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:31 GMT -->
     </div>
   </body>
 </html>

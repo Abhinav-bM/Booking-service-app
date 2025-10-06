@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html class="no-js" lang="">
-  <!-- Mirrored from wphix.com/template/mazia/single-product-5.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Feb 2024 06:04:32 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -9,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
-    <!-- Place favicon.ico in the root directory -->
 
     <!-- CSS here -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -36,22 +34,6 @@
     ></script>
 
     <style>
-      /* CSS for Image Zoom */
-      .zoomable {
-        position: relative;
-        overflow: hidden;
-      }
-
-      .zoomable__img {
-        transform-origin: var(--zoom-pos-x, 0%) var(--zoom-pos-y, 0%);
-        transition: transform 0.4s linear;
-      }
-
-      .zoomable--zoomed .zoomable__img {
-        cursor: zoom-in;
-        transform: scale(var(--zoom, 1));
-      }
-
       /* CSS for the toast notification */
       .toast {
         position: fixed;
@@ -80,91 +62,9 @@
       <div id="loader"></div>
     </div>
 
-    <!-- header section start -->
-    <header
-      class="header pt-30 pb-30 header-sticky header-static bg-white"
-      style="padding-top: 30px; padding-bottom: 15px; top: 0px"
-    >
-      <div class="container-fluid">
-        <div class="header-nav position-relative">
-          <div class="row align-items-center">
-            <div class="col-xl-5 col-lg-6 hidden-md position-static">
-              <div class="header-nav">
-                <nav>
-                  <ul>
-                    <li>
-                      <a href="/">
-                        <span>Home </span>
-                      </a>
-                    </li>
+    <!-- header -->
+    <%- include('../partials/header') %>
 
-                    <li class="position-static">
-                      <a href="/services">
-                        <span>Services</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="/contact">
-                        <span>Contact</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-3">
-              <div class="logo">
-                <a href="index3.html"
-                  ><img src="/img/logo/logo1.png" alt=""
-                /></a>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-lg-3 col-6 col-md-6 col-sm-6 col-9">
-              <div class="header-right">
-                <ul class="text-right">
-                  <% if(!user){ %>
-                  <li>
-                    <a href="/login" class="account"
-                      ><i class="fal fa-user-friends"></i>
-                      <article class="account-registar d-inline-block">
-                        Login
-                      </article></a
-                    >
-                  </li>
-                  <% } %>
-
-                  <li>
-                    <a><i class="fal fa-align-right"></i></a>
-                    <ul class="submenu bold-content text-right">
-                      <li><a href="/userProfile">My Account</a></li>
-
-                      <% if(user){ %>
-                      <li><a href="/user/logout">Logout</a></li>
-                      <% } %>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="mobile-menu visible-sm">
-          <div id="mobile-menu">
-            <ul>
-              <li><a class="pl-3" href="/">Home</a></li>
-              <li><a class="pl-3" href="/services">Services</a></li>
-              <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-        <!-- /. mobile nav -->
-      </div>
-    </header>
-    <!-- header section end -->
-
-    <!-- single product start -->
     <section class="single-product mb-90">
       <div class="container-fluid">
         <div class="shop-wrapper">
@@ -363,84 +263,8 @@
     <!-- related product end -->
 
     <!-- footer section start -->
-    <section class="footer">
-      <div class="footer-bottom pt-77" style="background-color: #292929">
-        <div class="container-1180">
-          <div class="footer-bottom-wrapper">
-            <div class="footer-bottom-primary pb-60">
-              <div class="row">
-                <div class="col-xl-5 col-lg-5 col-md-9">
-                  <div class="footer-item has-desc">
-                    <div class="footer-logo mb-25">
-                      <img
-                        src="img/logo/logo2.png"
-                        width="120"
-                        height="31"
-                        alt=""
-                      />
-                    </div>
-                    <div class="footer-desc">
-                      <p class="mb-10">
-                        Sign to the WatchVista store mailing list to receive
-                        updates on new arrivals, special offers and other
-                        discount information.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-7 col-lg-7 col-md-12">
-                  <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
-                      <div class="footer-menu">
-                        <ul>
-                          <li>
-                            <a href="/userProfile" class="title">MY ACCOUNT</a>
-                          </li>
-                          <li><a href="/checkout">Cart</a></li>
-                          <li><a href="/services">Shop</a></li>
-                          <li><a href="/wishlist">Wishlist</a></li>
-                        </ul>
-                      </div>
-                    </div>
+    <%- include('../partials/footer') %>
 
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
-                      <div class="footer-menu">
-                        <ul>
-                          <li>
-                            <a href="" class="title">Quick Links</a>
-                          </li>
-                          <li><a href="">Special Offers</a></li>
-                          <li><a href="">Gift Cards</a></li>
-                          <li><a href="">Privacy Policy</a></li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 hidden-sm">
-                      <div class="footer-menu">
-                        <ul>
-                          <li>
-                            <a href="" class="title">Company Info</a>
-                          </li>
-                          <li><a href="">About us</a></li>
-                          <li>
-                            <a href="">Business With Us</a>
-                          </li>
-                          <li><a href="">Teams of Use</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- footer section end -->
-
-    <!--------------------------------------------Add to cart------------------------------------------------------->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- JS here -->
