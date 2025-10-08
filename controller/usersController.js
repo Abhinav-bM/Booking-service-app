@@ -3,6 +3,7 @@ const Vendor = require("../models/vendorsModel");
 const Admin = require("../models/adminModel");
 const Services = require("../models/services");
 const Booking = require("../models/booking");
+const Reviews = require("../models/review");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const smsService = require("../helpers/smsService");
@@ -13,9 +14,6 @@ const {
 } = require("../helpers/emailService");
 const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
-const { findUserOrders } = require("../helpers/userHelper");
-const { relativeTimeRounding } = require("moment");
-const { request } = require("http");
 require("dotenv").config();
 const generateSlots = require("../helpers/booking").generateSlots;
 
@@ -47,7 +45,6 @@ let homePage = async (req, res) => {
       services,
       bannerHome,
       user,
-      wishlistProducts: user?.wishlist.products,
     });
   } catch (error) {
     console.error("Failed to get home:", error);
@@ -440,10 +437,14 @@ const serviceDetailsGetPage = async (req, res) => {
       user = await User.findById(userId);
     }
 
+    const reviews = await Reviews.find({ serviceId })
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
     res.render("user/serviceDetails", {
       service,
       user,
       relatedServices,
+      reviews,
     });
   } catch (error) {
     console.error(error);
@@ -835,13 +836,12 @@ const successfulRazorpayOrder = async (req, res) => {
 };
 
 // user profile get page with bookings and addresses
-let userProfile = async (req, res) => {
+const userProfile = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const user = await User.findById(userId).populate("orders");
+    const user = await User.findById(userId);
     const addresses = user.addresses;
-    const allVendors = await Vendor.find({}).populate("products");
     const bookings = await Booking.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(userId) } },
       {
@@ -855,9 +855,6 @@ let userProfile = async (req, res) => {
       { $unwind: "$service" },
       { $sort: { createdAt: -1 } },
     ]);
-
-    let cart = findUserOrders(user, allVendors);
-    cart.reverse();
 
     res.status(200).render("user/account", {
       addresses,
@@ -991,6 +988,31 @@ let getContactPage = async (req, res) => {
   }
 };
 
+// create review - POST
+const postServiceReview = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { serviceId, bookingId, rating, description } = req.body;
+    console.log(req.body);
+
+    console.log("called md", rating, description);
+
+    const review = new Reviews({
+      userId,
+      serviceId,
+      bookingId,
+      rating,
+      description,
+    });
+
+    await review.save();
+
+    res.status(200).send({ message: "Review created successfully" });
+  } catch (error) {
+    console.error("Error while creating review : ", error);
+  }
+};
+
 module.exports = {
   homePage,
   signupGetPage,
@@ -1021,4 +1043,5 @@ module.exports = {
   bookServiceWithCod,
   serviceDetailsGetPage,
   serviceCancelRequestPost,
+  postServiceReview,
 };

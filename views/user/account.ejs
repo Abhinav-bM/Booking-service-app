@@ -47,6 +47,10 @@
 
     <!--== Bootstrap CSS ==-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
 
     <!--== Main Style CSS ==-->
     <link href="assets/css/style.css" rel="stylesheet" />
@@ -312,7 +316,7 @@
                         aria-labelledby="orders-tab"
                       >
                         <div class="myaccount-content">
-                          <h3>Orders</h3>
+                          <h3>Bookings</h3>
 
                           <div class="" style="height: 80dvh; overflow-y: auto">
                             <% if (bookings.length > 0) { %> <%
@@ -341,6 +345,16 @@
                                     />
                                   </a>
                                 </div>
+                                <% if(booking.status === 'delivered') { %>
+                                <button
+                                  type="button"
+                                  class="btn btn-primary mt-3 mx-3"
+                                  data-toggle="modal"
+                                  data-target="#reviewModal_<%= booking._id %>"
+                                >
+                                  Add review
+                                </button>
+                                <% } %>
                               </div>
 
                               <div class="row p-2">
@@ -428,12 +442,12 @@
                               </div>
                             </div>
 
-                            <!-- RETURN MODAL -->
+                            <!-- REVIEW MODAL -->
                             <div
                               class="modal fade"
-                              id="returnModal_<%= booking._id %>"
+                              id="reviewModal_<%= booking._id %>"
                               tabindex="-1"
-                              aria-labelledby="returnModalLabel_<%= booking._id %>"
+                              aria-labelledby="reviewModalLabel_<%= booking._id %>"
                               aria-hidden="true"
                             >
                               <div class="modal-dialog modal-dialog-centered">
@@ -441,9 +455,9 @@
                                   <div class="modal-header">
                                     <h5
                                       class="modal-title"
-                                      id="returnModalLabel_<%= booking._id %>"
+                                      id="reviewModalLabel_<%= booking._id %>"
                                     >
-                                      Return Product
+                                      Add review
                                     </h5>
                                     <button
                                       type="button"
@@ -456,93 +470,63 @@
                                   <div class="modal-body">
                                     <form
                                       id="returnOrderForm_<%= booking._id %>"
-                                      onsubmit="submitReturn(event, $('#orderIdInput_<%= booking._id %>').val(), '<%= booking._id %>',)"
+                                      onsubmit="submitReview(event,'<%= booking._id %>', '<%= booking.service._id %>')"
                                     >
+                                      <div class="my-3">
+                                        <label
+                                          for="rating"
+                                          class="form-label d-block mb-1"
+                                          >Rating</label
+                                        >
+
+                                        <!-- Hidden input to store selected rating -->
+                                        <input
+                                          type="hidden"
+                                          id="reviewRating_<%= booking._id %>"
+                                          name="rating"
+                                          required
+                                        />
+
+                                        <!-- Star rating buttons -->
+                                        <div
+                                          class="star-rating"
+                                          id="starRating_<%= booking._id %>"
+                                        >
+                                          <i
+                                            class="bi bi-star"
+                                            data-value="1"
+                                          ></i>
+                                          <i
+                                            class="bi bi-star"
+                                            data-value="2"
+                                          ></i>
+                                          <i
+                                            class="bi bi-star"
+                                            data-value="3"
+                                          ></i>
+                                          <i
+                                            class="bi bi-star"
+                                            data-value="4"
+                                          ></i>
+                                          <i
+                                            class="bi bi-star"
+                                            data-value="5"
+                                          ></i>
+                                        </div>
+                                      </div>
                                       <div class="mb-3">
                                         <label
-                                          for="cancelReason_<%= booking._id %>"
+                                          for="reviewDescription_<%= booking._id %>"
                                           class="form-label pt-10"
-                                          >Return Reason</label
+                                          >Review</label
                                         >
                                         <textarea
                                           class="form-control"
-                                          id="returnReason_<%= booking._id %>"
-                                          name="returnReason"
+                                          id="reviewDescription_<%= booking._id %>"
+                                          name="description"
                                           rows="3"
                                           required
                                         ></textarea>
-                                      </div>
-                                      <input
-                                        type="hidden"
-                                        id="orderIdInput_<%= booking._id %>"
-                                        value="<%= booking._id %>"
-                                      />
-                                      <div>
-                                        <h6>Refund</h6>
-                                        <% if (booking.paymentMethod === 'RazorPay') { %>
-                                        <input
-                                          type="radio"
-                                          id="originalPayment"
-                                          name="paymentOption"
-                                          value="Original Payment Method"
-                                          checked
-                                        />
-                                        <label for="originalPayment"
-                                          >Original Payment method</label
-                                        >
-                                        <p>or</p>
-                                        <% } %>
-
-                                        <input
-                                          type="radio"
-                                          id="option1"
-                                          name="paymentOption"
-                                          value="Add Bank Account Details"
-                                        />
-                                        <label for="option1"
-                                          >Add Bank Account Details</label
-                                        >
-
-                                        <div class="bankDetails">
-                                          <label for="bankName"
-                                            >Bank Name:</label
-                                          >
-                                          <input
-                                            type="text"
-                                            id="bankName"
-                                            name="bankName"
-                                            placeholder="Enter Bank Name"
-                                            required
-                                          />
-                                          <label for="accountHolderName"
-                                            >Account Holder Name:</label
-                                          >
-                                          <input
-                                            type="text"
-                                            id="accountHolderName"
-                                            name="accountHolderName"
-                                            placeholder="Enter Account Holder Name"
-                                            required
-                                          />
-                                          <label for="accountNumber"
-                                            >Account Number:</label
-                                          >
-                                          <input
-                                            type="text"
-                                            id="accountNumber"
-                                            name="accountNumber"
-                                            placeholder="Enter Account Number"
-                                            required
-                                          />
-                                          <label for="ifsc">IFSC:</label>
-                                          <input
-                                            type="text"
-                                            id="ifsc"
-                                            name="ifsc"
-                                            placeholder="Enter IFSC Code"
-                                            required
-                                          />
-                                        </div>
                                       </div>
 
                                       <button
@@ -556,6 +540,42 @@
                                 </div>
                               </div>
                             </div>
+
+                            <script>
+                              // Star click logic (Bootstrap Icons needed)
+                              document.addEventListener(
+                                "DOMContentLoaded",
+                                function () {
+                                  const stars = document.querySelectorAll(
+                                    "#starRating_<%= booking._id %> i",
+                                  );
+                                  const ratingInput = document.getElementById(
+                                    "reviewRating_<%= booking._id %>",
+                                  );
+
+                                  stars.forEach((star, index) => {
+                                    star.addEventListener("click", () => {
+                                      const value = index + 1;
+                                      ratingInput.value = value;
+
+                                      // Fill all stars up to selected
+                                      stars.forEach((s, i) => {
+                                        s.classList.toggle(
+                                          "bi-star-fill",
+                                          i < value,
+                                        );
+                                        s.classList.toggle(
+                                          "bi-star",
+                                          i >= value,
+                                        );
+                                        s.style.color =
+                                          i < value ? "#facc15" : "#adb5bd";
+                                      });
+                                    });
+                                  });
+                                },
+                              );
+                            </script>
 
                             <% }) %>
                             <% } else { %>
@@ -1051,7 +1071,7 @@
       }
 
       // FUNCTION FOR OPEN RETURN MODAL
-      function openReturnModal(orderId, productId) {
+      function openReviewModal(orderId, productId) {
         console.log(
           "Opening return  modal for Order ID:",
           orderId,
@@ -1062,50 +1082,23 @@
         $("#returnlModal_" + productId).modal("show");
       }
 
-
-      // FUNCTION FOR RETURN REASON AND REFUND POST
-      function submitReturn(event, orderId, productId) {
+      // function for review submission
+      function submitReview(event, bookingId, serviceId) {
         event.preventDefault();
-        const returnReason = $("#returnReason_" + productId).val();
-        const paymentOptions = document.getElementsByName("paymentOption");
-        let paymentOption;
-        for (const option of paymentOptions) {
-          if (option.checked) {
-            paymentOption = option.value;
-            break;
-          }
-        }
+        const rating = $("#reviewRating_" + bookingId).val();
+        const description = $("#reviewDescription_" + bookingId).val();
 
-        console.log("payment option :", paymentOption);
-
-        const refundData = {
-          orderId: orderId,
-          productId: productId,
-          returnReason: returnReason,
-          refundMethod: paymentOption,
+        const reviewData = {
+          serviceId,
+          bookingId,
+          rating,
+          description,
         };
 
-        if (paymentOption === "Add Bank Account Details") {
-          const bankName = $("#bankName").val();
-          const accountHolderName = $("#accountHolderName").val();
-          const accountNumber = $("#accountNumber").val();
-          const ifsc = $("#ifsc").val();
-
-          const refundDetail = {
-            bankName: bankName,
-            accountHolderName: accountHolderName,
-            accountNumber: accountNumber,
-            ifsc: ifsc,
-          };
-
-          refundData.refundDetails = refundDetail;
-        }
-
         axios
-          .post("/product/return", { refundData })
+          .post("/create/review", { ...reviewData })
           .then((response) => {
-            console.log("Response data from return add post : ", response);
-            $("#returnlModal_" + productId).modal("hide");
+            $("#returnlModal_" + bookingId).modal("hide");
             window.location.href = `/userProfile?scrollTo=orders`;
           })
           .catch((error) => {
@@ -1185,7 +1178,7 @@
                             <p class="m-0">${newAddress.addedAddress.district}, ${newAddress.addedAddress.state}, ${newAddress.addedAddress.zip}</p>
                             <p class="m-0">${newAddress.addedAddress.email} , ${newAddress.addedAddress.phone}</p>
                         </div>
-                                                
+
                         <div class="d-flex d-sm-grid justify-content-end gap-2">
                             <div class="gap-2">
 

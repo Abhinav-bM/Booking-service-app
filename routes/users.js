@@ -42,6 +42,7 @@ router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage
 router.post("/book/cod", verifyToken, userController.bookServiceWithCod)
 router.post("/booking/razorPay",verifyToken,userController.placeOrderPostRazorpay)
 router.post("/razorpay-verify",verifyToken,userController.successfulRazorpayOrder)
+router.post("/create/review", verifyToken, userController.postServiceReview)
 
 router.put("/update-address/:id",verifyToken,userController.editAddress)
 
