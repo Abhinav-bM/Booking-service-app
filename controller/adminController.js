@@ -61,72 +61,30 @@ let loginPostPage = async (req, res) => {
   }
 };
 
-// ADMIN DASHBOARD DISPLAY
+// Admin dashboard display
 let dashboardPage = async (req, res) => {
   try {
     const user = req.user;
     const vendors = await Vendor.find();
-    const users = await User.find({}, "orders");
     const admin = await Admin.findOne();
+    const allbookings = await Booking.find()
+      .populate("userId", "name email phone")
+      .populate("serviceId", "title category sellingPrice images")
+      .sort({ createdAt: -1 });
 
-    const allOrders = users.flatMap((user) => user.orders);
+    let totalSales = allbookings.reduce((sum, b) => sum + b.amount, 0);
 
-    let productsArr = [];
-    allOrders.forEach((prod) => {
-      prod.products.forEach((product) => productsArr.push(product));
-    });
-    const filtered = productsArr.filter(
-      (prod) => prod.orderStatus === "Delivered",
-    );
-    let totalSales = 0;
-    filtered.forEach((prod) => (totalSales += prod.qty * prod.price));
-
-    ///////////////////////////////
-    const vendorProducts = await Vendor.find().populate("products");
-
-    const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
-
-    const vendorOrders = [];
-
-    usersWithOrders.forEach((user) => {
-      user.orders.forEach((order) => {
-        order.products.forEach((product) => {
-          if (product.productId) {
-            // Find the matching product from vendor products
-            const matchingProduct = vendorProducts.reduce((acc, vendor) => {
-              const foundProduct = vendor.products.find((vendorProduct) =>
-                vendorProduct._id.equals(product.productId),
-              );
-              return foundProduct ? foundProduct : acc;
-            }, null);
-
-            if (matchingProduct) {
-              const vendorOrder = {
-                quantity: product.qty,
-                price: product.price,
-                orderStatus: product.orderStatus,
-                orderDate: order.orderDate,
-              };
-              vendorOrders.push(vendorOrder);
-            }
-          }
-        });
-      });
-    });
-    ///////////////////////////////
-
-    const salesData = calculateTotalSales(vendorOrders);
-    const ordersCountForLast10Days = getOrdersCountForLast10Days(vendorOrders);
-    const latest10orders = await getLatest10Orders();
+    // const salesData = calculateTotalSales(vendorOrders);
+    // const ordersCountForLast10Days = getOrdersCountForLast10Days(vendorOrders);
+    const latest10Bookings = allbookings.slice(0, 10);
 
     res.render("admin/dashboard", {
       user,
       vendors,
       totalSales,
-      users,
-      salesData,
-      ordersCountForLast10Days,
-      latest10orders,
+      // salesData,
+      // ordersCountForLast10Days,
+      latest10Bookings,
     });
   } catch (error) {
     console.error(error);
@@ -407,118 +365,6 @@ let verifyVendor = async (req, res) => {
   }
 };
 
-// COUPON LIST GET PAGE
-let couponList = async (req, res) => {
-  try {
-    const admin = await Admin.findOne({});
-    const coupons = admin.coupons;
-    res.render("admin/coupons-list", { coupons, user: admin });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// ADD COUPON GET PAGE
-let couponAddGet = async (req, res) => {
-  try {
-    const categories = await Admin.aggregate([
-      { $unwind: "$categories" },
-      { $project: { _id: 0, categoryName: "$categories.categoryName" } },
-    ]);
-    const admin = await Admin.findOne({});
-    res.status(200).render("admin/coupon-add", { categories, user: admin });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server error" });
-  }
-};
-
-// ADD COUPON POST
-let couponAddPost = async (req, res) => {
-  console.log("added coupon: ", req.body);
-  const { couponCode, couponStatus, couponType, discountValue, endDate } =
-    req.body;
-  try {
-    const admin = await Admin.findOne();
-    const coupon = {
-      couponCode,
-      couponStatus,
-      couponType,
-      discountValue,
-      endDate,
-    };
-    admin.coupons.push(coupon);
-    admin.save();
-    res.status(200).redirect("/admin/couponList");
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// EDIT COUPON PAGE
-let editCouponGet = async (req, res) => {
-  const couponId = req.params.id;
-  try {
-    const admin = await Admin.findOne();
-    const coupon = admin.coupons;
-
-    const couponForEdit = coupon.find(
-      (coupon) => coupon._id.toString() === couponId,
-    );
-
-    const categories = await Admin.aggregate([
-      { $unwind: "$categories" },
-      { $project: { _id: 0, categoryName: "$categories.categoryName" } },
-    ]);
-
-    res
-      .status(200)
-      .render("admin/coupon-edit", { couponForEdit, categories, user: admin });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server error" });
-  }
-};
-
-// EDIT COUPON POST PAGE
-let editCouponPost = async (req, res) => {
-  const couponId = req.body.id;
-  const data = req.body.data;
-  try {
-    const admin = await Admin.findOne();
-    const index = admin?.coupons.findIndex(
-      (coupon) => coupon._id.toString() == couponId,
-    );
-    admin.coupons[index] = data;
-    console.log(data);
-    await admin.save();
-    res.status(200).json({ message: "Coupon updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(200).json({ error: "Internal server error" });
-  }
-};
-
-// COUPON DELETE
-let deleteCoupon = async (req, res) => {
-  const couponId = req.params.id;
-  console.log("id for delete coupn :", couponId);
-  try {
-    const admin = await Admin.findOne({});
-    const index = admin?.coupons.findIndex(
-      (coupon) => coupon._id.toString() == couponId,
-    );
-    admin?.coupons.splice(index, 1);
-    admin.save();
-    res.status(200).json({ message: "Coupon deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
 // BANNER GET PAGE
 let bannerGetPage = async (req, res) => {
   try {
@@ -643,12 +489,6 @@ module.exports = {
   deleteSubcategory,
   vendorsList,
   verifyVendor,
-  couponList,
-  couponAddGet,
-  couponAddPost,
-  editCouponGet,
-  editCouponPost,
-  deleteCoupon,
   bannerGetPage,
   bannerAddPost,
   deleteBanner,

@@ -74,13 +74,6 @@
             </li>
 
             <li>
-              <a class="m-link" href="/admin/couponList"
-                ><i class="icofont-sale-discount fs-5"></i>
-                <span>Coupons</span></a
-              >
-            </li>
-
-            <li>
               <a class="m-link" href="/admin/vendorsList">
                 <i class="icofont-funky-man fs-5"></i> <span>Vendors</span>
               </a>
@@ -217,7 +210,7 @@
                     </div>
                     <div class="flex-fill ms-3 text-truncate">
                       <div class="h6 mb-0">Users</div>
-                      <span class="small"><%= users.length %></span>
+                      <span class="small">2</span>
                     </div>
                   </div>
                 </div>
@@ -309,24 +302,24 @@
                       </thead>
 
                       <tbody>
-                        <% latest10orders.forEach(order => { %>
+                        <% latest10Bookings.forEach(booking => { %>
                         <tr>
                           <td>
-                            <strong><%= order.orderId %></strong>
+                            <strong><%= booking._id %></strong>
                           </td>
                           <td>
                             <img
-                              src="<%= order.image %>"
+                              src="<%= booking.serviceId.images[0] %>"
                               class="avatar lg rounded me-2"
                               alt="profile-image"
-                            /><span><%= order.productName %></span>
+                            /><span><%= booking.serviceId.title %></span>
                           </td>
-                          <td><%= order.userName %></td>
-                          <td><%= order.paymentMethod %></td>
+                          <td><%= booking.userId.name %></td>
+                          <td><%= booking.paymentMethod %></td>
 
                           <td>
                             <span class="badge bg-dark"
-                              ><%= order.orderStatus %></span
+                              ><%= booking.status %></span
                             >
                           </td>
                         </tr>
@@ -367,18 +360,7 @@
       </div>
     </div>
 
-    <input
-      type="hidden"
-      name=""
-      id="salesData"
-      value="<%= JSON.stringify(salesData) %>"
-    />
-    <input
-      type="hidden"
-      name=""
-      id="orderData"
-      value="<%= JSON.stringify(ordersCountForLast10Days) %>"
-    />
+   
 
     <!-- Jquery Core Js -->
     <script src="/admin/assets/bundles/libscripts.bundle.js"></script>
