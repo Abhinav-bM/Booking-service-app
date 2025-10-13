@@ -2,6 +2,7 @@ const Vendor = require("../models/vendorsModel");
 const Admin = require("../models/adminModel");
 const User = require("../models/usersModel");
 const Service = require("../models/services");
+const Booking = require("../models/booking");
 const bcrypt = require("bcryptjs");
 const {
   calculateTotalSales,
@@ -20,68 +21,63 @@ const generateOTP = () => {
 require("dotenv").config();
 const Excel = require("exceljs");
 
-// VENDOR DASHBOARD PAGE DISPLAY
-let dashboard = async (req, res) => {
+// vendor dashboard page display
+const dashboard = async (req, res) => {
   try {
     let vendorId = req.user.id;
-    let vendor = await Vendor.findOne({ _id: vendorId });
 
-    const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products",
+    let vendor = await Vendor.findById(vendorId);
+
+    const vendorServices = await Service.find({ vendorId });
+
+    const serviceIds = vendorServices.map((service) => service._id);
+
+    const vendorBookings = await Booking.find({
+      serviceId: { $in: serviceIds },
+    })
+      .populate({ path: "serviceId", select: "title images" })
+      .lean();
+
+    const totalSales = vendorBookings.length;
+
+    const totalRevenue = vendorBookings.reduce(
+      (sum, booking) => sum + (booking.price || 0) * (booking.quantity || 1),
+      0,
     );
-    const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
 
-    const vendorOrders = [];
+    const today = new Date();
+    const last10DaysSales = {};
 
-    usersWithOrders.forEach((user) => {
-      user.orders.forEach((order) => {
-        order.products.forEach((product) => {
-          if (product.productId) {
-            const matchingProduct = vendorProducts.products.find(
-              (vendorProduct) => vendorProduct._id.equals(product.productId),
-            );
+    for (let i = 0; i < 10; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateStr = date.toISOString().split("T")[0];
+      last10DaysSales[dateStr] = 0;
+    }
 
-            if (matchingProduct) {
-              const vendorOrder = {
-                userId: user._id,
-                orderId: order.orderId,
-                productName: matchingProduct.productName,
-                color: matchingProduct.productColor,
-                size: matchingProduct.productSize,
-                productId: product.productId,
-                category: matchingProduct.productCategory,
-                image: matchingProduct.productImages[0],
-                quantity: product.qty,
-                price: product.price,
-                orderStatus: product.orderStatus,
-                totalAmount: order.totalAmount,
-                orderDate: order.orderDate,
-                expectedDeliveryDate: order.expectedDeliveryDate,
-                shippingAddress: order.shippingAddress,
-                paymentMethod: order.paymentMethod,
-                cancelReason: product.cancelReason,
-              };
-              vendorOrders.push(vendorOrder);
-            }
-          }
-        });
-      });
-    });
+    for (const booking of vendorBookings) {
+      const dateStr = new Date(booking.createdAt).toISOString().split("T")[0];
+      if (last10DaysSales[dateStr] !== undefined) {
+        last10DaysSales[dateStr] +=
+          (booking.price || 0) * (booking.quantity || 1);
+      }
+    }
 
-    const salesData = calculateTotalSales(vendorOrders);
-    const topCategories = calculateTopCategoriesSales(vendorOrders);
-    const latestTenOrders = getLatest10DaysOrders(vendorOrders);
-    const totalRevenue = calculateTotalRevenue(vendorOrders);
-    const customers = getUniqueCustomers(vendorOrders);
+    const salesData = Object.entries(last10DaysSales)
+      .map(([date, total]) => ({ date, total }))
+      .reverse();
+
+    const latestTenBookings = vendorBookings
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 10);
 
     res.status(200).render("vendor/dashboard", {
       vendor,
       salesData,
-      vendorOrders,
-      topCategories,
-      latestTenOrders,
+      vendorBookings,
+      latestTenBookings,
       totalRevenue,
-      customers,
+      vendorServices,
     });
   } catch (error) {
     console.error(error);
@@ -558,6 +554,25 @@ let getOrdersForVendor = async (req, res) => {
   }
 };
 
+// get bookings
+const getbookings = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const vendor = await Vendor.findById(vendorId);
+    const vendorServices = await Service.find({ vendorId });
+    const serviceIds = vendorServices.map((service) => service._id);
+
+    const vendorBookings = await Booking.find({
+      serviceId: { $in: serviceIds },
+    })
+      .populate({ path: "serviceId", select: "title images" })
+      .lean();
+    res.render("vendor/booking-list", { vendorBookings, vendor });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // ORDER STATUS UPDATE
 let updateOrderStatus = async (req, res) => {
   const { orderId, productId } = req.params;
@@ -715,4 +730,5 @@ module.exports = {
   // service things
   addServicePost,
   servicesList,
+  getbookings,
 };

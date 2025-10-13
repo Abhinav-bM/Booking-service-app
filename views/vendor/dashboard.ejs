@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr">
-  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:55:54 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -44,10 +43,9 @@
                 ><i class="icofont-home fs-5"></i> <span>Dashboard</span></a
               >
             </li>
-
             <li>
               <a class="m-link" href="/vendor/servicesList"
-                ><i class="icofont-truck-loaded fs-5"></i>Products</a
+                ><i class="icofont-truck-loaded fs-5"></i>Services</a
               >
             </li>
             <li>
@@ -57,28 +55,25 @@
             </li>
 
             <li>
-              <a class="m-link" href="/vendor/orders"
-                ><i class="icofont-notepad"></i> <span>Orders</span></a
+              <a class="m-link" href="/vendor/bookings"
+                ><i class="icofont-notepad"></i> <span>Bookings</span></a
               >
             </li>
 
             <li>
-              <a class="m-link" href="/vendor/returnRepayment"
-                ><i class="icofont-notepad"></i>
-                <span>Return & Repayment</span></a
+              <a class="m-link" href="/vendor/reviews"
+                ><i class="icofont-notepad"></i> <span>Reviews</span></a
               >
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- main body area -->
+      <!-- main body -->
       <div class="main px-lg-4 px-md-4">
-        <!-- Body: Header -->
         <div class="header">
           <nav class="navbar py-4">
             <div class="container-xxl">
-              <!-- header rightbar icon -->
               <div
                 class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1"
               >
@@ -129,12 +124,6 @@
                         <div><hr class="dropdown-divider border-dark" /></div>
                       </div>
                       <div class="list-group m-2">
-                        <!-- <a
-                          href="/vendorProfile"
-                          class="list-group-item list-group-item-action border-0"
-                          ><i class="icofont-ui-user fs-5 me-3"></i>Profile
-                          Page</a
-                        > -->
                         <a
                           href="/vendor/logout"
                           class="list-group-item list-group-item-action border-0"
@@ -194,21 +183,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col">
-                <div class="alert-danger alert mb-0">
-                  <div class="d-flex align-items-center">
-                    <div
-                      class="avatar rounded no-thumbnail bg-danger text-light"
-                    >
-                      <i class="icofont-student-alt fs-3"></i>
-                    </div>
-                    <div class="flex-fill ms-3 text-truncate">
-                      <div class="h6 mb-0">Customers</div>
-                      <span class="small"><%= customers.length %></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <div class="col">
                 <div class="alert-warning alert mb-0">
                   <div class="d-flex align-items-center">
@@ -218,8 +193,8 @@
                       <i class="icofont-bag fs-3"></i>
                     </div>
                     <div class="flex-fill ms-3 text-truncate">
-                      <div class="h6 mb-0">Products</div>
-                      <span class="small"><%= vendor.products.length %></span>
+                      <div class="h6 mb-0">Services</div>
+                      <span class="small"><%= vendorServices.length %></span>
                     </div>
                   </div>
                 </div>
@@ -234,8 +209,8 @@
                       ></i>
                     </div>
                     <div class="flex-fill ms-3 text-truncate">
-                      <div class="h6 mb-0">Orders</div>
-                      <span class="small"><%= vendorOrders.length %></span>
+                      <div class="h6 mb-0">Bookings</div>
+                      <span class="small"><%= vendorBookings.length %></span>
                     </div>
                   </div>
                 </div>
@@ -253,21 +228,6 @@
                   </div>
                   <div>
                     <canvas id="myChart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xxl-4 col-xl-4">
-                <div class="card">
-                  <div
-                    class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0"
-                  >
-                    <h6 class="m-0 fw-bold">Top Categories Based on Sales</h6>
-                  </div>
-                  <div>
-                    <canvas id="myChartCategory"></canvas>
-                  </div>
-                  <div class="card-body">
-                    <div id="googleMap" style="width: 100%; height: 0px"></div>
                   </div>
                 </div>
               </div>
@@ -291,33 +251,31 @@
                     >
                       <thead>
                         <tr>
-                          <th>Order Id</th>
+                          <th>Booking Id</th>
                           <th>Item</th>
                           <th>Payment Info</th>
-                          <th>Quantity</th>
                           <th>Price</th>
                           <th>Status</th>
                         </tr>
                       </thead>
-                      <% latestTenOrders.forEach(order => {%>
+                      <% latestTenBookings.forEach(booking => {%>
                       <tbody>
                         <tr>
                           <td>
-                            <strong><%= order.orderId %></strong>
+                            <strong><%= booking._id %></strong>
                           </td>
                           <td>
                             <img
-                              src="<%= order.image %>"
+                              src="<%= booking.serviceId.images[0] %>"
                               class="avatar lg rounded me-2"
                               alt="profile-image"
-                            /><span> <%= order.productName %> </span>
+                            /><span> <%= booking.serviceId.title %> </span>
                           </td>
-                          <td><%= order.paymentMethod %></td>
-                          <td><%= order.quantity %></td>
-                          <td><%= order.price %></td>
+                          <td><%= booking.paymentMethod %></td>
+                          <td><%= booking.amount %></td>
                           <td>
                             <span class="badge bg-dark"
-                              ><%= order.orderStatus %></span
+                              ><%= booking.status %></span
                             >
                           </td>
                         </tr>
@@ -375,12 +333,6 @@
         name=""
         id="salesData"
         value="<%= JSON.stringify(salesData) %>"
-      />
-      <input
-        type="hidden"
-        name=""
-        id="categoryData"
-        value="<%= JSON.stringify(topCategories) %>"
       />
     </div>
 

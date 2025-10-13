@@ -128,15 +128,14 @@
             </li>
 
             <li>
-              <a class="m-link" href="/vendor/orders"
-                ><i class="icofont-notepad"></i> <span>Orders</span></a
+              <a class="m-link active" href="/vendor/bookings"
+                ><i class="icofont-notepad"></i> <span>Bookings</span></a
               >
             </li>
 
             <li>
-              <a class="m-link" href="/vendor/returnRepayment"
-                ><i class="icofont-notepad"></i>
-                <span>Return & Repayment</span></a
+              <a class="m-link" href="/vendor/reviews"
+                ><i class="icofont-notepad"></i> <span>Reviews</span></a
               >
             </li>
           </ul>
@@ -448,7 +447,7 @@
 
         // Find the selected category from the categories array
         const selectedCategoryObj = categories.find(
-          (category) => category.categoryName === selectedCategory
+          (category) => category.categoryName === selectedCategory,
         );
 
         if (selectedCategoryObj) {
@@ -487,7 +486,7 @@
         ClassicEditor.create(document.querySelector("#editor")).catch(
           (error) => {
             console.error(error);
-          }
+          },
         );
         //Datatable
         $("#myCartTable")
@@ -510,7 +509,7 @@
         var drEvent = $("#dropify-event").dropify();
         drEvent.on("dropify.beforeClear", function (event, element) {
           return confirm(
-            'Do you really want to delete "' + element.file.name + '" ?'
+            'Do you really want to delete "' + element.file.name + '" ?',
           );
         });
 

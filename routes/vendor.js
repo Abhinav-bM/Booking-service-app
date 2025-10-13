@@ -30,6 +30,8 @@ router.post("/updateOrderStatus/:orderId/:productId",vendorAuthMiddleware,vendor
 
 // services routes
 router.get("/servicesList",vendorAuthMiddleware,vendorController.servicesList) // changed from productList to servicesList
+router.get("/bookings", vendorAuthMiddleware, vendorController.getbookings)
+
 
 router.post("/addService",vendorAuthMiddleware,upload.fields([{ name: 'mainImage', maxCount: 1 }, { name: 'secondImage', maxCount: 1 }, { name: 'thirdImage', maxCount: 1 }, { name: 'fourthImage', maxCount: 1 }]),vendorController.addServicePost)
 
