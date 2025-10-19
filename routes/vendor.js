@@ -17,6 +17,7 @@ router.get("/editProduct/:id",vendorAuthMiddleware,vendorController.editProduct)
 router.get("/orders",vendorAuthMiddleware,vendorController.getOrdersForVendor)
 router.get("/sales-report/excel/:startDate/:endDate",vendorAuthMiddleware,vendorController.salesExcel)
 router.get("/returnRepayment",vendorAuthMiddleware,vendorController.returnRepaymentGetPage)
+router.get(`/reviews`,vendorAuthMiddleware, vendorController.getReviews)
 
 router.post("/register",vendorController.vendorRegisterPostPage) 
 router.post("/login",vendorController.vendorLoginPostPage)
@@ -29,7 +30,7 @@ router.post("/updateOrderStatus/:orderId/:productId",vendorAuthMiddleware,vendor
 
 // services routes
 router.get("/addService",vendorAuthMiddleware,vendorController.addService)
-router.get("/servicesList",vendorAuthMiddleware,vendorController.servicesList) // changed from productList to servicesList
+router.get("/servicesList",vendorAuthMiddleware,vendorController.servicesList)
 router.get("/bookings", vendorAuthMiddleware, vendorController.getbookings)
 
 

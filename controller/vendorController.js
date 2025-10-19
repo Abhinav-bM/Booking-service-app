@@ -3,6 +3,7 @@ const Admin = require("../models/adminModel");
 const User = require("../models/usersModel");
 const Service = require("../models/services");
 const Booking = require("../models/booking");
+const Reviews = require(`../models/review`);
 const bcrypt = require("bcryptjs");
 const {
   calculateTotalSales,
@@ -653,6 +654,23 @@ let returnRepaymentGetPage = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const vendor = await Vendor.findById(vendorId);
+    const vendorServices = await Service.find({ vendorId }).select("_id title");
+    const serviceIds = vendorServices.map((s) => s._id);
+    const reviews = await Reviews.find({ serviceId: { $in: serviceIds } })
+      .populate("serviceId", "title")
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
+    res.render("vendor/reviewsList", {
+      reviews,
+      vendor,
+    });
+  } catch (error) {}
+};
+
 module.exports = {
   loginGetPage,
   registerGetPage,
@@ -678,4 +696,5 @@ module.exports = {
   addServicePost,
   servicesList,
   getbookings,
+  getReviews,
 };

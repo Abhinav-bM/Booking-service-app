@@ -21,6 +21,8 @@ router.get("/categoryList",adminAuthMiddleware,adminController.categoryList)
 router.get("/subcategoryList",adminAuthMiddleware,adminController.subcategoryList)
 router.get("/vendorsList",adminAuthMiddleware,adminController.vendorsList)
 router.get("/banner",adminAuthMiddleware,adminController.bannerGetPage)
+router.get(`/reviews`,adminAuthMiddleware, adminController.getReviews)
+
 
 router.post("/loginPost", adminController.loginPostPage);
 router.post("/addCategory",adminAuthMiddleware,adminController.addCategory)

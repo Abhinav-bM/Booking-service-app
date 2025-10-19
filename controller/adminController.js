@@ -3,6 +3,7 @@ const User = require("../models/usersModel");
 const Vendor = require("../models/vendorsModel");
 const Services = require("../models/services");
 const Booking = require("../models/booking");
+const Review = require("../models/review");
 const {
   calculateTotalSales,
   getOrdersCountForLast10Days,
@@ -472,6 +473,22 @@ const bookingList = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  try {
+    const admin = await Admin.findOne();
+    const vendorServices = await Services.find().select("_id title");
+    const serviceIds = vendorServices.map((s) => s._id);
+    const reviews = await Review.find({ serviceId: { $in: serviceIds } })
+      .populate("serviceId", "title")
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
+    res.render("admin/reviewsList", {
+      reviews,
+      user: admin,
+    });
+  } catch (error) {}
+};
+
 module.exports = {
   loginGetPage,
   loginPostPage,
@@ -496,4 +513,5 @@ module.exports = {
   // services related controller
   servicesList,
   bookingList,
+  getReviews,
 };
