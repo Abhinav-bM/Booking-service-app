@@ -158,17 +158,21 @@
                                               <td><%= booking.amount %></td>
 
                                               <td>
-                                                <form id="updateOrderForm-<%= booking._id %>-<%= index %>" method="POST">
-                                                    <select name="status" class="form-select" onchange="updateOrderStatus(event, '<%= booking._id %>', '<%= booking.serviceId.serviceId %>', '<%= index %>')">
-                                                      <option value="Pending" <%= booking.status === "Pending" ? "selected" : "" %>> Pending</option>
-                                                      <option value="Processing" <%= booking.status === "Processing" ? "selected" : "" %>> Processing</option>
-                                                      <option value="Shipped" <%= booking.status === "Shipped" ? "selected" : "" %>>Shipped</option>
-                                                      <option value="Delivered" <%= booking.status === "Delivered" ? "selected" : "" %>>Delivered</option>
-                                                      <option value="Requested for Cancellation" <%= booking.status === "Requested for Cancellation" ? "selected" : "" %>>Requested for Cancellation</option>
-                                                      <option value="Cancelled" <%= booking.status === "Cancelled" ? "selected" : "" %>>Cancelled</option>
-                                                    </select>
+                                                <form id="updateBookingForm-<%= booking._id %>-<%= index %>" method="POST">
+                                                  <select name="status" class="form-select"
+                                                    onchange="updateBookingStatus(event, '<%= booking._id %>', '<%= index %>')">
+
+                                                    <option value="pending" <%= booking.status === "pending" ? "selected" : "" %>>Pending</option>
+                                                    <option value="confirmed" <%= booking.status === "confirmed" ? "selected" : "" %>>Confirmed</option>
+                                                    <option value="in_progress" <%= booking.status === "in_progress" ? "selected" : "" %>>In Progress</option>
+                                                    <option value="completed" <%= booking.status === "completed" ? "selected" : "" %>>Completed</option>
+                                                    <option value="cancelled" <%= booking.status === "cancelled" ? "selected" : "" %>>Cancelled</option>
+                                                    <option value="refunded" <%= booking.status === "refunded" ? "selected" : "" %>>Refunded</option>
+
+                                                  </select>
                                                 </form>
-                                            </td>
+                                              </td>
+
 
                                               <td>
                                                 <!-- Eye icon button to view details -->
@@ -227,25 +231,26 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        function updateOrderStatus(event, orderId, productId, index) {
-            event.preventDefault(); // Prevent default form submission
-            console.log(orderId, productId);
+      function updateBookingStatus(event, bookingId, index) {
+        event.preventDefault();
 
-            const form = document.querySelector(`#updateOrderForm-${orderId}-${index}`);
-            const status = form.querySelector('select[name="status"]').value;
+        const form = document.querySelector(`#updateBookingForm-${bookingId}-${index}`);
+        const status = form.querySelector('select[name="status"]').value;
 
-            axios.post(`/vendor/updateOrderStatus/${orderId}/${productId}`, { status })
-                .then(response => {
-                    // Handle success response, if needed
-                    console.log(response.data);
-                })
-                .catch(error => {
-                    // Handle error response, if needed
-                    console.error(error);
-                });
-        }
-      
+        axios.post(`/vendor/updateBookingStatus/${bookingId}`, { status })
+          .then(response => {
+            console.log(response.data);
+            if (response.data.message) {
+              toast(`✅ ${response.data.message}`);
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            alert("Failed to update booking status");
+          });
+      }
     </script>
+
 
     <!-- Jquery Page Js -->
     <script src="../js/template.js"></script>
@@ -260,6 +265,4 @@
         });
     </script>
 </body>
-
-<!-- Mirrored from pixelwibes.com/template/ebazar/html/dist/order-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:28 GMT -->
 </html> 

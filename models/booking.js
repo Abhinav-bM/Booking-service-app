@@ -27,7 +27,14 @@ const bookingSchema = new mongoose.Schema(
     slot: { type: String, required: true }, // "09:00 - 09:30"
     status: {
       type: String,
-      enum: ["pending", "paid", "cancelled", "confirmed", "delivered"],
+      enum: [
+        "pending",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "refunded",
+      ],
       default: "pending",
     },
     paymentMethod: { type: String, enum: ["COD", "ONLINE"], required: true },

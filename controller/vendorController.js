@@ -521,43 +521,63 @@ const getbookings = async (req, res) => {
   }
 };
 
-// ORDER STATUS UPDATE
-let updateOrderStatus = async (req, res) => {
-  const { orderId, productId } = req.params;
-  const { status } = req.body;
-
+// Update booking status
+const updateBookingStatus = async (req, res) => {
   try {
-    const user = await User.findOne({
-      orders: { $elemMatch: { orderId: orderId } },
-    });
+    const { bookingId } = req.params;
+    const { status } = req.body;
+    const vendorId = req.user?.id;
 
-    if (!user) {
-      return res.status(404).json({ message: "User or order not found" });
+    // Validate status
+    const validStatuses = [
+      "pending",
+      "confirmed",
+      "in_progress",
+      "completed",
+      "cancelled",
+      "refunded",
+    ];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
     }
 
-    const order = user.orders.find((order) => order.orderId === orderId);
+    // Find booking and populate service to verify vendor
+    const booking = await Booking.findById(bookingId).populate("serviceId");
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
 
-    const product = order.products.find(
-      (prod) => prod.productId.toString() === productId,
-    );
-
-    if (!product) {
+    // Ensure vendor owns the service
+    if (booking.serviceId.vendorId.toString() !== vendorId.toString()) {
       return res
-        .status(404)
-        .json({ message: "Product not found in the order" });
+        .status(403)
+        .json({ message: "Unauthorized: Not your booking" });
     }
 
-    product.orderStatus = status;
+    // Update booking status
+    booking.status = status;
 
-    if (status === "Delivered") {
-      product.deliveredDate = new Date();
+    // If completed, mark completed date
+    if (status === "completed") {
+      booking.completedAt = new Date();
     }
 
-    await user.save();
+    // If cancelled after payment, refund logic can go here
+    if (status === "cancelled" && booking.paymentStatus === "paid") {
+      booking.paymentStatus = "refunded";
+    }
 
-    res.status(200).json({ message: "Order status updated successfully" });
+    await booking.save();
+
+    res.status(200).json({
+      message: "Booking status updated successfully",
+      bookingId: booking._id,
+      newStatus: booking.status,
+      paymentStatus: booking.paymentStatus,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error updating booking status:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -687,7 +707,6 @@ module.exports = {
   editProductPost,
   deleteProduct,
   getOrdersForVendor,
-  updateOrderStatus,
   salesExcel,
   returnRepaymentGetPage,
 
@@ -697,4 +716,5 @@ module.exports = {
   servicesList,
   getbookings,
   getReviews,
+  updateBookingStatus,
 };
