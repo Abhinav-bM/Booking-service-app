@@ -387,21 +387,18 @@ const getServicesPage = async (req, res) => {
     // Pagination logic
     const ITEMS_PER_PAGE = 8;
     const page = +req.query.page || 1;
-    const totalProducts = allServices.length;
-    const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+    const totalServices = allServices.length;
+    const totalPages = Math.ceil(totalServices / ITEMS_PER_PAGE);
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalProducts);
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalServices);
     const paginatedProducts = allServices.slice(startIndex, endIndex);
-
-    console.log(allServices);
 
     res.status(200).render("user/services", {
       services: allServices,
       allCategories,
       user,
-      wishlistProducts: user?.wishlist.products,
       currentPage: page,
-      hasNextPage: ITEMS_PER_PAGE * page < totalProducts,
+      hasNextPage: ITEMS_PER_PAGE * page < totalServices,
       hasPrevPage: page > 1,
       nextPage: page + 1,
       prevPage: page - 1,

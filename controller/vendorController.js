@@ -85,8 +85,8 @@ const dashboard = async (req, res) => {
   }
 };
 
-// VENDOR LOGIN PAGE DISPLAY
-let loginGetPage = (req, res) => {
+// Vendor login page display
+const loginGetPage = (req, res) => {
   try {
     res.status(200).render("vendor/vendorlogin");
   } catch (error) {
@@ -94,8 +94,8 @@ let loginGetPage = (req, res) => {
   }
 };
 
-// VENDOR REGISTER PAGE DISPLAY
-let registerGetPage = async (req, res) => {
+// Vendor register page display
+const registerGetPage = async (req, res) => {
   try {
     res.status(200).render("vendor/vendorRegister");
   } catch (error) {
@@ -103,8 +103,8 @@ let registerGetPage = async (req, res) => {
   }
 };
 
-// VENDOR REGISTER POST PAGE
-let vendorRegisterPostPage = async (req, res) => {
+// Vendor register post page
+const vendorRegisterPostPage = async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
 
@@ -119,8 +119,6 @@ let vendorRegisterPostPage = async (req, res) => {
 
     await newVendor.save();
 
-    console.log(newVendor);
-
     res.status(201).redirect("/vendor/login");
   } catch (error) {
     console.error("Signup failed:", error);
@@ -128,14 +126,14 @@ let vendorRegisterPostPage = async (req, res) => {
   }
 };
 
-// VENDOR LOGIN POST PAGE
-let vendorLoginPostPage = async (req, res) => {
+// Vendor login post page
+const vendorLoginPostPage = async (req, res) => {
   try {
     const vendor = await Vendor.findOne({ email: req.body.email });
 
     if (vendor?.status) {
       return res.render("vendor/vendorlogin", {
-        error: "you are restricted by admin",
+        error: "You are restricted by admin",
       });
     } else if (vendor) {
       const passwordMatch = await bcrypt.compare(
@@ -177,8 +175,8 @@ let vendorLoginPostPage = async (req, res) => {
   }
 };
 
-// Add Service PAGE DISPLAY
-let addProduct = async (req, res) => {
+// Add service page display
+const addService = async (req, res) => {
   try {
     const vendorId = req.user.id;
     const vendor = await Vendor.findOne({ _id: vendorId });
@@ -190,65 +188,16 @@ let addProduct = async (req, res) => {
       ),
     }));
 
-    res.status(200).render("vendor/product-add", { categories, vendor });
+    res.status(200).render("vendor/service-add", { categories, vendor });
   } catch (error) {
     console.error(error);
     res.status(404).send("page not found");
   }
 };
 
-// Add Service POST PAGE
-// let addProductpost = async (req, res) => {
-//   const {
-//     croppedMainImage,
-//     croppedSecondImage,
-//     croppedThirdImage,
-//     croppedFourthImage,
-//   } = req.body;
-//   console.log("Image datas :", req.body);
-//   try {
-//     let { email } = req.user;
-
-//     let productData = req.body;
-
-//     let vendor = await Vendor.findOne({ email });
-
-//     const mainImage = await cloudinary.uploader.upload(croppedMainImage);
-//     const secondImage = await cloudinary.uploader.upload(croppedSecondImage);
-//     const thirdImage = await cloudinary.uploader.upload(croppedThirdImage);
-//     const fourthImage = await cloudinary.uploader.upload(croppedFourthImage);
-
-//     const imageUrls = [
-//       mainImage.secure_url,
-//       secondImage.secure_url,
-//       thirdImage.secure_url,
-//       fourthImage.secure_url,
-//     ];
-//     // Create a new Product instance with uploaded image URLs
-//     const newProduct = {
-//       productName: req.body.productName,
-//       productCategory: req.body.productCategory,
-//       productSubCategory: req.body.productSubcategory,
-//       productBrand: req.body.productBrand,
-//       productColor: req.body.productColor,
-//       productSize: req.body.productSize,
-//       productQTY: req.body.productQuantity,
-//       productPrice: req.body.productPrice,
-//       productImages: imageUrls,
-//       productDescription: req.body.productDescription,
-//     };
-//     vendor.products.push(newProduct);
-//     await vendor.save();
-//     res.redirect("/vendor/servicesList");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("server error");
-//   }
-// };
-
+// Add service post page
 const addServicePost = async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
     const {
       croppedMainImage,
       croppedSecondImage,
@@ -257,8 +206,6 @@ const addServicePost = async (req, res) => {
     } = req.body;
 
     let { email } = req.user;
-
-    let productData = req.body;
 
     let vendor = await Vendor.findOne({ email });
 
@@ -716,7 +663,6 @@ module.exports = {
   forgotOrpVerify,
   dashboard,
   vendorLogout,
-  addProduct,
   // addProductpost,
   producList,
   editProduct,
@@ -728,6 +674,7 @@ module.exports = {
   returnRepaymentGetPage,
 
   // service things
+  addService,
   addServicePost,
   servicesList,
   getbookings,

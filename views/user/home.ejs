@@ -142,7 +142,7 @@
                 <div class="product-box-wrapper">
                   <div class="product-img">
                     <a
-                      href="/products?productId=<%= service._id %>"
+                      href="/service/<%= service._id %>"
                       class="product-category"
                     >
                       <img
@@ -154,9 +154,7 @@
                   </div>
 
                   <div class="product-desc pb-20">
-                    <a
-                      href="/services?productId=<%= service._id %>"
-                      class="product-title"
+                    <a href="/service/<%= service._id %>" class="product-title"
                       ><%= service.title %></a
                     >
                     <span
