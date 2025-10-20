@@ -1,4 +1,5 @@
 // utils/slots.js
+
 function pad(n) {
   return String(n).padStart(2, "0");
 }
@@ -14,17 +15,15 @@ function generateSlots(service, dateStr, bookedSlots = []) {
   const [eH, eM] = service.availableUntil.split(":").map(Number);
   const dur = Number(service.duration) || 30;
 
-  // build Date objects using local time
-  const start = new Date(dateStr + "T00:00:00");
-  start.setHours(sH, sM, 0, 0);
-  const end = new Date(dateStr + "T00:00:00");
-  end.setHours(eH, eM, 0, 0);
+  // Build Date objects in **server local time**
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const start = new Date(year, month - 1, day, sH, sM, 0, 0);
+  const end = new Date(year, month - 1, day, eH, eM, 0, 0);
 
   const slots = [];
   let cur = new Date(start);
 
-  // current time (now)
-  const now = new Date();
+  const now = new Date(); // current server time
 
   while (cur.getTime() + dur * 60000 <= end.getTime()) {
     const nxt = new Date(cur.getTime() + dur * 60000);
@@ -40,18 +39,17 @@ function generateSlots(service, dateStr, bookedSlots = []) {
     }
 
     // Skip past slots only if date is today
-    const slotDate = new Date(dateStr + "T00:00:00");
-    slotDate.setHours(cur.getHours(), cur.getMinutes(), 0, 0);
-
     if (
-      slotDate.toDateString() === now.toDateString() && // same day
-      slotDate.getTime() <= now.getTime() // slot already passed
+      cur.getFullYear() === now.getFullYear() &&
+      cur.getMonth() === now.getMonth() &&
+      cur.getDate() === now.getDate() &&
+      cur.getTime() <= now.getTime()
     ) {
       cur = nxt;
       continue;
     }
 
-    // add slot
+    // Add slot
     slots.push({ slot: slotLabel, startTime: startStr, endTime: endStr });
     cur = nxt;
   }
