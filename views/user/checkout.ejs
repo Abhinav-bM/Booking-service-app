@@ -440,8 +440,8 @@
                                 amount: amount,
                                 currency: 'INR',
                                 name: 'Smart cleaning service',
-                                description: 'Smart cleaning service razorpay booking test',
-                                image: 'https://example.com/your_logo.png',
+                                description: 'Smart cleaning service - razorpay booking',
+                                image: 'https://ee.com/your_logo.png',
                                 order_id: orderId,
                                 handler: function (response) {
                                     
@@ -476,8 +476,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Booking Successfull!',
-                            html: `Your booking with ID <strong>${data.orderId}</strong> has been placed.<br>
-                            Total Price: <strong>${totalPrice}</strong><br>`,
+                            html: `Total Price: <strong>${totalPrice}</strong><br>`,
                             confirmButtonText: "Ok"
                         }).then((result) => {
                             if (result.isConfirmed) {
