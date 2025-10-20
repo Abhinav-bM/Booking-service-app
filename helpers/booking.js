@@ -1,4 +1,5 @@
 // utils/slots.js
+const { DateTime, Interval } = require("luxon");
 
 function pad(n) {
   return String(n).padStart(2, "0");
@@ -8,48 +9,48 @@ function pad(n) {
  * service: object with availableFrom "HH:MM", availableUntil "HH:MM", duration (minutes)
  * dateStr: "YYYY-MM-DD"
  * bookedSlots: array of slot strings that are already booked on that date
+ * timezone: e.g., "Asia/Kolkata"
  * returns: array of { slot, startTime, endTime } where slot e.g. "09:00 - 09:30"
  */
-function generateSlots(service, dateStr, bookedSlots = []) {
+function generateSlots(service, dateStr, bookedSlots = [], timezone = "Asia/Kolkata") {
   const [sH, sM] = service.availableFrom.split(":").map(Number);
   const [eH, eM] = service.availableUntil.split(":").map(Number);
   const dur = Number(service.duration) || 30;
 
-  // Build Date objects in **server local time**
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const start = new Date(year, month - 1, day, sH, sM, 0, 0);
-  const end = new Date(year, month - 1, day, eH, eM, 0, 0);
+  const start = DateTime.fromObject(
+    { year: Number(dateStr.split("-")[0]), month: Number(dateStr.split("-")[1]), day: Number(dateStr.split("-")[2]), hour: sH, minute: sM },
+    { zone: timezone }
+  );
 
+  const end = DateTime.fromObject(
+    { year: Number(dateStr.split("-")[0]), month: Number(dateStr.split("-")[1]), day: Number(dateStr.split("-")[2]), hour: eH, minute: eM },
+    { zone: timezone }
+  );
+
+  const now = DateTime.now().setZone(timezone);
+
+  let cur = start;
   const slots = [];
-  let cur = new Date(start);
 
-  const now = new Date(); // current server time
+  while (cur.plus({ minutes: dur }) <= end) {
+    const nxt = cur.plus({ minutes: dur });
 
-  while (cur.getTime() + dur * 60000 <= end.getTime()) {
-    const nxt = new Date(cur.getTime() + dur * 60000);
-
-    const startStr = pad(cur.getHours()) + ":" + pad(cur.getMinutes());
-    const endStr = pad(nxt.getHours()) + ":" + pad(nxt.getMinutes());
+    const startStr = pad(cur.hour) + ":" + pad(cur.minute);
+    const endStr = pad(nxt.hour) + ":" + pad(nxt.minute);
     const slotLabel = `${startStr} - ${endStr}`;
 
-    // Skip if already booked
+    // Skip booked
     if (bookedSlots.includes(slotLabel)) {
       cur = nxt;
       continue;
     }
 
-    // Skip past slots only if date is today
-    if (
-      cur.getFullYear() === now.getFullYear() &&
-      cur.getMonth() === now.getMonth() &&
-      cur.getDate() === now.getDate() &&
-      cur.getTime() <= now.getTime()
-    ) {
+    // Skip past slots if today
+    if (cur < now && cur.hasSame(now, "day")) {
       cur = nxt;
       continue;
     }
 
-    // Add slot
     slots.push({ slot: slotLabel, startTime: startStr, endTime: endStr });
     cur = nxt;
   }
