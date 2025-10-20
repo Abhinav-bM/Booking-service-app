@@ -203,41 +203,36 @@
                     <div class="tab-pane fade show active" id="shop-tab-3">
                       <div class="product-wrapper mt-55">
                         <div class="row" id="productDisplay">
-                          <!-- PRODUCT LIST -->
-                          <% services.forEach(service=>{ %>
-                          <div
-                            class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12"
-                          >
-                            <div class="product-box mb-40">
-                              <div class="product-box-wrapper">
-                                <div class="product-img">
-                                  <a
-                                    href="/service/<%= service._id %>"
-                                    class="product-category"
-                                  >
-                                    <img
-                                      src="<%= service.images[0] %>"
-                                      class="w-100"
-                                      alt="<%= service.title %>"
-                                    />
-                                  </a>
-                                </div>
-
-                                <div class="product-desc pb-20">
-                                  <a
-                                    href="/service/<%= service._id %>"
-                                    class="product-title"
-                                    ><%= service.title %></a
-                                  >
-                                  <span>₹ <%= service.sellingPrice %></span>
-                                
-                                </div>
-                              </div>
-                              <a href="/service/<%= service._id %>/book" class="bg-primary px-4 py-2 rounded d-flex justify-content-center align-items-center text-white">Book Now</a>
-
-                            </div>
+                        <% if (services.length === 0) { %>
+                          <div class="col-12 text-center py-5">
+                            <h4>No services found</h4>
                           </div>
-                          <% }); %> 
+                        <% } else { %>
+                          <% services.forEach(service => { %>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                              <div class="product-box mb-40">
+                                <div class="product-box-wrapper">
+                                  <div class="product-img">
+                                    <a href="/service/<%= service._id %>" class="product-category">
+                                      <img src="<%= service.images[0] %>" class="w-100" alt="<%= service.title %>" />
+                                    </a>
+                                  </div>
+
+                                  <div class="product-desc pb-20">
+                                    <a href="/service/<%= service._id %>" class="product-title">
+                                      <%= service.title %>
+                                    </a>
+                                    <span>₹ <%= service.sellingPrice %></span>
+                                  </div>
+                                </div>
+                                <a href="/service/<%= service._id %>/book" class="bg-primary px-4 py-2 rounded d-flex justify-content-center align-items-center text-white">
+                                  Book Now
+                                </a>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+
                         </div>
 
                         <div class="d-flex justify-content-center mt-20 mb-20">
@@ -296,6 +291,8 @@
                             </ul>
                           </nav>
                         </div>
+
+
                         
                       </div>
                     </div>
