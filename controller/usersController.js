@@ -369,13 +369,8 @@ let userLogout = async (req, res) => {
 const getServicesPage = async (req, res) => {
   try {
     const token = req.cookies.jwt;
-    const allServices = await Services.find();
     const admin = await Admin.findOne({});
-    const allCategories = [];
-
-    admin.categories.forEach((category) => {
-      allCategories.push(category.categoryName);
-    });
+    const allCategories = admin.categories.map((c) => c.categoryName);
 
     let user;
     if (token) {
@@ -384,25 +379,46 @@ const getServicesPage = async (req, res) => {
       user = await User.findById(userId);
     }
 
-    // Pagination logic
-    const ITEMS_PER_PAGE = 8;
-    const page = +req.query.page || 1;
-    const totalServices = allServices.length;
-    const totalPages = Math.ceil(totalServices / ITEMS_PER_PAGE);
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalServices);
-    const paginatedProducts = allServices.slice(startIndex, endIndex);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
+    const search = req.query.search ? req.query.search.trim() : "";
+    const sort = req.query.sort || "default";
+    const category = req.query.category || null;
+
+    const query = {};
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    if (category) {
+      query.category = category;
+    }
+
+    // sorting
+    let sortOption = {};
+    if (sort === "latest") sortOption = { createdAt: -1 };
+    else if (sort === "low_to_high") sortOption = { sellingPrice: 1 };
+    else if (sort === "high_to_low") sortOption = { sellingPrice: -1 };
+
+    const totalServices = await Services.countDocuments(query);
+    const services = await Services.find(query)
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalServices / limit);
 
     res.status(200).render("user/services", {
-      services: allServices,
+      services,
       allCategories,
+      currentCategory: category || null,
       user,
       currentPage: page,
-      hasNextPage: ITEMS_PER_PAGE * page < totalServices,
+      hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
       nextPage: page + 1,
       prevPage: page - 1,
       lastPage: totalPages,
+      request: req,
     });
   } catch (error) {
     console.error("Error fetching services:", error);

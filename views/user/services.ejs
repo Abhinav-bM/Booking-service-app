@@ -79,7 +79,7 @@
       z-index: 999;
       border-radius: 4px;
       display: none;
-      max-width: 250px; /* Set maximum width */
+      max-width: 250px;
       width: 100%;
     }
 
@@ -96,7 +96,6 @@
     }
 
     @media (max-width: 767px) {
-      /* Hide on screens smaller than 767px */
       .hide-on-small {
         display: none;
       }
@@ -154,13 +153,13 @@
               <div class="filter-heading">
                 <div class="row justify-content-end px-4">
                   <div class="sorting d-inline-block">
-                    <select name="sort" id="shop-sort">
+                    <select name="sort" id="shop-sort" class="">
                       <option value="Default">Default sorting</option>
                       <option value="latest">Sort by latest</option>
-                      <option value="low to high">
+                      <option value="low_to_high">
                         Sort by price: low to high
                       </option>
-                      <option value="high to low">
+                      <option value="high_to_low">
                         Sort by price: high to low
                       </option>
                     </select>
@@ -179,6 +178,7 @@
                                 <li>
                                   <a
                                     href="#"
+                                    class="<%= currentCategory === category ? ' bg-primary text-light' : '' %>"
                                     onclick="getProductsByCategory('<%= category %>',event)"
                                     ><%= category %></a
                                   >
@@ -188,7 +188,6 @@
                             </div>
                           </div>
                         </div>
-                        <!-- Add more filter options here if needed -->
                       </div>
                     </div>
                   </div>
@@ -243,13 +242,23 @@
 
                         <div class="d-flex justify-content-center mt-20 mb-20">
                           <nav aria-label="Page navigation example">
+                            <% 
+                              const queryParams = new URLSearchParams(request.query);
+                              queryParams.delete('page');
+                              const baseQuery = queryParams.toString() ? `&${queryParams.toString()}` : '';
+                            %>
+
                             <ul class="pagination justify-content-end">
-                              <% if(hasPrevPage) { %>
+
+                              <% if (hasPrevPage) { %>
                               <li class="page-item">
-                                <a class="page-link bg-dark text-white" href="?page=<%= prevPage %>" aria-label="Previous">
+                                <a class="page-link bg-dark text-white" 
+                                  href="/services?page=<%= prevPage %><%= baseQuery %>" 
+                                  aria-label="Previous">
                                   <span aria-hidden="true">&laquo;</span>
                                 </a>
                               </li>
+
                               <% } else { %>
                               <li class="page-item disabled">
                                 <a class="page-link bg-light text-dark" href="#" tabindex="-1" aria-label="Previous">
@@ -257,19 +266,25 @@
                                 </a>
                               </li>
                               <% } %>
-                        
-                              <% for(let i=1; i<=lastPage; i++) { %>
+
+                              <% for (let i = 1; i <= lastPage; i++) { %>
                               <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                <a class="page-link <%= i === currentPage ? 'bg-dark text-white' : 'bg-light text-dark' %>" href="?page=<%= i %>"><%= i %></a>
+                                <a class="page-link <%= i === currentPage ? 'bg-dark text-white' : 'bg-light text-dark' %>" 
+                                  href="/services?page=<%= i %><%= baseQuery %>">
+                                  <%= i %>
+                                </a>
                               </li>
                               <% } %>
-                        
-                              <% if(hasNextPage) { %>
+
+                              <% if (hasNextPage) { %>
                               <li class="page-item">
-                                <a class="page-link bg-dark text-white" href="?page=<%= nextPage %>" aria-label="Next">
+                                <a class="page-link bg-dark text-white" 
+                                  href="/services?page=<%= nextPage %><%= baseQuery %>" 
+                                  aria-label="Next">
                                   <span aria-hidden="true">&raquo;</span>
                                 </a>
                               </li>
+
                               <% } else { %>
                               <li class="page-item disabled">
                                 <a class="page-link bg-light text-dark" href="#" tabindex="-1" aria-label="Next">
@@ -277,6 +292,7 @@
                                 </a>
                               </li>
                               <% } %>
+
                             </ul>
                           </nav>
                         </div>
@@ -306,7 +322,6 @@
             searchLargeScreen.style.display = "flex";
             searchIconSmallScreen.style.display = "none";
           } else {
-            // searchLargeScreen.style.display = "none";
             searchIconSmallScreen.style.display = "flex";
           }
         }
@@ -316,282 +331,50 @@
       </script>
 
       <script>
-        // Function to fetch products by category
+        //  category
         function getProductsByCategory(category, event) {
-          event.preventDefault(); // Prevent default behavior of anchor tag
-          console.log("function called");
-          axios
-            .get(`/products/${category}`)
-            .then((response) => {
-              console.log(response);
-              displayProducts(
-                response.data.filteredProducts,
-                response.data.user
-              );
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          event.preventDefault(); 
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const existingCategory = urlParams.get('category');
+
+          if (
+            existingCategory &&
+            existingCategory.trim().toLowerCase() === category.trim().toLowerCase()
+          ) {
+            urlParams.delete('category');
+          } else {
+            urlParams.set('category', category);
+          }
+
+          urlParams.delete('page');
+
+          const newUrl = `/services?${urlParams.toString()}`;
+          window.location.href = newUrl;
         }
 
-        const shopSort = document.getElementById("shop-sort");
-        shopSort.addEventListener("change", (event) => {
-          const selectedOption = event.target.value;
-          sortProducts(selectedOption);
+
+        // sort
+        document.addEventListener("DOMContentLoaded", () => {
+          const sortSelect = document.getElementById("shop-sort");
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const currentSort = urlParams.get("sort") || "Default";
+
+          sortSelect.value = currentSort;
+
+          sortSelect.addEventListener("change", (e) => {
+            const newSort = e.target.value;
+
+            const params = new URLSearchParams(window.location.search);
+            params.set("sort", newSort);
+            params.delete("page"); 
+
+            window.location.href = `/services?${params.toString()}`;
+          });
         });
 
-        function sortProducts(selectedOption) {
-          console.log("selected option : ", selectedOption);
-          axios
-            .get(`/products/sort/${selectedOption}`)
-            .then((response) => {
-              console.log("lkjeflskdj :", response);
-              displayProducts(response.data.allProducts, response.data.user);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-
-        // SEARCH FUNCTION
-        // Function to handle search functionality
-        function handleSearch() {
-          const inputValue = document.getElementById("searchInput").value;
-
-          if(inputValue === ""){
-            return false;
-          }
-
-          axios
-            .get(`/products/search/${inputValue}`)
-            .then((response) => {
-              console.log(response);
-              displayProducts(
-                response.data.filteredProducts,
-                response.data.user
-              );
-              document.getElementById("searchInput").value = "";
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-
-        function handleSearch2() {
-          const inputValue = document.getElementById("searchInput1").value;
-
-          if(inputValue === ""){
-            return false;
-          }
-          
-          axios
-            .get(`/products/search/${inputValue}`)
-            .then((response) => {
-              console.log(response);
-              displayProducts(
-                response.data.filteredProducts,
-                response.data.user
-              );
-              document.getElementById("searchInput1").value = "";
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-
-        // Add event listener to the first button
-        document
-          .getElementById("searchButton")
-          .addEventListener("click", handleSearch);
-
-        // Add event listener to the second button
-        document
-          .getElementById("searchButtonSmall")
-          .addEventListener("click", handleSearch2);
-
-        // Function to display products on the page
-        function displayProducts(products, user) {
-          const productDisplay = document.getElementById("productDisplay");
-          productDisplay.innerHTML = ""; // Clear existing products
-
-          if (products.length === 0) {
-            // If no products, display a message
-            const noProductMessage = document.createElement("div");
-            noProductMessage.textContent = "No products available.";
-            productDisplay.appendChild(noProductMessage);
-            return; // Exit function
-          }
-
-          products.forEach((product) => {
-            // Create elements for product components
-            const productDiv = document.createElement("div");
-            productDiv.classList.add(
-              "col-xl-3",
-              "col-lg-3",
-              "col-md-4",
-              "col-sm-6",
-              "col-12"
-            );
-
-            const productBox = document.createElement("div");
-            productBox.classList.add("product-box", "mb-40");
-
-            const productBoxWrapper = document.createElement("div");
-            productBoxWrapper.classList.add("product-box-wrapper");
-
-            const productImg = document.createElement("div");
-            productImg.classList.add("product-img");
-
-            const imgLink = document.createElement("a");
-            imgLink.href = `/products?productId=${product._id}`;
-
-            const img = document.createElement("img");
-            img.src = product.productImages[0];
-            img.classList.add("w-100");
-            img.alt = product.productName;
-
-            imgLink.appendChild(img);
-            productImg.appendChild(imgLink);
-
-            const productDesc = document.createElement("div");
-            productDesc.classList.add("product-desc", "pb-20");
-
-            const productDescTop = document.createElement("div");
-            productDescTop.classList.add("product-desc-top");
-
-            const categories = document.createElement("div");
-            categories.classList.add("categories");
-            const categoryLink = document.createElement("a");
-            categoryLink.href = `/products?productId=${product._id}`;
-            categoryLink.classList.add("product-category");
-            const categorySpan = document.createElement("span");
-            categorySpan.textContent = product.productCategory;
-            categoryLink.appendChild(categorySpan);
-            categories.appendChild(categoryLink);
-
-            const wishlistButton = document.createElement("button");
-            wishlistButton.classList.add("btn", "btn-link");
-            wishlistButton.onclick = function () {
-              addToWishlist(event, product._id);
-            };
-            const wishlistDiv = document.createElement("div");
-            wishlistDiv.classList.add("wishlist", "float-right");
-            const wishlistIcon = document.createElement("i");
-            wishlistIcon.id = `heartIcon-${product._id}`;
-            wishlistIcon.classList.add("fal", "fa-heart", "fa-lg");
-            wishlistDiv.appendChild(wishlistIcon);
-            wishlistButton.appendChild(wishlistDiv);
-
-            const productTitle = document.createElement("a");
-            productTitle.href = `/products?productId=${product._id}`;
-            productTitle.classList.add("product-title");
-            productTitle.textContent = product.productName;
-
-            const priceSwitcher = document.createElement("div");
-            priceSwitcher.classList.add("price-switcher");
-            const priceSpan1 = document.createElement("span");
-            priceSpan1.classList.add("price", "switcher-item");
-            priceSpan1.textContent = `₹ ${product.productPrice}`;
-            const priceSpan2 = document.createElement("span");
-            priceSpan2.classList.add("price", "switcher-item");
-            priceSpan2.textContent = `₹ ${product.productPrice}`;
-
-            // Assemble the product components
-            productDescTop.appendChild(categories);
-            productDescTop.appendChild(wishlistButton);
-            productDesc.appendChild(productDescTop);
-            productDesc.appendChild(productTitle);
-            priceSwitcher.appendChild(priceSpan1);
-            priceSwitcher.appendChild(priceSpan2);
-            productDesc.appendChild(priceSwitcher);
-
-            productBoxWrapper.appendChild(productImg);
-            productBoxWrapper.appendChild(productDesc);
-            productBox.appendChild(productBoxWrapper);
-            productDiv.appendChild(productBox);
-
-            // Append the product to the display container
-            productDisplay.appendChild(productDiv);
-
-            // Reload wishlist icon status
-            if (
-              user &&
-              user.wishlist.products.some(
-                (wProduct) =>
-                  wProduct.productId.toString() === product._id.toString()
-              )
-            ) {
-              wishlistIcon.classList.add("text-danger", "fas");
-            }
-          });
-        }
-
-        // ADD TO WISHLIST
-        function addToWishlist(event, productId) {
-          event.preventDefault();
-          axios
-            .post("/products/addToWishlist", { productId })
-            .then((response) => {
-              console.log(response);
-              // Get the corresponding heart icon element
-              const heartIcon = document.getElementById(
-                `heartIcon-${productId}`
-              );
-              // Check if the product was added or removed from wishlist
-              if (
-                response.data.message ===
-                "Product added to wishlist successfully"
-              ) {
-                heartIcon.classList.remove("fal");
-                heartIcon.classList.add("fas");
-                heartIcon.classList.add("text-danger");
-
-                let wishlistCount = document.getElementById('wishlistCount')
-                let count = parseFloat(wishlistCount.textContent)
-                wishlistCount.textContent = count +=1
-
-                Toastify({
-                  text: "Product added to wishlist",
-                  duration: 2000,
-                  gravity: "top",
-                  position: "right",
-                  backgroundColor: "black",
-                }).showToast();
-              } else if (
-                response.data.message ===
-                "Product removed from wishlist successfully"
-              ) {
-                // Change heart icon to regular red heart
-                heartIcon.classList.remove("fas");
-                heartIcon.classList.remove("text-danger");
-                heartIcon.classList.add("fal");
-
-                let wishlistCount = document.getElementById('wishlistCount')
-                let count = parseFloat(wishlistCount.textContent)
-                wishlistCount.textContent = count -=1
-
-                Toastify({
-                  text: "Product removed from wishlist",
-                  duration: 2000,
-                  gravity: "top",
-                  position: "right",
-                  backgroundColor: "black",
-                }).showToast();
-              }
-            })
-            .catch((error) => {
-              console.log("sjfjskf", error);
-              if (error.response.data.error === "User not found") {
-                Toastify({
-                  text: "Please login for wishlisting a product",
-                  duration: 3000,
-                  gravity: "top",
-                  position: "right",
-                  // backgroundColor: "black",
-                }).showToast();
-              }
-            });
-        }
+       
       </script>
 
       <script>
@@ -608,7 +391,6 @@
           });
         });
 
-        ////////////////
         $(document).ready(function () {
           $("#searchIcon").click(function () {
             $("#smallSearchPopup").toggle();
@@ -634,7 +416,6 @@
       <script src="/js/jquery.magnific-popup.min.js"></script>
       <script src="/js/plugins.js"></script>
       <script src="/js/main.js"></script>
-
     </div>
   </body>
 </html>

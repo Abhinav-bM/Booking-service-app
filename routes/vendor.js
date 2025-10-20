@@ -23,7 +23,6 @@ router.post("/register",vendorController.vendorRegisterPostPage)
 router.post("/login",vendorController.vendorLoginPostPage)
 router.post("/forgotEmail",vendorController.forgotPassEmailPost)
 router.post("/forgotOtpPost",vendorController.forgotOrpVerify)
-// router.post("/addService",vendorAuthMiddleware,upload.fields([{ name: 'mainImage', maxCount: 1 }, { name: 'secondImage', maxCount: 1 }, { name: 'thirdImage', maxCount: 1 }, { name: 'fourthImage', maxCount: 1 }]),vendorController.addProductpost)
 router.post("/editProduct/:id",vendorAuthMiddleware,upload.array('productImages',4),vendorController.editProductPost)
 router.post("/deleteProduct/:id",vendorAuthMiddleware,vendorController.deleteProduct)
 // services routes
