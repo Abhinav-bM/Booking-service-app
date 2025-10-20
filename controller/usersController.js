@@ -27,7 +27,7 @@ let homePage = async (req, res) => {
 
   try {
     let vendors = await Vendor.find().select("products");
-    let services = await Services.find();
+    let services = await Services.find({ isActive: true });
 
     const admin = await Admin.findOne();
     const bannerHome = admin.banner.filter(
