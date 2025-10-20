@@ -274,7 +274,7 @@
 
     <script>
       function updateOrderStatus(event, orderId, productId, index) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
         console.log(orderId, productId);
 
         const form = document.querySelector(
@@ -285,11 +285,9 @@
         axios
           .post(`/vendor/updateOrderStatus/${orderId}/${productId}`, { status })
           .then((response) => {
-            // Handle success response, if needed
             console.log(response.data);
           })
           .catch((error) => {
-            // Handle error response, if needed
             console.error(error);
           });
       }
@@ -307,5 +305,4 @@
     </script>
   </body>
 
-  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist/order-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:28 GMT -->
 </html>

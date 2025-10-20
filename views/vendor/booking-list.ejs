@@ -5,29 +5,28 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Orders List </title>
+    <title> 
+      Booking List </title>
     <link rel="icon" href="favicon.ico" type="image/x-icon"> 
 
-    <!-- plugin css file  -->
     <link rel="stylesheet" href="/vendor/assets/plugin/datatables/responsive.dataTables.min.css">
     <link rel="stylesheet" href="/vendor/assets/plugin/datatables/dataTables.bootstrap5.min.css">
 
-    <!-- project css file  -->
     <link rel="stylesheet" href="/vendor/assets/css/ebazar.style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
 </head>
 <body>
     <div id="ebazar-layout" class="theme-blue">                          
         
-        <!-- sidebar -->
         <div class="sidebar px-4 py-4 py-md-4 me-0">
             <div class="d-flex flex-column h-100">
-                <a href="index.html" class="mb-0 brand-icon">
+                <a href="" class="mb-0 brand-icon">
                     <span class="logo-icon">
                         <i class="bi bi-bag-check-fill fs-4"></i>
                     </span>
                     <span class="logo-text"><%= vendor.vendorName %></span>
                 </a>
-                <!-- Menu: main ul -->
                 <ul class="menu-list flex-grow-1 mt-3">
                     <li>
                         <a class="m-link" href="/vendor/dashboard"
@@ -62,15 +61,12 @@
             </div>
         </div>       
 
-        <!-- main body area -->
         <div class="main px-lg-4 px-md-4"> 
 
-            <!-- Body: Header -->
             <div class="header">
                 <nav class="navbar py-4">
                     <div class="container-xxl">
         
-                        <!-- header rightbar icon -->
                         <div class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1">
                             
 
@@ -114,11 +110,7 @@
         
                         <!-- main menu Search-->
                         <div class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0 ">
-                            <div class="input-group flex-nowrap input-group-lg">
-                                <input type="search" class="form-control" placeholder="Search" aria-label="search" aria-describedby="addon-wrapping">
-                                <button type="button" class="input-group-text" id="addon-wrapping"><i class="fa fa-search"></i></button>
-                                
-                            </div>
+                           
                         </div>
         
                     </div>
@@ -208,7 +200,6 @@
                                           <% }) %>
                                         </tbody>
                                       </table>
-                                    <!-- ORDER LIST TABLE ENDS -->
                                 </div>
                             </div>
                         </div>
@@ -229,6 +220,8 @@
     <script src="/vendor/assets/bundles/dataTables.bundle.js"></script>  
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
     <script>
       function updateBookingStatus(event, bookingId, index) {
@@ -239,15 +232,25 @@
 
         axios.post(`/vendor/updateBookingStatus/${bookingId}`, { status })
           .then(response => {
-            console.log(response.data);
             if (response.data.message) {
-              toast(`✅ ${response.data.message}`);
+              Toastify({
+                text: `✅ ${response.data.message}`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#4BB543"
+              }).showToast();
             }
           })
           .catch(error => {
             console.error(error);
-            alert("Failed to update booking status");
-          });
+              Toastify({
+      text: `Failed to update booking status`,
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#FF0000"
+    }).showToast();         });
       }
     </script>
 

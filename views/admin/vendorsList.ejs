@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr">
-  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist/customers.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:28 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -10,9 +9,7 @@
     />
     <title>vendors List</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <!-- Favicon-->
 
-    <!-- plugin css file  -->
     <link
       rel="stylesheet"
       href="/admin/assets/plugin/datatables/responsive.dataTables.min.css"
@@ -22,7 +19,6 @@
       href="/admin/assets/plugin/datatables/dataTables.bootstrap5.min.css"
     />
 
-    <!-- project css file  -->
     <link rel="stylesheet" href="/admin/assets/css/ebazar.style.min.css" />
   </head>
   <body>
@@ -98,7 +94,6 @@
         <div class="header">
           <nav class="navbar py-4">
             <div class="container-xxl">
-              <!-- header rightbar icon -->
               <div
                 class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1"
               >
@@ -173,22 +168,7 @@
               <div
                 class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
               >
-                <div class="input-group flex-nowrap input-group-lg">
-                  <input
-                    type="search"
-                    class="form-control"
-                    placeholder="Search"
-                    aria-label="search"
-                    aria-describedby="addon-wrapping"
-                  />
-                  <button
-                    type="button"
-                    class="input-group-text"
-                    id="addon-wrapping"
-                  >
-                    <i class="fa fa-search"></i>
-                  </button>
-                </div>
+               
               </div>
             </div>
           </nav>
@@ -204,7 +184,6 @@
                 >
                   <h3 class="fw-bold mb-0">Vendors</h3>
                   <div class="col-auto d-flex w-sm-100">
-                    <!-- <button type="button" class="btn btn-primary btn-set-task w-sm-100" data-bs-toggle="modal" data-bs-target="#expadd"><i class="icofont-plus-circle me-2 fs-6"></i>Add Customers</button> -->
                   </div>
                 </div>
               </div>
@@ -221,23 +200,17 @@
                     >
                       <thead>
                         <tr>
-                          <!-- <th>Id</th> -->
                           <th>Vendors</th>
-                          <!-- <th>Register  Date</th> -->
                           <th>Mail</th>
                           <th>Phone</th>
-                          <!-- <th>Country</th>  -->
-                          <!-- <th>Total Order</th> -->
                           <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         <% vendors.forEach(data=>{ %>
                         <tr>
-                          <!-- <td><strong>#CS-00002</strong></td> -->
                           <td>
                             <a href="customer-detail.html">
-                              <!-- <img class="avatar rounded" src="/admin/assets/images/xs/avatar1.svg" alt=""> -->
                               <span class="fw-bold ms-1"
                                 ><%= data.vendorName %></span
                               >
@@ -245,8 +218,6 @@
                           </td>
                           <td><%= data.email %></td>
                           <td><%= data.phoneNumber %></td>
-                          <!-- <td>South Africa</td> -->
-                          <!-- <td>18</td> -->
                           <td>
                             <% if (data.status) { %>
                             <form
@@ -325,5 +296,4 @@
     </script>
   </body>
 
-  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist/customers.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:29 GMT -->
 </html>
