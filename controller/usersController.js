@@ -400,7 +400,7 @@ const getServicesPage = async (req, res) => {
     else if (sort === "high_to_low") sortOption = { sellingPrice: -1 };
 
     const totalServices = await Services.countDocuments(query);
-    const services = await Services.find(query)
+    const services = await Services.find({ ...query, isActive: true })
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(limit);

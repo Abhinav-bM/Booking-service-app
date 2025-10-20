@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr">
-  <!-- Mirrored from pixelwibes.com/template/ebazar/html/dist//vendor/addService by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Feb 2024 06:56:26 GMT -->
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -8,64 +7,51 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Vendor Product Add</title>
+    <title>Vendor Product Edit</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <!-- Favicon-->
 
-    <!--plugin css file -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/multi-select/css/multi-select.css"
     />
-    <!-- Multi Select Css -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/bootstrap-tagsinput/bootstrap-tagsinput.css"
     />
-    <!-- Bootstrap Tagsinput Css -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/cropper/cropper.min.css"
     />
-    <!--Cropperer Css -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/dropify/dist/css/dropify.min.css"
     />
-    <!-- Dropify Css -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/datatables/responsive.dataTables.min.css"
     />
-    <!-- Datatable Css -->
     <link
       rel="stylesheet"
       href="/vendor/assets/plugin/datatables/dataTables.bootstrap5.min.css"
     />
-    <!-- Datatable Css -->
 
-    <!-- Project css file  -->
     <link rel="stylesheet" href="/vendor/assets/css/ebazar.style.min.css" />
 
-    <!-------------->
     <link rel="stylesheet" href="/helpers/cropperjs/cropper.css" />
 
     <script src="/helpers/cropperjs/cropper.js"></script>
 
-    <!-- Include Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
 
-    <!-- Include Cropper.js library -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
-    <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
@@ -120,7 +106,6 @@
   </head>
   <body>
     <div id="ebazar-layout" class="theme-blue">
-      <!-- sidebar -->
       <div class="sidebar px-4 py-4 py-md-4 me-0">
         <div class="d-flex flex-column h-100">
           <a href="index.html" class="mb-0 brand-icon">
@@ -129,7 +114,6 @@
             </span>
             <span class="logo-text"><%= vendor.vendorName %></span>
           </a>
-          <!-- Menu: main ul -->
           <ul class="menu-list flex-grow-1 mt-3">
             <li>
               <a class="m-link" href="/vendor/dashboard"
@@ -220,12 +204,6 @@
                         <div><hr class="dropdown-divider border-dark" /></div>
                       </div>
                       <div class="list-group m-2">
-                        <!-- <a
-                          href="/vendorProfile"
-                          class="list-group-item list-group-item-action border-0"
-                          ><i class="icofont-ui-user fs-5 me-3"></i>Profile
-                          Page</a
-                        > -->
                         <a
                           href="/vendor/logout"
                           class="list-group-item list-group-item-action border-0"
@@ -246,274 +224,122 @@
               >
                 <span class="fa fa-bars"></span>
               </button>
-
-              <!-- main menu Search-->
-              <!-- <div
-                class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
-              >
-                <div class="input-group flex-nowrap input-group-lg">
-                  <input
-                    type="search"
-                    class="form-control"
-                    placeholder="Search"
-                    aria-label="search"
-                    aria-describedby="addon-wrapping"
-                  />
-                  <button
-                    type="button"
-                    class="input-group-text"
-                    id="addon-wrapping"
-                  >
-                    <i class="fa fa-search"></i>
-                  </button>
-                </div>
-              </div> -->
             </div>
           </nav>
         </div>
 
-        <h2 class="text-uppercase fw-bold px-3">Add New Service</h2>
+        <h2 class="text-uppercase fw-bold px-3">Edit Service</h2>
         <br />
         <form
           class="needs-validation"
           name="myForm"
-          action="/vendor/addService"
+          action="/vendor/editService/<%= service._id %>"
           method="POST"
           enctype="multipart/form-data"
         >
-          <div class="">
-            <div class="form-group px-3">
-              <label for="title">Title</label>
-              <input class="" type="text" id="title" name="title" required />
-            </div>
+          <input type="hidden" name="serviceId" value="<%= service._id %>" />
 
-            <!-- <div class="form-group px-3">
-              <label for="productBrand">Product Brand:</label>
-              <input
-                type="text"
-                id="productBrand"
-                name="productBrand"
-                required
-              />
-            </div> -->
-            <!-- 
-            <div class="form-group px-3">
-              <label for="productColor">Product Color:</label>
-              <input
-                type="text"
-                id="productColor"
-                name="productColor"
-                required
-              />
-            </div> -->
-            <!-- 
-            <div class="form-group px-3">
-              <label for="productSize">Product Size:</label>
-              <input type="text" id="productSize" name="productSize" required />
-            </div> -->
+          <!-- Title -->
+          <div class="form-group px-3">
+            <label for="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value="<%= service.title %>"
+              class="form-control"
+            />
+          </div>
 
-            <!-- <div class="form-group px-3">
-              <label for="productQuantity">Product Quantity:</label>
+          <!-- Prices -->
+          <div class="d-flex w-100">
+            <div class="form-group w-50 px-3">
+              <label for="actualPrice">Actual Price</label>
               <input
                 type="number"
-                id="productQuantity"
-                name="productQuantity"
+                id="actualPrice"
+                name="actualPrice"
                 min="0"
-                required
+                value="<%= service.actualPrice %>"
+                class="form-control"
               />
-            </div> -->
-
-            <div class="d-flex w-100">
-              <div class="form-group w-100 px-3">
-                <label for="actualPrice">Actual Price</label>
-                <input
-                  type="number"
-                  id="actualPrice"
-                  name="actualPrice"
-                  min="0"
-                  required
-                />
-              </div>
-              <div class="form-group w-100 px-3">
-                <label for="sellingPrice">Selling Price</label>
-                <input
-                  type="number"
-                  id="sellingPrice"
-                  name="sellingPrice"
-                  min="0"
-                  required
-                />
-              </div>
             </div>
+            <div class="form-group w-50 px-3">
+              <label for="sellingPrice">Selling Price</label>
+              <input
+                type="number"
+                id="sellingPrice"
+                name="sellingPrice"
+                min="0"
+                value="<%= service.sellingPrice %>"
+                class="form-control"
+              />
+            </div>
+          </div>
 
-            <div class="d-flex w-100">
-              <div class="form-group w-100 px-3">
-                <label for="category">Category:</label>
-                <select
-                  id="category"
-                  name="category"
-                  onchange="getSubcategory()"
-                  required
-                >
-                  <option value="">Select Category</option>
-                  <% categories.forEach(category => { %>
-                  <option value="<%= category.categoryName %>">
-                    <%= category.categoryName %>
+          <!-- Category & Subcategory -->
+          <div class="d-flex w-100">
+            <div class="form-group w-50 px-3">
+              <label for="category">Category:</label>
+              <select id="category" name="category" onchange="getSubcategory()" class="form-control">
+                <option value="">Select Category</option>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat.categoryName %>" <%= service.category === cat.categoryName ? "selected" : "" %>>
+                    <%= cat.categoryName %>
                   </option>
-                  <% }); %>
-                </select>
-              </div>
+                <% }); %>
+              </select>
+            </div>
 
-              <input
-                type="hidden"
-                id="categoriesData"
-                value="<%= JSON.stringify(categories) %>"
-              />
-
-              <div class="form-group w-100 px-3">
-                <label for="subcategory">Subcategory:</label>
-                <select id="subcategory" name="subcategory" required>
-                  <option value="">Select Subcategory</option>
-                </select>
-              </div>
+            <div class="form-group w-50 px-3">
+              <label for="subcategory">Subcategory:</label>
+              <select id="subcategory" name="subcategory" class="form-control">
+                <option value="">Select Subcategory</option>
+                <% if(service.subcategory){ %>
+                  <option value="<%= service.subcategory %>" selected><%= service.subcategory %></option>
+                <% } %>
+              </select>
             </div>
           </div>
 
-          <div class="d-flex">
-            <div class="form-group w-100 px-3">
-              <label for="duration">Duration</label>
-              <input
-                type="number"
-                id="duration"
-                name="duration"
-                min="0"
-                required
-              />
-            </div>
+          <!-- Duration -->
+          <div class="form-group px-3">
+            <label for="duration">Duration (minutes)</label>
+            <input type="number" id="duration" name="duration" min="0" value="<%= service.duration %>" class="form-control"/>
           </div>
 
-          <div class="d-flex">
-            <div class="form-group w-100 px-3">
+          <!-- Available From / Until -->
+          <div class="d-flex w-100">
+            <div class="form-group w-50 px-3">
               <label for="startTime">Available From</label>
-              <input
-                type="time"
-                id="startTime"
-                name="startTime"
-                required
-                class="rounded-1"
-                style="height: 45px; width: 100%"
-              />
+              <input type="time" id="startTime" name="startTime" value="<%= service.availableFrom %>" class="form-control"/>
             </div>
-
-            <div class="form-group w-100 px-3">
+            <div class="form-group w-50 px-3">
               <label for="endTime">Available Until</label>
-              <input
-                type="time"
-                id="endTime"
-                name="endTime"
-                required
-                class="rounded-1"
-                style="height: 45px; width: 100%"
-              />
+              <input type="time" id="endTime" name="endTime" value="<%= service.availableUntil %>" class="form-control"/>
             </div>
           </div>
 
+          <!-- Description -->
           <div class="form-group px-3">
             <label for="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              rows="5"
-              required
-            ></textarea>
+            <textarea id="description" name="description" rows="5" class="form-control"><%= service.description %></textarea>
           </div>
 
-          <div class="mb-3 px-3">
-            <label for="mainImage">Main image</label>
-            <input
-              type="file"
-              class="form-control"
-              id="mainImage"
-              name="mainImage"
-            />
-          </div>
-          <div class="mb-3 col-4">
-            <div id="imageContainer">
-              <img
-                id="croppedMainImage"
-                hidden
-                name="croppedMainImage"
-                src="#"
-                alt="Cropped Image"
-              />
+          <!-- Images -->
+          <% for(let i=0; i<4; i++) { %>
+            <div class="mb-3 px-3">
+              <label>Image <%= i+1 %></label>
+              <input type="file" class="form-control" id="image<%= i %>" />
+              <img id="croppedImage<%= i %>" src="<%= service.images[i] %>" style="max-width:150px; display:block; margin-top:10px;" />
             </div>
-          </div>
-          <div class="mb-3 px-3">
-            <label for="secondImage">Second image</label>
-            <input
-              type="file"
-              class="form-control"
-              id="secondImage"
-              name="secondImage"
-            />
-          </div>
-          <div class="mb-3 col-4">
-            <div id="secondImageContainer">
-              <img
-                id="croppedSecondImage"
-                hidden
-                name="croppedSecondImage"
-                src="#"
-                alt="Cropped Image"
-              />
-            </div>
-          </div>
-          <div class="mb-3 px-3">
-            <label for="thirdImage">Third image</label>
-            <input
-              type="file"
-              class="form-control"
-              id="thirdImage"
-              name="thirdImage"
-            />
-          </div>
-          <div class="mb-3 col-4">
-            <div id="thirdImageContainer">
-              <img
-                id="croppedThirdImage"
-                hidden
-                name="croppedThirdImage"
-                src="#"
-                alt="Cropped Image"
-              />
-            </div>
-          </div>
-          <div class="mb-3 px-3">
-            <label for="fourthImage">Fourth image</label>
-            <input
-              type="file"
-              class="form-control"
-              id="fourthImage"
-              name="fourthImage"
-            />
-          </div>
-          <div class="mb-3 col-4">
-            <div id="fourthImageContainer">
-              <img
-                id="croppedFourthImage"
-                hidden
-                name="croppedFourthImage"
-                src="#"
-                alt="Cropped Image"
-              />
-            </div>
-          </div>
+          <% } %>
 
           <div class="px-3">
-            <!-- <input  value="Add Service" class="btn-submit "> -->
-            <button type="submit" class="btn btn-primary">Add Service</button>
+            <button type="submit" class="btn btn-primary">Update Service</button>
           </div>
         </form>
+
         <br />
 
         <!-- Include Bootstrap JS -->
@@ -522,184 +348,64 @@
         <!-- Include Cropper.js JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            const mainImage = document.getElementById("mainImage");
-            const croppedMainImage =
-              document.getElementById("croppedMainImage");
-            let cropperMain;
+       `<script>
+          const categories = JSON.parse(document.getElementById('categoriesData')?.value || '[]');
 
-            mainImage.addEventListener("change", function (e) {
-              const file = e.target.files[0];
-
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                  croppedMainImage.src = e.target.result;
-                  cropperMain = new Cropper(croppedMainImage, {
-                    aspectRatio: 1,
-                    viewMode: 2,
-                  });
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-
-            const secondImage = document.getElementById("secondImage");
-            const croppedSecondImage =
-              document.getElementById("croppedSecondImage");
-            let cropperSecond;
-
-            secondImage.addEventListener("change", function (e) {
-              const file = e.target.files[0];
-
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                  croppedSecondImage.src = e.target.result;
-                  cropperSecond = new Cropper(croppedSecondImage, {
-                    aspectRatio: 1,
-                    viewMode: 2,
-                  });
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-
-            const thirdImage = document.getElementById("thirdImage");
-            const croppedThirdImage =
-              document.getElementById("croppedThirdImage");
-            let cropperThird;
-
-            thirdImage.addEventListener("change", function (e) {
-              const file = e.target.files[0];
-
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                  croppedThirdImage.src = e.target.result;
-                  cropperThird = new Cropper(croppedThirdImage, {
-                    aspectRatio: 1,
-                    viewMode: 2,
-                  });
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-
-            const FourthImage = document.getElementById("fourthImage");
-            const croppedFourthImage =
-              document.getElementById("croppedFourthImage");
-            let cropperFourth;
-
-            FourthImage.addEventListener("change", function (e) {
-              const file = e.target.files[0];
-
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                  croppedFourthImage.src = e.target.result;
-                  cropperFourth = new Cropper(croppedFourthImage, {
-                    aspectRatio: 1,
-                    viewMode: 2,
-                  });
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-
-            // Form submission
-            const myForm = document.forms.myForm;
-            myForm.addEventListener("submit", function (e) {
-              e.preventDefault();
-
-              // Main image
-              const croppedCanvasMain = cropperMain.getCroppedCanvas();
-              const croppedDataUrlMain =
-                croppedCanvasMain.toDataURL("image/jpeg");
-              const croppedImageInputMain = document.createElement("input");
-              croppedImageInputMain.type = "hidden";
-              croppedImageInputMain.name = "croppedMainImage";
-              croppedImageInputMain.value = croppedDataUrlMain;
-              myForm.appendChild(croppedImageInputMain);
-
-              // Second image
-              const croppedCanvasSecond = cropperSecond.getCroppedCanvas();
-              const croppedDataUrlSecond =
-                croppedCanvasSecond.toDataURL("image/jpeg");
-              const croppedImageInputSecond = document.createElement("input");
-              croppedImageInputSecond.type = "hidden";
-              croppedImageInputSecond.name = "croppedSecondImage";
-              croppedImageInputSecond.value = croppedDataUrlSecond;
-              myForm.appendChild(croppedImageInputSecond);
-
-              // Third image
-              const croppedCanvasThird = cropperThird.getCroppedCanvas();
-              const croppedDataUrlThird =
-                croppedCanvasThird.toDataURL("image/jpeg");
-              const croppedImageInputThird = document.createElement("input");
-              croppedImageInputThird.type = "hidden";
-              croppedImageInputThird.name = "croppedThirdImage";
-              croppedImageInputThird.value = croppedDataUrlThird;
-              myForm.appendChild(croppedImageInputThird);
-
-              // Fourth image
-              const croppedCanvasFourth = cropperFourth.getCroppedCanvas();
-              const croppedDataUrlFourth =
-                croppedCanvasFourth.toDataURL("image/jpeg");
-              const croppedImageInputFourth = document.createElement("input");
-              croppedImageInputFourth.type = "hidden";
-              croppedImageInputFourth.name = "croppedFourthImage";
-              croppedImageInputFourth.value = croppedDataUrlFourth;
-              myForm.appendChild(croppedImageInputFourth);
-
-              myForm.submit();
-            });
-          });
-        </script>
-
-        <!-- <script src="/js/cropper.js"></script> -->
-
-        <script>
           function getSubcategory() {
-            const categoriesInput = document.getElementById("categoriesData");
-            const categoriesJson = categoriesInput.value;
-
-            // Parse the JSON string to get the categories array
-            const categories = JSON.parse(categoriesJson);
-
-            const categoryDropdown = document.getElementById("category");
-            const subcategoryDropdown = document.getElementById("subcategory");
-
-            // Clear previous options
-            subcategoryDropdown.innerHTML =
-              '<option value="">Select Subcategory</option>';
-
-            const selectedCategory = categoryDropdown.value;
-            if (!selectedCategory) {
-              return;
-            }
-
-            // Find the selected category from the categories array
-            const selectedCategoryObj = categories.find(
-              (category) => category.categoryName === selectedCategory,
-            );
-
-            if (selectedCategoryObj) {
-              selectedCategoryObj.subcategories.forEach((subcategory) => {
-                const option = document.createElement("option");
-                option.text = subcategory;
-                option.value = subcategory;
-                subcategoryDropdown.add(option);
+            const selectedCategory = document.getElementById("category").value;
+            const subDropdown = document.getElementById("subcategory");
+            subDropdown.innerHTML = '<option value="">Select Subcategory</option>';
+            const cat = categories.find(c => c.categoryName === selectedCategory);
+            if(cat) {
+              cat.subcategories.forEach(sub => {
+                const opt = document.createElement("option");
+                opt.value = sub;
+                opt.text = sub;
+                subDropdown.appendChild(opt);
               });
             }
           }
 
-          // Trigger getSubcategory() when the page loads
           document.addEventListener("DOMContentLoaded", () => {
             getSubcategory();
+
+            const croppers = [];
+            for(let i=0; i<4; i++) {
+              const fileInput = document.getElementById(`image${i}`);
+              const img = document.getElementById(`croppedImage${i}`);
+              let cropper;
+
+              fileInput.addEventListener("change", e => {
+                const file = e.target.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt){
+                  img.src = evt.target.result;
+                  if(cropper) cropper.destroy();
+                  cropper = new Cropper(img, { aspectRatio: 1, viewMode: 2 });
+                  croppers[i] = cropper;
+                }
+                reader.readAsDataURL(file);
+              });
+            }
+
+            // Form submission: attach cropped images as hidden inputs
+            const form = document.forms.myForm;
+            form.addEventListener("submit", e => {
+              for(let i=0; i<croppers.length; i++) {
+                if(croppers[i]) {
+                  const dataUrl = croppers[i].getCroppedCanvas().toDataURL("image/jpeg");
+                  const input = document.createElement("input");
+                  input.type = "hidden";
+                  input.name = ["croppedMainImage","croppedSecondImage","croppedThirdImage","croppedFourthImage"][i];
+                  input.value = dataUrl;
+                  form.appendChild(input);
+                }
+              }
+            });
           });
         </script>
+
 
         <!--------------------------------------------------------------------------------------------------------------------------------------------->
         <!-- Modal Custom Settings-->

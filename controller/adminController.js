@@ -342,7 +342,7 @@ let vendorsList = async (req, res) => {
 const servicesList = async (req, res) => {
   try {
     const user = await Admin.findOne();
-    const services = await Services.find();
+    const services = await Services.find({ isActive: true });
     res.status(200).render("admin/services-list", { services, user });
   } catch (error) {
     console.error("vendor product list error", error);

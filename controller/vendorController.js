@@ -5,13 +5,6 @@ const Service = require("../models/services");
 const Booking = require("../models/booking");
 const Reviews = require(`../models/review`);
 const bcrypt = require("bcryptjs");
-const {
-  calculateTotalSales,
-  calculateTopCategoriesSales,
-  getLatest10DaysOrders,
-  calculateTotalRevenue,
-  getUniqueCustomers,
-} = require("../helpers/vendorDashboard");
 const { vendorOrders } = require("../helpers/vendorOrders");
 const jwt = require("jsonwebtoken");
 const { sendOtpEmail } = require("../helpers/emailService");
@@ -244,26 +237,15 @@ const addServicePost = async (req, res) => {
   }
 };
 
-// PRODUCT LIST
-let producList = async (req, res) => {
-  try {
-    let _id = req.user.id;
-    const vendor = await Vendor.findOne({ _id });
-    let products = vendor.products;
-    res.status(200).render("vendor/product-list", { vendor, products });
-  } catch (error) {
-    console.error("vendor product list error", error);
-    res.status(404).send("page not found");
-  }
-};
-
 // List services
 const servicesList = async (req, res) => {
   try {
-    let vendorId = req.user.id;
+    const vendorId = req.user.id;
     const vendor = await Vendor.findOne({ _id: vendorId });
-    let services = await Service.find({ vendorId: vendor._id });
-    console.log(services);
+    const services = await Service.find({
+      vendorId: vendor._id,
+      isActive: true,
+    });
     res.status(200).render("vendor/services-list", { vendor, services });
   } catch (error) {
     console.error("vendor service list error", error);
@@ -271,23 +253,21 @@ const servicesList = async (req, res) => {
   }
 };
 
-// EDIT PRODUCT GET PAGE
-let editProduct = async (req, res) => {
+// Edit service get page
+const editService = async (req, res) => {
   try {
-    let productId = req.params.id;
+    const serviceId = req.params.id;
+    const service = await Service.findById(serviceId);
 
-    let vendorId = req.user.id;
-    let vendor = await Vendor.findOne({ _id: vendorId });
+    const vendor = await Vendor.findById(req?.user?.id);
     if (!vendor) {
       res.status(400).send("Vendor not found");
     }
 
-    let admin = await Admin.findOne();
-    let product = vendor.products.find(
-      (prod) => prod._id.toString() === productId,
-    );
-    if (!product) {
-      return res.status(404).send("Product Not Found");
+    const admin = await Admin.findOne();
+
+    if (!service) {
+      return res.status(404).send("service Not Found");
     }
 
     const categories = admin.categories.map((category) => ({
@@ -296,94 +276,105 @@ let editProduct = async (req, res) => {
         (subcategory) => subcategory.subcategoryName,
       ),
     }));
-    res.render("vendor/product-edit", { product, categories, vendor });
+    res.render("vendor/service-edit", { service, categories, vendor });
   } catch (error) {
     console.error(error);
     res.status(500).send("failed to get editproduct page");
   }
 };
 
-// EDIT PRODUDT POST PAGE
-let editProductPost = async (req, res) => {
+// edit service post
+const editServicePost = async (req, res) => {
   try {
-    let productId = req.params.id;
-    let vendorId = req.user.id;
-    const imageUrls = [];
+    const {
+      serviceId,
+      title,
+      actualPrice,
+      sellingPrice,
+      category,
+      subcategory,
+      duration,
+      startTime,
+      endTime,
+      description,
+      croppedMainImage,
+      croppedSecondImage,
+      croppedThirdImage,
+      croppedFourthImage,
+    } = req.body;
 
-    if (req.files && req.files.length > 0) {
-      // If there are files uploaded, process them
-      for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(file.path);
-        imageUrls.push(result.secure_url);
-      }
+    if (!serviceId) return res.status(400).send("Service ID missing");
+
+    // Find the service
+    const service = await Service.findById(serviceId);
+    if (!service) return res.status(404).send("Service not found");
+
+    // update fields if they have new values
+    service.title = title || service.title;
+    service.actualPrice = actualPrice || service.actualPrice;
+    service.sellingPrice = sellingPrice || service.sellingPrice;
+    service.category = category || service.category;
+    service.subcategory = subcategory || service.subcategory;
+    service.duration = duration || service.duration;
+    service.availableFrom = startTime || service.availableFrom;
+    service.availableUntil = endTime || service.availableUntil;
+    service.description = description || service.description;
+
+    const updatedImages = [...service.images];
+
+    // Main image
+    if (croppedMainImage) {
+      const uploaded = await cloudinary.uploader.upload(croppedMainImage);
+      updatedImages[0] = uploaded.secure_url;
+    }
+    if (croppedSecondImage) {
+      const uploaded = await cloudinary.uploader.upload(croppedSecondImage);
+      updatedImages[1] = uploaded.secure_url;
+    }
+    if (croppedThirdImage) {
+      const uploaded = await cloudinary.uploader.upload(croppedThirdImage);
+      updatedImages[2] = uploaded.secure_url;
+    }
+    if (croppedFourthImage) {
+      const uploaded = await cloudinary.uploader.upload(croppedFourthImage);
+      updatedImages[3] = uploaded.secure_url;
     }
 
-    let vendor = await Vendor.findOne({ _id: vendorId });
+    service.images = updatedImages;
 
-    let productIndex = await vendor.products.findIndex(
-      (product) => product._id.toString() === productId,
-    );
+    await service.save();
 
-    if (productIndex === -1) {
-      res.status(404).send("Product Not Found");
-    } else {
-      let updatedProduct = vendor.products[productIndex];
-      updatedProduct.productName = req.body.productName;
-      updatedProduct.productCategory = req.body.productCategory;
-      updatedProduct.productSubCategory = req.body.productSubcategory;
-      updatedProduct.productBrand = req.body.productBrand;
-      updatedProduct.productColor = req.body.productColor;
-      updatedProduct.productSize = req.body.productSize;
-      updatedProduct.productQTY = req.body.productQuantity;
-      updatedProduct.productPrice = req.body.productPrice;
-      updatedProduct.productDescription = req.body.productDescription;
-
-      // Only update productImages if there are new imageUrls
-      if (imageUrls.length > 0) {
-        updatedProduct.productImages = imageUrls;
-      }
-
-      await vendor.save();
-
-      res.status(200).redirect("/vendor/servicesList");
-    }
+    res.redirect("/vendor/servicesList");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("server error edit failed");
+    console.error("Error updating service:", error);
+    res.status(500).send("Server error");
   }
 };
 
-// DELETE PRODUCT POST PAGE
-let deleteProduct = async (req, res) => {
+module.exports = { editServicePost };
+
+// Delete a service
+const deleteService = async (req, res) => {
   try {
-    let vendorId = req.user.id;
-    let productId = req.params.id;
+    const { id: serviceId } = req.params;
 
-    // FINDING VENDOR
-    let vendor = await Vendor.findOne({ _id: vendorId });
+    if (!serviceId) return res.status(400).send("Service ID missing");
 
-    if (!vendor) {
-      return res.status(404).json({ message: "Vendor not found" });
-    }
+    const service = await Service.findById(serviceId);
+    if (!service) return res.status(404).send("Service not found");
 
-    // FINDING THE INDEX OF THE PRODUCT
-    const productIndex = vendor.products.findIndex((product) => {
-      product._id.toString() === productId;
-    });
+    // Soft delete: disable the service
+    service.isActive = false;
+    await service.save();
 
-    // REMOVING PRODUCTS FORM THE PRODUCT ARRAY
-    vendor.products.splice(productIndex, 1);
-
-    await vendor.save();
-
-    res.status(200).redirect("/vendor/servicesList");
+    res.redirect("/vendor/servicesList");
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Error disabling service:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// FORGOT PASSWORD
+// forgot password
 let forgotEmail = async (req, res) => {
   try {
     res.status(200).render("vendor/vendorForgotEmail");
@@ -435,7 +426,7 @@ let forgotOrpVerify = async (req, res) => {
   }
 };
 
-// VENDOR LOGOUT
+// Vendor logout
 let vendorLogout = (req, res) => {
   try {
     // Clear the JWT cookie
@@ -446,59 +437,6 @@ let vendorLogout = (req, res) => {
   } catch (error) {
     console.error("Error logging out:", error);
     res.status(500).send("Internal Server Error");
-  }
-};
-
-// VENDOR ORDER DISPLAY
-let getOrdersForVendor = async (req, res) => {
-  const vendorId = req.user.id;
-  try {
-    const vendor = await Vendor.findOne({ _id: vendorId });
-    const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products",
-    );
-    const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
-
-    const vendorOrder1 = [];
-
-    usersWithOrders.forEach((user) => {
-      user.orders.forEach((order) => {
-        order.products.forEach((product) => {
-          if (product.productId) {
-            const matchingProduct = vendorProducts.products.find(
-              (vendorProduct) => vendorProduct._id.equals(product.productId),
-            );
-
-            if (matchingProduct) {
-              const vendorOrder = {
-                userId: user._id,
-                orderId: order.orderId,
-                productName: matchingProduct.productName,
-                color: matchingProduct.productColor,
-                size: matchingProduct.productSize,
-                productId: product.productId,
-                quantity: product.qty,
-                price: product.price,
-                orderStatus: product.orderStatus,
-                totalAmount: order.totalAmount,
-                orderDate: order.orderDate,
-                expectedDeliveryDate: order.expectedDeliveryDate,
-                shippingAddress: order.shippingAddress,
-                paymentMethod: order.paymentMethod,
-                cancelReason: product.cancelReason,
-              };
-              vendorOrder1.push(vendorOrder);
-            }
-          }
-        });
-      });
-    });
-
-    const vendorOrders = vendorOrder1.sort((a, b) => b.orderDate - a.orderDate);
-    res.render("vendor/order-list", { vendorOrders, vendor });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
   }
 };
 
@@ -582,6 +520,24 @@ const updateBookingStatus = async (req, res) => {
   }
 };
 
+// reviews get page
+const getReviews = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const vendor = await Vendor.findById(vendorId);
+    const vendorServices = await Service.find({ vendorId }).select("_id title");
+    const serviceIds = vendorServices.map((s) => s._id);
+    const reviews = await Reviews.find({ serviceId: { $in: serviceIds } })
+      .populate("serviceId", "title")
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
+    res.render("vendor/reviewsList", {
+      reviews,
+      vendor,
+    });
+  } catch (error) {}
+};
+
 // SALES REPORT EXCEL
 let salesExcel = async (req, res) => {
   const { startDate, endDate } = req.params;
@@ -656,41 +612,6 @@ let salesExcel = async (req, res) => {
   }
 };
 
-// RETURN AND REPAYMENT GET PAGE
-let returnRepaymentGetPage = async (req, res) => {
-  const vendorId = req.user.id;
-  try {
-    const vendorProducts = await Vendor.findOne({ _id: vendorId }).populate(
-      "products",
-    );
-    const vendor = vendorProducts;
-    const usersWithOrders = await User.find({ "orders.0": { $exists: true } });
-    const orders = vendorOrders(vendorProducts, usersWithOrders);
-    const returnOrders = orders.filter((order) => order.returnReason);
-    res.status(200).render("vendor/return-repayment", { returnOrders, vendor });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-const getReviews = async (req, res) => {
-  try {
-    const vendorId = req.user.id;
-    const vendor = await Vendor.findById(vendorId);
-    const vendorServices = await Service.find({ vendorId }).select("_id title");
-    const serviceIds = vendorServices.map((s) => s._id);
-    const reviews = await Reviews.find({ serviceId: { $in: serviceIds } })
-      .populate("serviceId", "title")
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 });
-    res.render("vendor/reviewsList", {
-      reviews,
-      vendor,
-    });
-  } catch (error) {}
-};
-
 module.exports = {
   loginGetPage,
   registerGetPage,
@@ -701,20 +622,15 @@ module.exports = {
   forgotOrpVerify,
   dashboard,
   vendorLogout,
-  // addProductpost,
-  producList,
-  editProduct,
-  editProductPost,
-  deleteProduct,
-  getOrdersForVendor,
-  salesExcel,
-  returnRepaymentGetPage,
-
-  // service things
   addService,
   addServicePost,
   servicesList,
   getbookings,
   getReviews,
   updateBookingStatus,
+  editService,
+  editServicePost,
+  deleteService,
+
+  salesExcel,
 };
