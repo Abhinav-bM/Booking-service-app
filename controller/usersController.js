@@ -6,7 +6,6 @@ const Booking = require("../models/booking");
 const Reviews = require("../models/review");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const smsService = require("../helpers/smsService");
 const {
   sendOtpEmail,
   sendBookingEmail,
@@ -267,7 +266,6 @@ let forgotEmailPostPage = async (req, res) => {
           .status(404)
           .render("user/forgotemail", { error: "User not found" });
       }
-      smsService.sendOTP(emailOrPhone, otp);
     } else {
       return res.status(400).json({ message: "Invalid email or phone number" });
     }
@@ -612,7 +610,7 @@ let getAddressForEdiit = async (req, res) => {
 };
 
 // edit address
-let editAddress = async (req, res) => {
+const editAddress = async (req, res) => {
   const addressId = req.params.id;
   const { name, address, district, state, zip, email, phone } = req.body;
   7;
@@ -639,16 +637,6 @@ let editAddress = async (req, res) => {
     userForEditAddress.addresses[addressIndex].zip = zip;
     userForEditAddress.addresses[addressIndex].email = email;
     userForEditAddress.addresses[addressIndex].phone = phone;
-
-    let addressEdited = {
-      name,
-      address,
-      district,
-      state,
-      zip,
-      email,
-      phone,
-    };
 
     await userForEditAddress.save();
 

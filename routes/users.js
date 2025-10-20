@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/usersController");
-const passport = require("../helpers/passport");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const {verifyToken} = require('../middleware/jwtMiddleware');
 
-router.use(passport.initialize());
-router.use(passport.session());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
