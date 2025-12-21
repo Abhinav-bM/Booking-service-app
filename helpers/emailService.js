@@ -16,7 +16,7 @@ const sendOtpEmail = async (email, message) => {
   const mailOptions = {
     from: "watchvista6@gmail.com",
     to: email,
-    subject: "WatchVista",
+    subject: "Service Booking",
     text: message,
   };
 
@@ -32,7 +32,7 @@ const sendBookingEmail = async (email, booking) => {
   const mailOptions = {
     from: "watchvista6@gmail.com",
     to: email,
-    subject: "Booking Confirmation - WatchVista",
+    subject: "Booking Confirmation",
     html: `
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color: #1677FF;">Booking Confirmed 🎉</h2>
@@ -46,7 +46,7 @@ const sendBookingEmail = async (email, booking) => {
           <li><b>Price:</b> ₹${booking.price}</li>
         </ul>
         <p>We look forward to serving you!</p>
-        <p style="margin-top:20px;">– Team WatchVista</p>
+        <p style="margin-top:20px;">– Team smart cleaning services</p>
       </div>
     `,
   };
@@ -100,7 +100,7 @@ const sendReminderEmailNow = async (email, booking) => {
   const mailOptions = {
     from: "watchvista6@gmail.com",
     to: email,
-    subject: "Service Reminder - WatchVista",
+    subject: "Service Reminder",
     html: `
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color:#1677FF;">Service Reminder ⏰</h2>
@@ -111,7 +111,7 @@ const sendReminderEmailNow = async (email, booking) => {
           <li><b>Time Slot:</b> ${booking.slot}</li>
         </ul>
         <p>Please be ready.</p>
-        <p style="margin-top:20px;">– Team WatchVista</p>
+        <p style="margin-top:20px;">– Team smart cleaning services</p>
       </div>
     `,
   };

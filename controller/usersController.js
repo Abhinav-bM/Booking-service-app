@@ -715,7 +715,7 @@ const bookServiceWithCod = async (req, res) => {
       serviceName: service.title,
       date: booking.date,
       slot: booking.slot,
-      price: booking.price,
+      price: booking.amount,
     });
 
     // Schedule reminder email 30 min before
