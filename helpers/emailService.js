@@ -124,4 +124,32 @@ const sendReminderEmailNow = async (email, booking) => {
   }
 };
 
-module.exports = { sendOtpEmail, sendBookingEmail, scheduleReminderEmail };
+const sendVendorSuccessfullyVerifiedEmail = async (email) => {
+  const mailOptions = {
+    from: "watchvista6@gmail.com",
+    to: email,
+    subject: "Vendor Verified Successfully",
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2 style="color:#1677FF;">Vendor Verification Successful 🎉</h2>
+        <p>Hi,</p>
+        <p>Your vendor account has been verified successfully. You can now start adding services and take bookings.</p>
+        <p style="margin-top:20px;">– Team smart cleaning services</p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Vendor verification email sent");
+  } catch (error) {
+    console.error("Error sending vendor verification email:", error);
+  }
+};
+
+module.exports = {
+  sendOtpEmail,
+  sendBookingEmail,
+  scheduleReminderEmail,
+  sendVendorSuccessfullyVerifiedEmail,
+};

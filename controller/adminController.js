@@ -11,6 +11,9 @@ const {
 } = require("../helpers/adminDashboard");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
+const {
+  sendVendorSuccessfullyVerifiedEmail,
+} = require("../helpers/emailService");
 
 // ADMIN LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -358,6 +361,9 @@ let verifyVendor = async (req, res) => {
     if (vendor) {
       vendor.status = !vendor.status;
       await vendor.save();
+    }
+    if (!vendor.status) {
+      await sendVendorSuccessfullyVerifiedEmail(vendor.email);
     }
     res.redirect("/admin/vendorsList");
   } catch (error) {
