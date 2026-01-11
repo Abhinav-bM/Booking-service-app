@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 const sendOtpEmail = async (email, message) => {
   const mailOptions = {
-    from: "watchvista6@gmail.com",
+    from: `${process.env.APP_EMAIL}gmail.com`,
     to: email,
     subject: "Service Booking",
     text: message,
@@ -30,7 +30,7 @@ const sendOtpEmail = async (email, message) => {
 
 const sendBookingEmail = async (email, booking) => {
   const mailOptions = {
-    from: "watchvista6@gmail.com",
+    from: `${process.env.APP_EMAIL}gmail.com`,
     to: email,
     subject: "Booking Confirmation",
     html: `
@@ -98,7 +98,7 @@ const scheduleReminderEmail = (email, booking) => {
 // helper function to send instantly
 const sendReminderEmailNow = async (email, booking) => {
   const mailOptions = {
-    from: "watchvista6@gmail.com",
+    from: `${process.env.APP_EMAIL}gmail.com`,
     to: email,
     subject: "Service Reminder",
     html: `
@@ -126,7 +126,7 @@ const sendReminderEmailNow = async (email, booking) => {
 
 const sendVendorSuccessfullyVerifiedEmail = async (email) => {
   const mailOptions = {
-    from: "watchvista6@gmail.com",
+    from: `${process.env.APP_EMAIL}gmail.com`,
     to: email,
     subject: "Vendor Verified Successfully",
     html: `
