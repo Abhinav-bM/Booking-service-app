@@ -511,8 +511,23 @@ const updateBookingStatus = async (req, res) => {
     // Update booking status
     booking.status = status;
 
-    // If completed, mark completed date
+    // If completed, mark completed date and handle images
     if (status === "completed") {
+      const files = req.files;
+      if (files) {
+        if (files.beforeImage && files.beforeImage[0]) {
+          const result = await cloudinary.uploader.upload(
+            files.beforeImage[0].path,
+          );
+          booking.beforeImage = result.secure_url;
+        }
+        if (files.afterImage && files.afterImage[0]) {
+          const result = await cloudinary.uploader.upload(
+            files.afterImage[0].path,
+          );
+          booking.afterImage = result.secure_url;
+        }
+      }
       booking.completedAt = new Date();
     }
 

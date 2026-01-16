@@ -438,8 +438,9 @@ const serviceDetailsGetPage = async (req, res) => {
     }
 
     const relatedServices = await Services.find({
-      _id: { $ne: serviceId },
+      // _id: { $ne: serviceId },
       category: service.category,
+      isActive: true,
     }).limit(4);
 
     let user;

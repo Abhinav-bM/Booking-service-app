@@ -167,9 +167,7 @@
               <!-- main menu Search-->
               <div
                 class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
-              >
-                
-              </div>
+              ></div>
             </div>
           </nav>
         </div>
@@ -227,6 +225,60 @@
                             <span class="badge bg-dark"
                               ><%= booking.status %></span
                             >
+                            <% if (booking.beforeImage && booking.afterImage) { %>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-info ms-2"
+                              data-bs-toggle="modal"
+                              data-bs-target="#proofModal<%= booking._id %>"
+                            >
+                              View Proof
+                            </button>
+
+                            <!-- Proof Modal -->
+                            <div
+                              class="modal fade"
+                              id="proofModal<%= booking._id %>"
+                              tabindex="-1"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title">
+                                      Service Completion Proof
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="row">
+                                      <div class="col-6 text-center">
+                                        <h6>Before</h6>
+                                        <img
+                                          src="<%= booking.beforeImage %>"
+                                          class="img-fluid rounded border"
+                                          alt="Before"
+                                        />
+                                      </div>
+                                      <div class="col-6 text-center">
+                                        <h6>After</h6>
+                                        <img
+                                          src="<%= booking.afterImage %>"
+                                          class="img-fluid rounded border"
+                                          alt="After"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <% } %>
                           </td>
                         </tr>
                         <% }) %>
@@ -260,5 +312,4 @@
         });
     </script>
   </body>
-
 </html>

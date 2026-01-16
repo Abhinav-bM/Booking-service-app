@@ -27,7 +27,7 @@ router.post("/forgotOtpPost",vendorController.forgotOrpVerify)
 
 router.post("/addService",vendorAuthMiddleware,upload.fields([{ name: 'mainImage', maxCount: 1 }, { name: 'secondImage', maxCount: 1 }, { name: 'thirdImage', maxCount: 1 }, { name: 'fourthImage', maxCount: 1 }]),vendorController.addServicePost)
 router.post("/editService/:id",vendorAuthMiddleware,upload.array('productImages',4),vendorController.editServicePost)
-router.post("/updateBookingStatus/:bookingId",vendorAuthMiddleware,vendorController.updateBookingStatus);
+router.post("/updateBookingStatus/:bookingId",vendorAuthMiddleware,upload.fields([{ name: "beforeImage", maxCount: 1 },{ name: "afterImage", maxCount: 1 },]),vendorController.updateBookingStatus,);
 
 router.post("/deleteService/:id",vendorAuthMiddleware,vendorController.deleteService)
 router.post("/uploadProfilePicture", vendorAuthMiddleware, vendorController.uploadProfilePicture);
