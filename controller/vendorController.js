@@ -627,6 +627,38 @@ let salesExcel = async (req, res) => {
   }
 };
 
+const uploadProfilePicture = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const { image } = req.body;
+
+    if (!image) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No image provided" });
+    }
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "vendor_profiles",
+    });
+
+    await Vendor.findByIdAndUpdate(vendorId, {
+      profilePicture: result.secure_url,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Profile picture updated successfully",
+      profilePicture: result.secure_url,
+    });
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to upload profile picture" });
+  }
+};
+
 module.exports = {
   loginGetPage,
   registerGetPage,
@@ -646,6 +678,7 @@ module.exports = {
   editService,
   editServicePost,
   deleteService,
+  uploadProfilePicture,
 
   salesExcel,
 };

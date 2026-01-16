@@ -21,8 +21,22 @@
       href="/vendor/assets/plugin/datatables/dataTables.bootstrap5.min.css"
     />
 
+    <style>
+      .profile-upload-container:hover #vendor-profile-img-dropdown {
+        filter: brightness(0.8);
+      }
+      .profile-upload-container label:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+      }
+    </style>
     <!-- project css file  -->
     <link rel="stylesheet" href="/vendor/assets/css/ebazar.style.min.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
@@ -95,8 +109,9 @@
                     data-bs-display="static"
                   >
                     <img
+                      id="vendor-profile-img-top"
                       class="avatar lg rounded-circle img-thumbnail"
-                      src="/vendor/assets/images/profile_av.svg"
+                      src="<%= vendor.profilePicture || '/vendor/assets/images/profile_av.svg' %>"
                       alt="profile"
                     />
                   </a>
@@ -105,19 +120,55 @@
                   >
                     <div class="card border-0 w280">
                       <div class="card-body pb-0">
-                        <div class="d-flex py-1">
-                          <img
-                            class="avatar rounded-circle"
-                            src="/vendor/assets/images/profile_av.svg"
-                            alt="profile"
-                          />
-                          <div class="flex-fill ms-3">
+                        <div class="d-flex flex-column align-items-center py-3">
+                          <div
+                            class="position-relative profile-upload-container"
+                          >
+                            <img
+                              id="vendor-profile-img-dropdown"
+                              class="avatar xl rounded-circle img-thumbnail shadow-sm"
+                              style="
+                                width: 80px;
+                                height: 80px;
+                                object-fit: cover;
+                              "
+                              src="<%= vendor.profilePicture || '/vendor/assets/images/profile_av.svg' %>"
+                              alt="profile"
+                            />
+                            <label
+                              for="profileInput"
+                              class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                              style="
+                                width: 28px;
+                                height: 28px;
+                                cursor: pointer;
+                                border: 2px solid #fff;
+                              "
+                            >
+                              <i class="icofont-camera fs-6"></i>
+                            </label>
+                            <input
+                              type="file"
+                              id="profileInput"
+                              class="d-none"
+                              accept="image/*"
+                              onchange="uploadProfileImage(this)"
+                            />
+                          </div>
+                          <div class="text-center mt-2">
                             <p class="mb-0">
                               <span class="font-weight-bold"
                                 ><%= vendor.vendorName %></span
                               >
                             </p>
-                            <small class=""><%= vendor.email %></small>
+                            <small class="text-muted d-block"
+                              ><%= vendor.email %></small
+                            >
+                            <small
+                              class="text-info mt-1"
+                              style="font-size: 0.7rem"
+                              >Max size: 5MB</small
+                            >
                           </div>
                         </div>
 
@@ -138,9 +189,7 @@
               <!-- main menu Search-->
               <div
                 class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
-              >
-               
-              </div>
+              ></div>
             </div>
           </nav>
         </div>
@@ -323,6 +372,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
 
     <script>
       // SALES REPORT
@@ -452,6 +505,86 @@
       });
     </script>
 
+    <script>
+      function uploadProfileImage(input) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          const maxSize = 5 * 1024 * 1024; // 5MB
+
+          if (file.size > maxSize) {
+            Toastify({
+              text: "File is too large! Maximum size is 5MB.",
+              duration: 3000,
+              gravity: "top",
+              position: "right",
+              style: {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+              },
+            }).showToast();
+            input.value = ""; // Clear input
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const base64Image = e.target.result;
+
+            const dropdownImg = document.getElementById(
+              "vendor-profile-img-dropdown",
+            );
+            const topImg = document.getElementById("vendor-profile-img-top");
+            const originalDropdownSrc = dropdownImg.src;
+            const originalTopSrc = topImg.src;
+
+            // Show loading state
+            dropdownImg.style.opacity = "0.5";
+            topImg.style.opacity = "0.5";
+
+            axios
+              .post("/vendor/uploadProfilePicture", {
+                image: base64Image,
+              })
+              .then((response) => {
+                if (response.data.success) {
+                  const newUrl = response.data.profilePicture;
+                  dropdownImg.src = newUrl;
+                  topImg.src = newUrl;
+
+                  // Success Toast/Alert
+                  Toastify({
+                    text: "Profile picture updated successfully!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                      background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    },
+                  }).showToast();
+                } else {
+                  alert(
+                    "Failed to upload profile picture: " +
+                      (response.data.message || "Unknown error"),
+                  );
+                  dropdownImg.src = originalDropdownSrc;
+                  topImg.src = originalTopSrc;
+                }
+              })
+              .catch((error) => {
+                console.error("Error uploading profile picture:", error);
+                alert("Error uploading profile picture. Please try again.");
+                dropdownImg.src = originalDropdownSrc;
+                topImg.src = originalTopSrc;
+              })
+              .finally(() => {
+                dropdownImg.style.opacity = "1";
+                topImg.style.opacity = "1";
+              });
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+    </script>
+
     <!-- Jquery Core Js -->
     <script src="/vendor/assets/bundles/libscripts.bundle.js"></script>
 
@@ -464,5 +597,4 @@
     <script src="../js/page/index.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1Jr7axGGkwvHRnNfoOzoVRFV3yOPHJEU&amp;callback=myMap"></script>
   </body>
-
 </html>

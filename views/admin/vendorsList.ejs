@@ -167,9 +167,7 @@
               <!-- main menu Search-->
               <div
                 class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0"
-              >
-               
-              </div>
+              ></div>
             </div>
           </nav>
         </div>
@@ -183,8 +181,7 @@
                   class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap"
                 >
                   <h3 class="fw-bold mb-0">Vendors</h3>
-                  <div class="col-auto d-flex w-sm-100">
-                  </div>
+                  <div class="col-auto d-flex w-sm-100"></div>
                 </div>
               </div>
             </div>
@@ -200,15 +197,28 @@
                     >
                       <thead>
                         <tr>
+                          <th>Image</th>
                           <th>Vendors</th>
                           <th>Mail</th>
                           <th>Phone</th>
+                          <th>Details</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <% vendors.forEach(data=>{ %>
+                        <% vendors.forEach((data, index)=>{ %>
                         <tr>
+                          <td>
+                            <img
+                              src="<%= data.profilePicture || '/admin/assets/images/profile_av.svg' %>"
+                              alt=""
+                              style="
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 50%;
+                              "
+                            />
+                          </td>
                           <td>
                             <a href="customer-detail.html">
                               <span class="fw-bold ms-1"
@@ -218,6 +228,17 @@
                           </td>
                           <td><%= data.email %></td>
                           <td><%= data.phoneNumber %></td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-outline-primary btn-sm show-details-btn"
+                              data-bs-toggle="modal"
+                              data-bs-target="#vendorDetailsModal"
+                              data-index="<%= index %>"
+                            >
+                              Show Details
+                            </button>
+                          </td>
                           <td>
                             <% if (data.status) { %>
                             <form
@@ -271,6 +292,99 @@
       </div>
     </div>
 
+    <!-- Vendor Details Modal -->
+    <div
+      class="modal fade"
+      id="vendorDetailsModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Vendor Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-4 text-center">
+                <img
+                  id="modalVendorImage"
+                  src=""
+                  alt="Profile"
+                  class="rounded-circle shadow-sm"
+                  style="width: 150px; height: 150px; object-fit: cover"
+                />
+              </div>
+              <div class="col-md-8">
+                <div class="table-responsive">
+                  <table class="table table-sm table-borderless">
+                    <tr>
+                      <th width="150">Name:</th>
+                      <td id="modalVendorName"></td>
+                    </tr>
+                    <tr>
+                      <th>Email:</th>
+                      <td id="modalVendorEmail"></td>
+                    </tr>
+                    <tr>
+                      <th>Phone:</th>
+                      <td id="modalVendorPhone"></td>
+                    </tr>
+                    <tr>
+                      <th>Joined At:</th>
+                      <td id="modalVendorJoined"></td>
+                    </tr>
+                    <tr>
+                      <th>PAN:</th>
+                      <td id="modalVendorPan"></td>
+                    </tr>
+                    <tr>
+                      <th>PAN Verified:</th>
+                      <td id="modalVendorPanVerified"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-12 mt-4">
+                <h6 class="fw-bold border-bottom pb-2">Bank Details</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-borderless">
+                    <tr>
+                      <th width="150">Account Number:</th>
+                      <td id="modalBankAcc"></td>
+                    </tr>
+                    <tr>
+                      <th>IFSC Code:</th>
+                      <td id="modalBankIfsc"></td>
+                    </tr>
+                    <tr>
+                      <th>Holder Name:</th>
+                      <td id="modalBankHolder"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Jquery Core Js -->
     <script src="/admin/assets/bundles/libscripts.bundle.js"></script>
 
@@ -280,8 +394,30 @@
     <!-- Jquery Page Js -->
     <script src="../js/template.js"></script>
     <script>
-      // project data table
+      var allVendors = <%= JSON.stringify(vendors) %>;
+
+
+
       $(document).ready(function () {
+        // Handle Details Button Click
+        $(".show-details-btn").on("click", function() {
+          const index = $(this).data("index");
+          const vendor = allVendors[index];
+
+          $("#modalVendorImage").attr("src", vendor.profilePicture || "/admin/assets/images/profile_av.svg");
+          $("#modalVendorName").text(vendor.vendorName);
+          $("#modalVendorEmail").text(vendor.email);
+          $("#modalVendorPhone").text(vendor.phoneNumber);
+          $("#modalVendorJoined").text(new Date(vendor.JoinedAt).toLocaleDateString());
+          $("#modalVendorPan").text(vendor.pan || "N/A");
+          $("#modalVendorPanVerified").text(vendor.panVerified ? "Yes" : "No");
+
+          const bank = vendor.bankDetails || {};
+          $("#modalBankAcc").text(bank.accountNumber || "N/A");
+          $("#modalBankIfsc").text(bank.ifsc || "N/A");
+          $("#modalBankHolder").text(bank.holderName || "N/A");
+        });
+
         $("#myProjectTable")
           .addClass("nowrap")
           .dataTable({
@@ -295,5 +431,4 @@
       });
     </script>
   </body>
-
 </html>

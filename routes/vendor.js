@@ -5,8 +5,8 @@ const { vendorAuthMiddleware } = require("../middleware/jwtMiddleware");
 const upload = require("../config/multer")
 const bodyParser = require("body-parser");
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json({ limit: "10mb" }));
+router.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 router.get("/dashboard",vendorAuthMiddleware,vendorController.dashboard)
 router.get("/login", vendorController.loginGetPage);
@@ -30,6 +30,7 @@ router.post("/editService/:id",vendorAuthMiddleware,upload.array('productImages'
 router.post("/updateBookingStatus/:bookingId",vendorAuthMiddleware,vendorController.updateBookingStatus);
 
 router.post("/deleteService/:id",vendorAuthMiddleware,vendorController.deleteService)
+router.post("/uploadProfilePicture", vendorAuthMiddleware, vendorController.uploadProfilePicture);
 
 
 

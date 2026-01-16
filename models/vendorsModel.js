@@ -19,6 +19,7 @@ const vendorSchema = new mongoose.Schema({
   pan: { type: String },
   panVerified: { type: Boolean, default: false },
   bankDetails: bankSchema,
+  profilePicture: { type: String },
 });
 
 module.exports = mongoose.model("vendor", vendorSchema);
