@@ -21,7 +21,7 @@
       }
 
       .signup-container {
-        max-width: 400px;
+        max-width: 550px;
         width: 100%;
         padding: 1px;
       }
@@ -73,6 +73,10 @@
     .form-check-label {
         font-size: 14px;
       }
+
+      .gap-3 {
+        gap: 1rem;
+      }
     </style>
   </head>
 
@@ -98,32 +102,42 @@
             name="name"
             id="name"
             class="form-control my-2 py-2"
-            placeholder="Enter your name..."
+            placeholder="Name... ( Make sure it matches with your PAN and Bank account name)"
           />
 
-          <label for="email" class="m-0"
-            ><strong>Email <span class="text-danger">**</span></strong></label
-          ><br />
-          <small id="email-error" style="color: red"></small>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            class="form-control my-2 py-2"
-            placeholder="Enter your email..."
-          />
+          <div class="d-flex gap-3" style="width: 100%">
+            <div class="w-100">
+              <label for="email" class="m-0"
+                ><strong
+                  >Email <span class="text-danger">**</span></strong
+                ></label
+              ><br />
+              <small id="email-error" style="color: red"></small>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                class="form-control my-2 py-2"
+                placeholder="Enter your email..."
+              />
+            </div>
 
-          <label for="phone" class="m-0"
-            ><strong>Phone <span class="text-danger">**</span></strong></label
-          ><br />
-          <small id="phone-error" style="color: red"></small>
-          <input
-            type="text"
-            name="phone"
-            id="phone"
-            class="form-control my-2 py-2"
-            placeholder="Enter your phone..."
-          />
+            <div class="w-100">
+              <label for="phone" class="m-0"
+                ><strong
+                  >Phone <span class="text-danger">**</span></strong
+                ></label
+              ><br />
+              <small id="phone-error" style="color: red"></small>
+              <input
+                type="text"
+                name="phone"
+                id="phone"
+                class="form-control my-2 py-2"
+                placeholder="Enter your phone..."
+              />
+            </div>
+          </div>
 
           <label for="password" class="m-0"
             ><strong
@@ -139,6 +153,47 @@
             placeholder="Enter your password..."
           />
 
+          <hr />
+
+          <label for="pan" class="m-0"
+            ><strong>PAN <span class="text-danger">**</span></strong></label
+          ><br />
+          <small id="pan-error" style="color: red"></small>
+          <input
+            type="text"
+            name="pan"
+            id="pan"
+            class="form-control my-2 py-2"
+            placeholder="Enter your pan..."
+          />
+          <hr />
+
+          <label for="accountNumber" class="m-0"
+            ><strong
+              >Account Number <span class="text-danger">**</span></strong
+            ></label
+          ><br />
+          <small id="accountNumber-error" style="color: red"></small>
+          <input
+            type="text"
+            name="accountNumber"
+            id="accountNumber"
+            class="form-control my-2 py-2"
+            placeholder="Enter your bank account number..."
+          />
+
+          <label for="ifsc" class="m-0"
+            ><strong>IFSC <span class="text-danger">**</span></strong></label
+          ><br />
+          <small id="ifsc-error" style="color: red"></small>
+          <input
+            type="text"
+            name="ifsc"
+            id="ifsc"
+            class="form-control my-2 py-2"
+            placeholder="Enter your bank ifsc code..."
+          />
+
           <button class="mt-3 btn btn-primary btn-block" type="submit">
             Register
           </button>
@@ -147,23 +202,31 @@
 
       <script>
         function validateAndSubmit() {
-
-
-
           var nameInput = document.getElementById("name");
           var emailInput = document.getElementById("email");
           var phoneInput = document.getElementById("phone");
           var passwordInput = document.getElementById("password");
+          var panInput = document.getElementById("pan");
+          var accountNumberInput = document.getElementById("accountNumber");
+          var ifscInput = document.getElementById("ifsc");
 
           var nameError = document.getElementById("name-error");
           var emailError = document.getElementById("email-error");
           var phoneError = document.getElementById("phone-error");
           var passwordError = document.getElementById("password-error");
+          var panError = document.getElementById("pan-error");
+          var accountNumberError = document.getElementById(
+            "accountNumber-error",
+          );
+          var ifscError = document.getElementById("ifsc-error");
 
-          nameError.textContent = ''
-          emailError.textContent = ''
-          phoneError.textContent = ''
-          passwordError.textContent = ''
+          nameError.textContent = "";
+          emailError.textContent = "";
+          phoneError.textContent = "";
+          passwordError.textContent = "";
+          panError.textContent = "";
+          accountNumberError.textContent = "";
+          ifscError.textContent = "";
 
           if (nameInput.value === "") {
             nameError.textContent = "Please fill the field";
@@ -181,10 +244,22 @@
             passwordError.textContent = "Please fill the field";
             return false;
           }
+          if (panInput.value === "") {
+            panError.textContent = "Please fill the field";
+            return false;
+          }
+          if (accountNumberInput.value === "") {
+            accountNumberError.textContent = "Please fill the field";
+            return false;
+          }
+          if (ifscInput.value === "") {
+            ifscError.textContent = "Please fill the field";
+            return false;
+          }
 
           var isValidName = /^[a-zA-Z\s]{3,}$/.test(nameInput.value);
           var isvalidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-            emailInput.value
+            emailInput.value,
           );
           var isvalidPhone = /^(\+91)?\d{10}$/.test(phoneInput.value);
           var isvalidPassword = passwordInput.value.length >= 6;

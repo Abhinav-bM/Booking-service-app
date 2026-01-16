@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
 const vendorRouter = require("./routes/vendor");
+const { verfiyPAN } = require("./helpers/userHelper");
 
 const path = require("path");
 const app = express();
@@ -51,7 +52,7 @@ mongoose
     console.log(err);
   });
 
-// // Set up routes
+// Set up routes
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 app.use("/vendor", vendorRouter);

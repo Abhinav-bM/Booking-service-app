@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const bankSchema = new mongoose.Schema({
+  accountNumber: { type: String },
+  ifsc: { type: String },
+  holderName: { type: String },
+});
+
 const vendorSchema = new mongoose.Schema({
   vendorName: { type: String, required: true },
   email: { type: String, required: true },
@@ -10,6 +16,9 @@ const vendorSchema = new mongoose.Schema({
     default: Date.now,
   },
   status: { type: Boolean, default: true },
+  pan: { type: String },
+  panVerified: { type: Boolean, default: false },
+  bankDetails: bankSchema,
 });
 
 module.exports = mongoose.model("vendor", vendorSchema);

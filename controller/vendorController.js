@@ -14,6 +14,7 @@ const generateOTP = () => {
 };
 require("dotenv").config();
 const Excel = require("exceljs");
+const { verfiyPAN } = require("../helpers/userHelper");
 
 // vendor dashboard page display
 const dashboard = async (req, res) => {
@@ -100,15 +101,29 @@ const registerGetPage = async (req, res) => {
 // Vendor register post page
 const vendorRegisterPostPage = async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password, pan, accountNumber, ifsc } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Pan verification
+    let panVerification;
+    if (pan) {
+      panVerification = await verfiyPAN(pan?.toUpperCase());
+    }
 
     const newVendor = new Vendor({
       vendorName: name,
       email,
       phoneNumber: phone,
+      pan,
+      panVerified: panVerification.valid,
+      bankDetails: {
+        accountNumber,
+        ifsc,
+        holderName: name || "",
+      },
       password: hashedPassword,
+      status: panVerification.valid ? false : true,
     });
 
     await newVendor.save();
