@@ -238,6 +238,22 @@
                               style="max-width: 300px"
                             >
                               <%= review.description %>
+                              <div class="mt-2 text-start">
+                                <% if (review.images && review.images.length >
+                                0) { %> <% review.images.forEach(img => { %>
+                                <img
+                                  src="<%= img %>"
+                                  class="rounded border me-1"
+                                  style="
+                                    width: 50px;
+                                    height: 50px;
+                                    object-fit: cover;
+                                  "
+                                  alt="Review Image"
+                                />
+                                <% }) %>
+                                <% } %>
+                              </div>
                             </td>
                             <td>
                               <%= new Date(review.createdAt).toLocaleDateString() %>
@@ -304,5 +320,4 @@
         });
     </script>
   </body>
-
 </html>

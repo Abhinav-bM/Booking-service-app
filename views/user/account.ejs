@@ -528,6 +528,21 @@
                                           required
                                         ></textarea>
                                       </div>
+                                      <div class="mb-3">
+                                        <label
+                                          for="reviewImages_<%= booking._id %>"
+                                          class="form-label"
+                                          >Images (Optional)</label
+                                        >
+                                        <input
+                                          type="file"
+                                          class="form-control"
+                                          id="reviewImages_<%= booking._id %>"
+                                          name="reviewImages"
+                                          multiple
+                                          accept="image/*"
+                                        />
+                                      </div>
 
                                       <button
                                         type="submit"
@@ -1087,16 +1102,26 @@
         event.preventDefault();
         const rating = $("#reviewRating_" + bookingId).val();
         const description = $("#reviewDescription_" + bookingId).val();
+        const images = document.getElementById(
+          "reviewImages_" + bookingId,
+        ).files;
 
-        const reviewData = {
-          serviceId,
-          bookingId,
-          rating,
-          description,
-        };
+        const formData = new FormData();
+        formData.append("serviceId", serviceId);
+        formData.append("bookingId", bookingId);
+        formData.append("rating", rating);
+        formData.append("description", description);
+
+        for (let i = 0; i < images.length; i++) {
+          formData.append("reviewImages", images[i]);
+        }
 
         axios
-          .post("/create/review", { ...reviewData })
+          .post("/create/review", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             $("#returnlModal_" + bookingId).modal("hide");
             window.location.href = `/userProfile?scrollTo=orders`;

@@ -20,6 +20,7 @@ const reviewSchema = new mongoose.Schema(
     },
     rating: { type: Number, required: true },
     description: { type: String, required: true },
+    images: [{ type: String }],
   },
   { timestamps: true },
 );

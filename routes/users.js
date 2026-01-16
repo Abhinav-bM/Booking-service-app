@@ -7,6 +7,7 @@ const {verifyToken} = require('../middleware/jwtMiddleware');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
+const upload = require("../config/multer");
 
 // ROUTER
 router.get("/", userController.homePage);
@@ -39,7 +40,7 @@ router.post("/book/checkout", verifyToken, userController.checkoutServiceGetPage
 router.post("/book/cod", verifyToken, userController.bookServiceWithCod)
 router.post("/booking/razorPay",verifyToken,userController.placeOrderPostRazorpay)
 router.post("/razorpay-verify",verifyToken,userController.successfulRazorpayOrder)
-router.post("/create/review", verifyToken, userController.postServiceReview)
+router.post("/create/review",verifyToken,upload.array("reviewImages"),userController.postServiceReview,);
 
 router.put("/update-address/:id",verifyToken,userController.editAddress)
 

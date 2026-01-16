@@ -13,6 +13,7 @@ const {
 } = require("../helpers/emailService");
 const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
+const cloudinary = require("../config/cloudinary");
 require("dotenv").config();
 const generateSlots = require("../helpers/booking").generateSlots;
 
@@ -994,16 +995,23 @@ const postServiceReview = async (req, res) => {
   try {
     const userId = req.user.id;
     const { serviceId, bookingId, rating, description } = req.body;
-    console.log(req.body);
+    const files = req.files;
 
-    console.log("called md", rating, description);
+    let imageUrls = [];
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const result = await cloudinary.uploader.upload(file.path);
+        imageUrls.push(result.secure_url);
+      }
+    }
 
     const review = new Reviews({
       userId,
       serviceId,
       bookingId,
-      rating,
+      rating: parseInt(rating),
       description,
+      images: imageUrls,
     });
 
     await review.save();
@@ -1011,6 +1019,7 @@ const postServiceReview = async (req, res) => {
     res.status(200).send({ message: "Review created successfully" });
   } catch (error) {
     console.error("Error while creating review : ", error);
+    res.status(500).send({ error: "Failed to create review" });
   }
 };
 
